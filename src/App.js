@@ -1,24 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import { Routes, Route } from "react-router-dom";
+import ErrorPage from "./layouts/error";
+import { AuthProvider, RequireAuth } from "./hooks/auth/useAuth";
+import AdminHome from "./layouts/admin/home";
+import CommonHome from "./layouts/home";
+import LoginScreen from "./layouts/login";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AuthProvider>
+      <Routes>
+        <Route path="*" element={<ErrorPage />} />
+        <Route path="/" element={<CommonHome />} />
+        <Route path="/login" element={<LoginScreen />} />
+        <Route element={<RequireAuth props={{ clearance: 4 }} />}>
+          <Route path="/admin" element={<AdminHome />} />
+        </Route>
+        <Route element={<RequireAuth props={{ clearance: 3 }} />}>
+          <Route path="/staff" element={<AdminHome />} />
+        </Route>
+        <Route element={<RequireAuth props={{ clearance: 2 }} />}>
+          <Route path="/student" element={<AdminHome />} />
+        </Route>
+      </Routes>
+    </AuthProvider>
   );
 }
 

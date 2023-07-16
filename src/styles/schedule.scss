@@ -1,0 +1,35 @@
+.schedule-table-row {
+	min-width: 1200px;
+	max-width: 3000px;
+	width: 100%;
+
+	.schedule-table-heading {
+		border-top: 1px solid;
+	}
+
+	.schedule-table-slot {
+		min-width: 120px;
+		min-height: 100px;
+		height: 12%;
+		width: 12.5%;
+		position: relative;
+		border-bottom: 1px solid;
+		border-right: 1px solid;
+
+		.slot-content {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -50%);
+		}
+	}
+
+	.schedule-table-slot:is(:first-child) {
+		border-left: 1px solid;
+	}
+}
+
+.schedule-btn {
+	padding: 10px;
+	margin-left: 10px;
+}

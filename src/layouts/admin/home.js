@@ -1,3 +1,9 @@
-export default function AdminHome() {
+import React from "react"
 
+export default function AdminHome() {
+    return (
+        <>
+            
+        </>
+    )
 }

@@ -5,6 +5,7 @@ import AdminHome from "./layouts/admin/home";
 import CommonHome from "./layouts/home";
 import LoginScreen from "./layouts/login";
 import ScheduleHome from "./layouts/schedule/views/schedule";
+import NavBar from "./navBar";
 
 function App() {
     return (
@@ -12,6 +13,7 @@ function App() {
             <Routes>
                 <Route path="*" element={<ErrorPage />} />
                 <Route path="/" element={<CommonHome />} />
+                <Route path="/navigation" element={<NavBar />} />
                 <Route path="/schedule" element={<ScheduleHome />} />
                 <Route path="/test" element={<AdminHome />} />
                 <Route path="/login" element={<LoginScreen />} />

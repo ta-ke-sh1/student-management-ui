@@ -9,7 +9,7 @@ import moment from "moment";
 
 
 const daysOfTheWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-const slot = [1, 2, 3, 4]
+const slot = [1, 2, 3, 4, 5, 6, 7, 8]
 
 export default function ScheduleHome() {
     const [week, setWeek] = useState(moment().week());
@@ -36,7 +36,7 @@ export default function ScheduleHome() {
 
     const initDateMap = () => {
         let d_map = [];
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < 8; i++) {
             let row = [];
             for (let j = 0; j < 7; j++) {
                 row.push({
@@ -119,6 +119,11 @@ export default function ScheduleHome() {
                                         })
                                     }
                                 </Grid>
+                                <div>
+                                    Note:
+                                    <ul>(attended) Student has attended this slot</ul>
+                                    <ul>(absent) Student has not attended this slot</ul>
+                                </div>
                             </div>
                         )
                     })

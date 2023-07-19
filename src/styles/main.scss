@@ -2,3 +2,33 @@
 	display: flex;
 	align-items: center;
 }
+
+.body {
+	width: 100vw;
+	display: flex;
+	flex-direction: column;
+}
+
+.mt-200 {
+	margin-top: 200px;
+}
+
+.w-100 {
+	width: 100%;
+}
+
+.relative-container {
+	position: relative;
+}
+
+.center {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
+
+body {
+	font-family: "Poppins-Light";
+	overflow-x: hidden;
+}

@@ -8,22 +8,24 @@ export default function NavBar() {
                 <div className="nav-container">
                     <div className="nav-content">
                         <Link to={"/"} style={{ marginLeft: "10px" }}>
-                            <div
-                                id="logo"
-                                style={{
-                                    backgroundImage: `url(${
-                                        process.env.PUBLIC_URL +
-                                        "/logo/logo-icon.png"
-                                    })`,
-                                }}
-                            />
+                            <div id="logo-circle">
+                                <div
+                                    id="logo"
+                                    style={{
+                                        backgroundImage: `url(${
+                                            process.env.PUBLIC_URL +
+                                            "/logo/logo-icon.png"
+                                        })`,
+                                    }}
+                                />
+                            </div>
                         </Link>
                         <Button
-                            variant="outlined"
+                            variant="contained"
                             disableElevation={true}
                             style={{
                                 marginLeft: "auto",
-                                marginRight: "15px",
+                                marginRight: "25px",
                             }}>
                             Login
                         </Button>

@@ -1,8 +1,8 @@
 import { Routes, Route } from "react-router-dom";
 import ErrorPage from "./layouts/error";
 import { AuthProvider, RequireAuth } from "./hooks/auth/useAuth";
-import AdminHome from "./layouts/admin/home";
-import CommonHome from "./layouts/home";
+import AdminHome from "./layouts/users/admin/home";
+import CommonHome from "./layouts/home/home";
 import LoginScreen from "./layouts/login";
 import ScheduleHome from "./layouts/schedule/views/schedule";
 import NavBar from "./navBar";

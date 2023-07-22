@@ -1,5 +1,32 @@
-.course-card{
-   width: 100%;
-   height: 300px;
-   background-color: red;
+.course-cards-container {
+	width: 100%;
+
+	.course-card {
+		width: inherit;
+		height: 300px;
+		background-size: cover;
+		margin-bottom: 40px;
+		position: relative;
+
+		transition-duration: 0.4s;
+		border-radius: 5px;
+
+		&:hover {
+			border-radius: 20px;
+			box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+		}
+
+		.text-line {
+			width: 100%;
+			padding: 20px 0;
+			position: absolute;
+			width: 100%;
+			background-color: #f1f1f1;
+			bottom: 0;
+
+			span {
+				margin-left: 10px;
+			}
+		}
+	}
 }

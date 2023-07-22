@@ -10,15 +10,15 @@
 	margin: 0;
 }
 
-.ml-75{
+.ml-75 {
 	margin-left: 7.5%;
 }
 
-.mt-50{
+.mt-50 {
 	margin-top: 50px;
 }
 
-.mt-100{
+.mt-100 {
 	margin-top: 100%;
 }
 
@@ -26,7 +26,7 @@
 	margin-top: 200px;
 }
 
-.w-90{
+.w-90 {
 	width: 90%;
 }
 
@@ -36,6 +36,11 @@
 
 .relative-container {
 	position: relative;
+}
+
+.body-container {
+	width: 100%;
+	margin: 0 4.5vw;
 }
 
 .center {
@@ -48,4 +53,10 @@
 body {
 	font-family: "Poppins-Light";
 	overflow-x: hidden;
+}
+
+.fab {
+	position: fixed;
+	right: 2.5%;
+	bottom: 2.5%;
 }

@@ -2,7 +2,7 @@
 	position: fixed;
 	top: 20px;
 	height: 80px;
-	width: 90%;
+	width: 95%;
 	border-radius: 20px;
 	z-index: 100;
 
@@ -10,7 +10,7 @@
 	transform: translateX(-50%);
 
 	background: transparent;
-  	backdrop-filter: blur(5px);
+	backdrop-filter: blur(5px);
 	box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 
 	.nav-container {
@@ -36,7 +36,7 @@
 				transform: translate(-50%, -50%);
 			}
 
-			#logo-circle{
+			#logo-circle {
 				margin-left: 5px;
 				background-color: white;
 				border-radius: 50%;

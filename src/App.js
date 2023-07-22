@@ -17,7 +17,7 @@ function App() {
                 <Route path="/schedule" element={<ScheduleHome />} />
                 <Route path="/test" element={<AdminHome />} />
                 <Route path="/login" element={<LoginScreen />} />
-                <Route element={<RequireAuth props={{ clearance: 4 }} />}>
+                <Route element={<RequireAuth props={{ clearance: 0 }} />}>
                     <Route path="/admin" element={<AdminHome />} />
                 </Route>
                 <Route element={<RequireAuth props={{ clearance: 3 }} />}>

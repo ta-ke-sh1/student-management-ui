@@ -10,7 +10,8 @@ import "./styles/fonts.scss";
 import "./styles/home.scss";
 import NavBar from "./navBar";
 import "./styles/cards.scss";
-import "./styles/footer.scss"
+import "./styles/footer.scss";
+import "./styles/widget.scss";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

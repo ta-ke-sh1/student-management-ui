@@ -52,11 +52,19 @@
 
 body {
 	font-family: "Poppins-Light";
-	overflow-x: hidden;
+	margin: 0;
 }
 
 .fab {
 	position: fixed;
-	right: 2.5%;
-	bottom: 2.5%;
+	left: 2.5%;
+	bottom: 3vh;
+	z-index: 1000000000;
+}
+
+.drawer {
+	h3{
+		margin-left: 20px;
+		margin-bottom: 0;
+	}
 }

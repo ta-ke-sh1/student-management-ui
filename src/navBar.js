@@ -12,10 +12,9 @@ export default function NavBar() {
                                 <div
                                     id="logo"
                                     style={{
-                                        backgroundImage: `url(${
-                                            process.env.PUBLIC_URL +
+                                        backgroundImage: `url(${process.env.PUBLIC_URL +
                                             "/logo/logo-icon.png"
-                                        })`,
+                                            })`,
                                     }}
                                 />
                             </div>

@@ -1,0 +1,21 @@
+.login-container {
+	position: relative;
+	width: 100vw;
+	height: 100vh;
+	margin: 0;
+
+	.login-component {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+	}
+
+	h1 {
+		margin: 0;
+	}
+}
+
+a {
+	text-decoration: none;
+}

@@ -2,9 +2,58 @@ import { Grid } from "@mui/material";
 import { useFetchHomeData } from "./hooks/useFetchHomeData";
 import CoursesCards from "./coursesCards";
 import Footer from "../../footer";
+import { Link } from "react-router-dom";
 
 export default function CommonHome() {
     const { coursesRegistration } = useFetchHomeData();
+
+    const infomationAccessItems = [
+        {
+            id: 1,
+            title: "View Weekly Schedule",
+            banner: "image2.jpg",
+            link: ""
+        },
+        {
+            id: 2,
+            title: "View Weekly Schedule",
+            banner: "image3.jpg",
+            link: ""
+        },
+        {
+            id: 3,
+            title: "View Weekly Schedule",
+            banner: "image4.jpg",
+            link: ""
+        },
+        {
+            id: 4,
+            title: "View Weekly Schedule",
+            banner: "image5.jpg",
+            link: ""
+        }
+    ]
+
+    const regulationItems = [
+        {
+            id: 1,
+            title: "Test Regulations",
+            banner: "image2.jpg",
+            link: ""
+        },
+        {
+            id: 2,
+            title: "University Code of Conduct",
+            banner: "image3.jpg",
+            link: ""
+        },
+        {
+            id: 3,
+            title: "Published Articles Awarding Regulations",
+            banner: "image4.jpg",
+            link: ""
+        }
+    ]
 
     return (
         <div className="body">
@@ -38,64 +87,34 @@ export default function CommonHome() {
                 <div className="relative-container w-100 mt-50">
                     <h1>Information Access</h1>
                     <Grid container spacing={3}>
-                        <Grid item xs={12} md={3}>
-                            <div className="home-nav-btn">
-                                <div className="nav-text">
-                                    View Weekly Schedule
-                                </div>
-                            </div>
-                        </Grid>
-                        <Grid item xs={12} md={3}>
-                            <div className="home-nav-btn">
-                                <div className="nav-text">
-                                    View Class Timetable
-                                </div>
-                            </div>
-                        </Grid>
-                        <Grid item xs={12} md={3}>
-                            <div className="home-nav-btn">
-                                <div className="nav-text">
-                                    Attendance Report
-                                </div>
-                            </div>
-                        </Grid>
-                        <Grid item xs={12} md={3}>
-                            <div className="home-nav-btn">
-                                <div className="nav-text">
-                                    Mark Report
-                                </div>
-                            </div>
-                        </Grid>
+                        {infomationAccessItems.map((item) => <NavItem imageUrl={item.banner} title={item.title} />)}
                     </Grid>
                 </div>
                 <div className="relative-container w-100 mt-50">
                     <h1>Regulations</h1>
                     <Grid container spacing={3}>
-                        <Grid item xs={12} md={3}>
-                            <div className="home-nav-btn">
-                                <div className="nav-text">
-                                    Test Regulations
-                                </div>
-                            </div>
-                        </Grid>
-                        <Grid item xs={12} md={3}>
-                            <div className="home-nav-btn">
-                                <div className="nav-text">
-                                    University Code of Conduct
-                                </div>
-                            </div>
-                        </Grid>
-                        <Grid item xs={12} md={3}>
-                            <div className="home-nav-btn">
-                                <div className="nav-text">
-                                    Published Articles Awarding Regulations
-                                </div>
-                            </div>
-                        </Grid>
+                        {regulationItems.map((item) => <NavItem imageUrl={item.banner} title={item.title} />)}
                     </Grid>
                 </div>
             </div>
             <Footer />
         </div>
     );
+}
+
+const NavItem = (props) => {
+    return (
+        <Grid item xs={12} md={3}>
+            <Link to={props.link}>
+                <div className="home-nav-btn">
+                    <div className="nav-item-img" style={{
+                        backgroundImage: `url(${process.env.PUBLIC_URL + "/banner/" + props.imageUrl})`
+                    }}></div>
+                    <div className="nav-text">
+                        {props.title}
+                    </div>
+                </div>
+            </Link>
+        </Grid>
+    )
 }

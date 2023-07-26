@@ -12,6 +12,7 @@ import NavBar from "./navBar";
 import "./styles/cards.scss";
 import "./styles/footer.scss";
 import "./styles/widget.scss";
+import "./styles/login.scss"
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

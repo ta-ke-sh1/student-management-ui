@@ -35,11 +35,9 @@
 		width: 90%;
 
 		.home-nav-btn {
-			height: 100px;
+			height: 460px;
 			position: relative;
 			transition-duration: 0.4s;
-			background-color: #0a6ebd;
-			color: white;
 			border-radius: 5px;
 
 			&:hover {
@@ -47,13 +45,25 @@
 				box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
 			}
 
+			&:hover > .nav-item-img {
+				background-position: 50% 100%;
+				border-top-left-radius: 20px;
+				border-top-right-radius: 20px;
+			}
+
+			.nav-item-img {
+				background-size: cover;
+				height: 400px;
+				background-color: red;
+				margin-bottom: 10px;
+				background-position: 60% 100%;
+				transition-duration: 0.9s;
+			}
+
 			.nav-text {
+				color: black;
 				width: fit-content;
-				position: absolute;
-				left: 50%;
-				top: 50%;
-				transform: translate(-50%, -50%);
-				text-align: center;
+				margin: 0 auto;
 				font-size: 1.2rem;
 				font-family: "Poppins-Regular";
 			}

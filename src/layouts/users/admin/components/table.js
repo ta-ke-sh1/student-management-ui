@@ -36,7 +36,7 @@ export default function CustomTable(props) {
     const [orderBy, setOrderBy] = useState("");
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(8);
+    const [rowsPerPage, setRowsPerPage] = useState(props.init_count ?? 8);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === "asc";
@@ -100,6 +100,7 @@ export default function CustomTable(props) {
         <Box sx={{ width: "100%", paddingTop: '20px' }}>
             <Paper sx={{ width: "100%", mb: 2 }}>
                 <EnhancedTableToolbar
+                    title={props.title}
                     handleEdit={props.handleEdit}
                     handleDelete={props.handleDelete}
                     numSelected={selected.length}
@@ -107,6 +108,11 @@ export default function CustomTable(props) {
                 />
                 <TableContainer>
                     <Table
+                        wrapperStyle={
+                            {
+                                maxHeight: '30vh'
+                            }
+                        }
                         sx={{ minWidth: 750 }}
                         aria-labelledby="tableTitle"
                         size={"medium"}>
@@ -134,7 +140,8 @@ export default function CustomTable(props) {
                                         tabIndex={-1}
                                         key={row.id}
                                         selected={isItemSelected}
-                                        sx={{ cursor: "pointer" }}>
+
+                                        sx={{ cursor: "pointer", maxHeight: '20px', overflowY: 'auto' }}>
                                         <TableCell padding="checkbox">
                                             <Checkbox
                                                 color="primary"
@@ -247,7 +254,7 @@ function EnhancedTableHead(props) {
 }
 
 function EnhancedTableToolbar(props) {
-    const { numSelected, selected } = props;
+    const { numSelected, selected, title } = props;
 
     return (
         <Toolbar
@@ -276,7 +283,7 @@ function EnhancedTableToolbar(props) {
                     variant="h6"
                     id="tableTitle"
                     component="div">
-                    Rooms
+                    {title}
                 </Typography>
             )}
 

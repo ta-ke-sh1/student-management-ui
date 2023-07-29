@@ -197,6 +197,7 @@ export default function CampusAdmin() {
                     <div className="big-widget" >
                         <div className="campus-list">
                             <CustomTable
+                                title={"Campus"}
                                 rows={rows}
                                 headCells={headCells}
                                 colNames={['id', 'campus', 'building', 'number']}

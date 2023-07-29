@@ -3,6 +3,10 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+
 import "./styles/main.scss";
 import "./styles/schedule.scss";
 import "./styles/navBar.scss";
@@ -18,9 +22,11 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
     <React.StrictMode>
-        <BrowserRouter>
-            <NavBar />
-            <App />
-        </BrowserRouter>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <BrowserRouter>
+                <NavBar />
+                <App />
+            </BrowserRouter>
+        </LocalizationProvider>
     </React.StrictMode>
 );

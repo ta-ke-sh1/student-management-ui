@@ -1,7 +1,11 @@
 .big-widget {
-   width: 96%;
-   min-height: 77vh;
-   padding: 5px 20px;
-   background-color: #f9f9f9;
-   border-radius: 30px;
+	height: fit-content;
+	padding: 5px 20px;
+	background-color: #f9f9f9;
+	border-radius: 10px;
+}
+
+.admin-form-bar {
+	padding: 20px 0;
+	width: 100%;
 }

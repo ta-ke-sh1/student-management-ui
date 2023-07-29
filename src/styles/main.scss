@@ -57,14 +57,19 @@ body {
 
 .fab {
 	position: fixed;
-	left: 2.5%;
-	bottom: 3vh;
-	z-index: 1000000000;
+	left: 30px;
+	bottom: 30px;
+	z-index: 10000;
 }
 
 .drawer {
-	h3{
+	h3 {
 		margin-left: 20px;
 		margin-bottom: 0;
 	}
+}
+
+h1 {
+	margin: 0;
+	padding: 0;
 }

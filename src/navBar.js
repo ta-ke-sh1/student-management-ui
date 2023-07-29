@@ -1,10 +1,29 @@
 import { Button } from "@mui/material";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 export default function NavBar() {
+
+    useEffect(() => {
+        if (window.location.href.startsWith("http://localhost:3000/test")) {
+            document.getElementById('nav-bar').style.width = '95%'
+        } else {
+            document.getElementById('nav-bar').style.width = '65%'
+        }
+
+        window.addEventListener('resize', () => {
+            if (window.location.href.startsWith("http://localhost:3000/test")) {
+                document.getElementById('nav-bar').style.width = '95%'
+            } else {
+                document.getElementById('nav-bar').style.width = '65%'
+            }
+        })
+
+    }, [])
+
     return (
         <>
-            <div className="navbar">
+            <div className="navbar" id="nav-bar">
                 <div className="nav-container">
                     <div className="nav-content">
                         <Link to={"/"} style={{ marginLeft: "10px" }}>

@@ -1,79 +1,23 @@
-import * as React from "react";
-import PropTypes from "prop-types";
-import { alpha } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
-import TableSortLabel from "@mui/material/TableSortLabel";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Paper from "@mui/material/Paper";
-import Checkbox from "@mui/material/Checkbox";
-import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Switch from "@mui/material/Switch";
-import DeleteIcon from "@mui/icons-material/Delete";
-import FilterListIcon from "@mui/icons-material/FilterList";
-import { visuallyHidden } from "@mui/utils";
+import { useState, useEffect } from "react";
+import { TextField, Select, MenuItem, InputLabel, FormControl, Button, Grid } from "@mui/material";
+import CustomTable from "./table";
 
-function createData(name, calories, fat, carbs, protein) {
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
+function createData(id, campus, building, number) {
     return {
-        name,
-        calories,
-        fat,
-        carbs,
+        id,
+        campus,
+        building,
+        number,
     };
 }
 
-const rows = [
-    createData("Cupcake", 305, 3.7, 67, 4.3),
-    createData("Donut", 452, 25.0, 51, 4.9),
-    createData("Eclair", 262, 16.0, 24, 6.0),
-    createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-    createData("Gingerbread", 356, 16.0, 49, 3.9),
-    createData("Honeycomb", 408, 3.2, 87, 6.5),
-    createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-    createData("Jelly Bean", 375, 0.0, 94, 0.0),
-    createData("KitKat", 518, 26.0, 65, 7.0),
-    createData("Lollipop", 392, 0.2, 98, 0.0),
-    createData("Marshmallow", 318, 0, 81, 2.0),
-    createData("Nougat", 360, 19.0, 9, 37.0),
-    createData("Oreo", 437, 18.0, 63, 4.0),
-];
-
-function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
-}
-
-function getComparator(order, orderBy) {
-    return order === "desc"
-        ? (a, b) => descendingComparator(a, b, orderBy)
-        : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort(array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-        const order = comparator(a[0], b[0]);
-        if (order !== 0) {
-            return order;
-        }
-        return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
-}
+const rooms = [{ "id": "Room-HN-100", "campus": "HN", "room": "100", "building": "Pham Van Bach" }, { "id": "Room-HN-101", "campus": "HN", "room": "101", "building": "Pham Van Bach" }, { "id": "Room-HN-102", "campus": "HN", "room": "102", "building": "Pham Van Bach" }, { "id": "Room-HN-103", "campus": "HN", "room": "103", "building": "Pham Van Bach" }, { "id": "Room-HN-104", "campus": "HN", "room": "104", "building": "Pham Van Bach" }, { "id": "Room-HN-105", "campus": "HN", "room": "105", "building": "Pham Van Bach" }, { "id": "Room-HN-106", "campus": "HN", "room": "106", "building": "Pham Van Bach" }, { "id": "Room-HN-107", "campus": "HN", "room": "107", "building": "Pham Van Bach" }, { "id": "Room-HN-108", "campus": "HN", "room": "108", "building": "Pham Van Bach" }, { "id": "Room-HN-109", "campus": "HN", "room": "109", "building": "Pham Van Bach" }, { "id": "Room-HN-110", "campus": "HN", "room": "110", "building": "Pham Van Bach" }, { "id": "Room-HN-111", "campus": "HN", "room": "111", "building": "Pham Van Bach" }, { "id": "Room-HN-112", "campus": "HN", "room": "112", "building": "Pham Van Bach" }, { "id": "Room-HN-113", "campus": "HN", "room": "113", "building": "Pham Van Bach" }, { "id": "Room-HN-114", "campus": "HN", "room": "114", "building": "Pham Van Bach" }, { "id": "Room-HN-115", "campus": "HN", "room": "115", "building": "Pham Van Bach" }, { "id": "Room-HN-116", "campus": "HN", "room": "116", "building": "Pham Van Bach" }, { "id": "Room-HN-117", "campus": "HN", "room": "117", "building": "Pham Van Bach" }, { "id": "Room-HN-118", "campus": "HN", "room": "118", "building": "Pham Van Bach" }, { "id": "Room-HN-119", "campus": "HN", "room": "119", "building": "Pham Van Bach" }, { "id": "Room-HN-200", "campus": "HN", "room": "200", "building": "Pham Van Bach" }, { "id": "Room-HN-201", "campus": "HN", "room": "201", "building": "Pham Van Bach" }, { "id": "Room-HN-202", "campus": "HN", "room": "202", "building": "Pham Van Bach" }, { "id": "Room-HN-203", "campus": "HN", "room": "203", "building": "Pham Van Bach" }, { "id": "Room-HN-204", "campus": "HN", "room": "204", "building": "Pham Van Bach" }, { "id": "Room-HN-205", "campus": "HN", "room": "205", "building": "Pham Van Bach" }, { "id": "Room-HN-206", "campus": "HN", "room": "206", "building": "Pham Van Bach" }, { "id": "Room-HN-207", "campus": "HN", "room": "207", "building": "Pham Van Bach" }, { "id": "Room-HN-208", "campus": "HN", "room": "208", "building": "Pham Van Bach" }, { "id": "Room-HN-209", "campus": "HN", "room": "209", "building": "Pham Van Bach" }, { "id": "Room-HN-210", "campus": "HN", "room": "210", "building": "Pham Van Bach" }, { "id": "Room-HN-300", "campus": "HN", "room": "300", "building": "Pham Van Bach" }, { "id": "Room-HN-301", "campus": "HN", "room": "301", "building": "Pham Van Bach" }, { "id": "Room-HN-302", "campus": "HN", "room": "302", "building": "Pham Van Bach" }, { "id": "Room-HN-303", "campus": "HN", "room": "303", "building": "Pham Van Bach" }, { "id": "Room-HN-304", "campus": "HN", "room": "304", "building": "Pham Van Bach" }, { "id": "Room-HN-305", "campus": "HN", "room": "305", "building": "Pham Van Bach" }, { "id": "Room-HN-306", "campus": "HN", "room": "306", "building": "Pham Van Bach" }, { "id": "Room-HN-307", "campus": "HN", "room": "307", "building": "Pham Van Bach" }, { "id": "Room-HN-308", "campus": "HN", "room": "308", "building": "Pham Van Bach" }, { "id": "Room-HN-309", "campus": "HN", "room": "309", "building": "Pham Van Bach" }, { "id": "Room-HN-310", "campus": "HN", "room": "310", "building": "Pham Van Bach" }, { "id": "Room-HN-311", "campus": "HN", "room": "311", "building": "Pham Van Bach" }, { "id": "Room-HN-312", "campus": "HN", "room": "312", "building": "Pham Van Bach" }, { "id": "Room-HN-313", "campus": "HN", "room": "313", "building": "Pham Van Bach" }, { "id": "Room-HN-314", "campus": "HN", "room": "314", "building": "Pham Van Bach" }, { "id": "Room-HN-315", "campus": "HN", "room": "315", "building": "Pham Van Bach" }, { "id": "Room-HN-316", "campus": "HN", "room": "316", "building": "Pham Van Bach" }, { "id": "Room-HN-317", "campus": "HN", "room": "317", "building": "Pham Van Bach" }, { "id": "Room-HN-318", "campus": "HN", "room": "318", "building": "Pham Van Bach" }, { "id": "Room-HN-319", "campus": "HN", "room": "319", "building": "Pham Van Bach" }, { "id": "Room-HN-400", "campus": "HN", "room": "400", "building": "Pham Van Bach" }, { "id": "Room-HN-401", "campus": "HN", "room": "401", "building": "Pham Van Bach" }, { "id": "Room-HN-402", "campus": "HN", "room": "402", "building": "Pham Van Bach" }, { "id": "Room-HN-403", "campus": "HN", "room": "403", "building": "Pham Van Bach" }, { "id": "Room-HN-404", "campus": "HN", "room": "404", "building": "Pham Van Bach" }, { "id": "Room-HN-405", "campus": "HN", "room": "405", "building": "Pham Van Bach" }, { "id": "Room-HN-406", "campus": "HN", "room": "406", "building": "Pham Van Bach" }, { "id": "Room-HN-407", "campus": "HN", "room": "407", "building": "Pham Van Bach" }, { "id": "Room-HN-408", "campus": "HN", "room": "408", "building": "Pham Van Bach" }, { "id": "Room-HN-409", "campus": "HN", "room": "409", "building": "Pham Van Bach" }, { "id": "Room-HN-410", "campus": "HN", "room": "410", "building": "Pham Van Bach" }, { "id": "Room-HN-411", "campus": "HN", "room": "411", "building": "Pham Van Bach" }, { "id": "Room-HN-412", "campus": "HN", "room": "412", "building": "Pham Van Bach" }, { "id": "Room-HN-413", "campus": "HN", "room": "413", "building": "Pham Van Bach" }, { "id": "Room-HN-414", "campus": "HN", "room": "414", "building": "Pham Van Bach" }, { "id": "Room-HN-415", "campus": "HN", "room": "415", "building": "Pham Van Bach" }, { "id": "Room-HN-416", "campus": "HN", "room": "416", "building": "Pham Van Bach" }, { "id": "Room-HN-417", "campus": "HN", "room": "417", "building": "Pham Van Bach" }, { "id": "Room-HN-418", "campus": "HN", "room": "418", "building": "Pham Van Bach" }, { "id": "Room-HN-419", "campus": "HN", "room": "419", "building": "Pham Van Bach" }]
 
 const headCells = [
     {
@@ -83,301 +27,211 @@ const headCells = [
         label: "Room Id",
     },
     {
-        id: "calories",
+        id: "campus",
         numeric: true,
         disablePadding: false,
         label: "Campus",
     },
     {
-        id: "fat",
+        id: "building",
         numeric: true,
         disablePadding: false,
         label: "Building",
     },
     {
-        id: "carbs",
+        id: "number",
         numeric: true,
         disablePadding: false,
-        label: "Options",
+        label: "Room Number",
     },
 ];
 
-function EnhancedTableHead(props) {
-    const {
-        onSelectAllClick,
-        order,
-        orderBy,
-        numSelected,
-        rowCount,
-        onRequestSort,
-    } = props;
-    const createSortHandler = (property) => (event) => {
-        onRequestSort(event, property);
-    };
-
-    return (
-        <TableHead>
-            <TableRow>
-                <TableCell padding="checkbox">
-                    <Checkbox
-                        color="primary"
-                        indeterminate={
-                            numSelected > 0 && numSelected < rowCount
-                        }
-                        checked={rowCount > 0 && numSelected === rowCount}
-                        onChange={onSelectAllClick}
-                        inputProps={{
-                            "aria-label": "select all desserts",
-                        }}
-                    />
-                </TableCell>
-                {headCells.map((headCell) => (
-                    <TableCell
-                        key={headCell.id}
-                        align={headCell.numeric ? "right" : "left"}
-                        padding={headCell.disablePadding ? "none" : "normal"}
-                        sortDirection={orderBy === headCell.id ? order : false}>
-                        <TableSortLabel
-                            active={orderBy === headCell.id}
-                            direction={orderBy === headCell.id ? order : "asc"}
-                            onClick={createSortHandler(headCell.id)}>
-                            {headCell.label}
-                            {orderBy === headCell.id ? (
-                                <Box component="span" sx={visuallyHidden}>
-                                    {order === "desc"
-                                        ? "sorted descending"
-                                        : "sorted ascending"}
-                                </Box>
-                            ) : null}
-                        </TableSortLabel>
-                    </TableCell>
-                ))}
-            </TableRow>
-        </TableHead>
-    );
-}
-
-EnhancedTableHead.propTypes = {
-    numSelected: PropTypes.number.isRequired,
-    onRequestSort: PropTypes.func.isRequired,
-    onSelectAllClick: PropTypes.func.isRequired,
-    order: PropTypes.oneOf(["asc", "desc"]).isRequired,
-    orderBy: PropTypes.string.isRequired,
-    rowCount: PropTypes.number.isRequired,
-};
-
-function EnhancedTableToolbar(props) {
-    const { numSelected } = props;
-
-    return (
-        <Toolbar
-            sx={{
-                pl: { sm: 2 },
-                pr: { xs: 1, sm: 1 },
-                ...(numSelected > 0 && {
-                    bgcolor: (theme) =>
-                        alpha(
-                            theme.palette.primary.main,
-                            theme.palette.action.activatedOpacity
-                        ),
-                }),
-            }}>
-            {numSelected > 0 ? (
-                <Typography
-                    sx={{ flex: "1 1 100%" }}
-                    color="inherit"
-                    variant="subtitle1"
-                    component="div">
-                    {numSelected} selected
-                </Typography>
-            ) : (
-                <Typography
-                    sx={{ flex: "1 1 100%" }}
-                    variant="h6"
-                    id="tableTitle"
-                    component="div">
-                    Rooms
-                </Typography>
-            )}
-
-            {numSelected > 0 ? (
-                <Tooltip title="Delete">
-                    <IconButton>
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
-            ) : (
-                <Tooltip title="Filter list">
-                    <IconButton>
-                        <FilterListIcon />
-                    </IconButton>
-                </Tooltip>
-            )}
-        </Toolbar>
-    );
-}
-
-function RoomsTable() {
-    const [order, setOrder] = React.useState("asc");
-    const [orderBy, setOrderBy] = React.useState("calories");
-    const [selected, setSelected] = React.useState([]);
-    const [page, setPage] = React.useState(0);
-    const [dense, setDense] = React.useState(false);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-    const handleRequestSort = (event, property) => {
-        const isAsc = orderBy === property && order === "asc";
-        setOrder(isAsc ? "desc" : "asc");
-        setOrderBy(property);
-    };
-
-    const handleSelectAllClick = (event) => {
-        if (event.target.checked) {
-            const newSelected = rows.map((n) => n.name);
-            setSelected(newSelected);
-            return;
-        }
-        setSelected([]);
-    };
-
-    const handleClick = (event, name) => {
-        const selectedIndex = selected.indexOf(name);
-        let newSelected = [];
-
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
-                selected.slice(0, selectedIndex),
-                selected.slice(selectedIndex + 1)
-            );
-        }
-
-        setSelected(newSelected);
-    };
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-    };
-
-    const isSelected = (name) => selected.indexOf(name) !== -1;
-
-    // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
-    const visibleRows = React.useMemo(
-        () =>
-            stableSort(rows, getComparator(order, orderBy)).slice(
-                page * rowsPerPage,
-                page * rowsPerPage + rowsPerPage
-            ),
-        [order, orderBy, page, rowsPerPage]
-    );
-
-    return (
-        <Box sx={{ width: "100%" }}>
-            <Paper sx={{ width: "100%", mb: 2 }}>
-                <EnhancedTableToolbar numSelected={selected.length} />
-                <TableContainer>
-                    <Table
-                        sx={{ minWidth: 750 }}
-                        aria-labelledby="tableTitle"
-                        size={dense ? "small" : "medium"}>
-                        <EnhancedTableHead
-                            numSelected={selected.length}
-                            order={order}
-                            orderBy={orderBy}
-                            onSelectAllClick={handleSelectAllClick}
-                            onRequestSort={handleRequestSort}
-                            rowCount={rows.length}
-                        />
-                        <TableBody>
-                            {visibleRows.map((row, index) => {
-                                const isItemSelected = isSelected(row.name);
-                                const labelId = `enhanced-table-checkbox-${index}`;
-                                return (
-                                    <TableRow
-                                        hover
-                                        onClick={(event) =>
-                                            handleClick(event, row.name)
-                                        }
-                                        role="checkbox"
-                                        aria-checked={isItemSelected}
-                                        tabIndex={-1}
-                                        key={row.name}
-                                        selected={isItemSelected}
-                                        sx={{ cursor: "pointer" }}>
-                                        <TableCell padding="checkbox">
-                                            <Checkbox
-                                                color="primary"
-                                                checked={isItemSelected}
-                                                inputProps={{
-                                                    "aria-labelledby": labelId,
-                                                }}
-                                            />
-                                        </TableCell>
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            padding="none">
-                                            {row.name}
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            {row.calories}
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            {row.fat}
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            {row.carbs}
-                                        </TableCell>
-                                    </TableRow>
-                                );
-                            })}
-                            {emptyRows > 0 && (
-                                <TableRow
-                                    style={{
-                                        height: (dense ? 33 : 53) * emptyRows,
-                                    }}>
-                                    <TableCell colSpan={6} />
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-            </Paper>
-        </Box>
-    );
-}
-
 export default function CampusAdmin() {
+    let campuses = [
+        {
+            id: 'HN',
+            name: 'Ha Noi'
+        },
+        {
+            id: 'HCM',
+            name: 'Ho Chi Minh'
+        },
+        {
+            id: 'DN',
+            name: 'Da Nang'
+        },
+        {
+            id: 'CT',
+            name: 'Can Tho'
+        },
+    ]
+
+    const [roomId, setRoomId] = useState('')
+    const [campus, setCampus] = useState('HN');
+    const [rows, setRows] = useState([])
+    const [building, setBuilding] = useState('')
+    const [number, setNumber] = useState('');
+
+    const [dialogTitle, setDialogTitle] = useState("")
+    const [dialogContent, setDialogContent] = useState("")
+
+    const [open, setOpen] = useState(false);
+
+    useEffect(() => {
+        fetchRows()
+    }, [rows])
+
+    const fetchRows = () => {
+        let res = [];
+        rooms.forEach((room) => {
+            res.push(
+                createData(room.id, room.campus, room.building, room.room)
+            )
+        })
+        setRows(res)
+    }
+
+    const fetchRoom = (id) => {
+        return rows.find((row) => row.id === id)
+    }
+
+    const handleEdit = (id) => {
+        let room = fetchRoom(id)
+        setRoomId(room.id)
+        setCampus(room.campus)
+        setBuilding(room.building)
+        setNumber(room.number)
+    }
+
+    const handleDelete = (index) => {
+        setDialogTitle("Delete Room")
+        setDialogContent("This room will be deleted, are you sure? This change cannot be undone")
+        setOpen(true)
+        console.log(index)
+    }
+
+    const handleConfirm = (e) => {
+        e.preventDefault()
+        console.log({
+            id: roomId,
+            campus: campus,
+            building: building,
+            number: number
+        })
+
+        if (building === "" || number === "" || campus === "") return
+
+        setDialogTitle("Edit Room information")
+        setDialogContent("This room will be edited, are you sure? This change cannot be undone")
+        setOpen(true);
+    }
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
     return (
-        <div className="big-widget">
-            <p className="heading-1">Rooms</p>
-            <p>All available rooms are listed here</p>
-            <div className="campus-list">
-                <RoomsTable />
-            </div>
-        </div>
+        <>
+            <Grid container spacing={4} sx={{ width: '98.5%' }}>
+                <Grid item sm={12} md={6} style={{ marginBottom: '30px' }}>
+                    <div className="big-widget" style={{ paddingBottom: '25px' }}>
+                        <h2>Room Control</h2>
+                        <p>Edit or Add new roow here</p>
+                        <br />
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} md={3}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="campus-select-label">Campus</InputLabel>
+                                    <Select
+                                        id="form-campus"
+                                        labelId="campus-select-label"
+                                        value={campus}
+                                        label="Campus"
+                                        onChange={(e) => {
+                                            setCampus(e.target.value)
+                                        }}
+                                    >
+                                        {campuses.map((campus) => <MenuItem key={campus.id} value={campus.id}>{campus.name}</MenuItem>)}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <TextField
+                                    onChange={(e) => setBuilding(e.target.value)}
+                                    value={building}
+                                    id="form-building"
+                                    fullWidth
+                                    label="Building"
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <TextField
+                                    value={number}
+                                    onChange={(e) => setNumber(e.target.value)}
+                                    id="form-number"
+                                    fullWidth
+                                    label="Room Number"
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <Button fullWidth variant="outlined" sx={{ padding: '15px 30px' }} onClick={(e) => handleConfirm(e)}>Save</Button>
+                            </Grid>
+                        </Grid>
+                    </div>
+                </Grid>
+                <Grid item sm={12} md={6} style={{ marginBottom: '30px' }}>
+                    <div style={{
+                        backgroundImage: `url(${process.env.PUBLIC_URL}/banner/banner` + 5 + ".jpg)",
+                        width: '100%',
+                        height: '225px',
+                        borderRadius: '10px',
+                        backgroundSize: 'contain'
+                    }}>
+                    </div>
+                </Grid>
+            </Grid>
+            <Grid container style={{ width: '97%' }}>
+                <Grid item xs={12}>
+                    <div className="big-widget" >
+                        <div className="campus-list">
+                            <CustomTable
+                                rows={rows}
+                                headCells={headCells}
+                                colNames={['id', 'campus', 'building', 'number']}
+                                handleEdit={handleEdit}
+                                handleDelete={handleDelete}
+                            />
+                        </div>
+                    </div>
+                </Grid>
+            </Grid>
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                style={{
+                    zIndex: 100000000000
+                }}
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {dialogTitle}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        {dialogContent}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Accept</Button>
+                    <Button onClick={handleClose} autoFocus>
+                        Cancel
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </>
+
     );
 }

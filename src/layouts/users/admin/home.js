@@ -9,9 +9,12 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
-import MailIcon from "@mui/icons-material/Mail";
 import CampusAdmin from "./components/campus";
 import CourseAdmin from "./components/course";
+import TableRestaurantIcon from '@mui/icons-material/TableRestaurant';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 const drawerWidth = 200;
 
@@ -49,17 +52,17 @@ export default function AdminHome() {
         {
             name: "Facilities",
             id: 0,
-            icon: <InboxIcon />,
+            icon: <TableRestaurantIcon />,
         },
         {
             name: "Users",
             id: 1,
-            icon: <InboxIcon />,
+            icon: <AccountCircleIcon />,
         },
         {
             name: "Classes",
             id: 2,
-            icon: <InboxIcon />,
+            icon: <SupervisorAccountIcon />,
         },
     ];
 
@@ -67,12 +70,12 @@ export default function AdminHome() {
         {
             name: "Registrations",
             id: 3,
-            icon: <InboxIcon />,
+            icon: <CalendarMonthIcon />,
         },
         {
             name: "Semesters",
             id: 4,
-            icon: <InboxIcon />,
+            icon: <CalendarMonthIcon />,
         },
     ];
 

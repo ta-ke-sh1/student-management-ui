@@ -7,6 +7,7 @@ import LoginScreen from "./layouts/login";
 import ScheduleHome from "./layouts/schedule/views/schedule";
 import NavBar from "./navBar";
 import CourseUser from "./layouts/users/student/views/course";
+import GradeUser from "./layouts/users/student/views/grade";
 
 function App() {
     return (
@@ -18,6 +19,7 @@ function App() {
                         <ErrorPage />
                     </>
                 } />
+                <Route path="/grade" element={<><NavBar /><GradeUser /></>} />
                 <Route path="/course" element={<><NavBar /><CourseUser /></>} />
                 <Route path="/" element={<><NavBar /><CommonHome /></>} />
                 <Route path="/schedule" element={<><NavBar /><ScheduleHome /></>} />

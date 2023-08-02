@@ -78,7 +78,6 @@ export default function CourseUser() {
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     <p>Opened at: </p>
-                                    <p>Deadline: </p>
                                     <h4>Submission Status</h4>
                                     <TableContainer component={Paper} className="submission-table" elevation={0} >
                                         <Table fullWidth>

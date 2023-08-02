@@ -72,8 +72,7 @@ export default function ScheduleHome() {
     }
 
     return (
-        <div>
-            <h1>Hello world</h1>
+        <div className="schedule-container">
             <div className="schedule-table">
                 <div className="row">
                     <Button variant="outlined" className="schedule-btn">Last Week</Button>
@@ -119,15 +118,15 @@ export default function ScheduleHome() {
                                         })
                                     }
                                 </Grid>
-                                <div>
-                                    Note:
-                                    <ul>(attended) Student has attended this slot</ul>
-                                    <ul>(absent) Student has not attended this slot</ul>
-                                </div>
                             </div>
                         )
                     })
                 }
+                <div>
+                    Note:
+                    <ul>(attended) Student has attended this slot</ul>
+                    <ul>(absent) Student has not attended this slot</ul>
+                </div>
             </div>
         </div>
     );

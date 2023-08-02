@@ -52,7 +52,7 @@ export default function AdminHome() {
 
     const facilities_tabs = [
         {
-            name: "Facilities",
+            name: "Rooms",
             id: 0,
             icon: <TableRestaurantIcon />,
         },
@@ -69,32 +69,27 @@ export default function AdminHome() {
             id: 2,
             icon: <CalendarMonthIcon />,
         },
-        {
-            name: "Semesters",
-            id: 3,
-            icon: <CalendarMonthIcon />,
-        },
     ];
 
     const courses_tabs = [
         {
             name: "Subjects",
-            id: 4,
+            id: 3,
             icon: <BookmarksIcon />,
         },
         {
             name: "Schedules",
-            id: 5,
+            id: 4,
             icon: <InboxIcon />,
         },
         {
             name: "Grades",
-            id: 6,
+            id: 5,
             icon: <InboxIcon />,
         },
     ];
 
-    const components = [<CampusAdmin />, <UsersAdmin />, <RegistrationAdmin />, <RegistrationAdmin />, <SubjectsAdmin />];
+    const components = [<CampusAdmin />, <UsersAdmin />, <RegistrationAdmin />, <SubjectsAdmin />];
 
     const drawer = (
         <div className="drawer">

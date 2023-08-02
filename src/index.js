@@ -24,7 +24,6 @@ root.render(
     <React.StrictMode>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <BrowserRouter>
-                <NavBar />
                 <App />
             </BrowserRouter>
         </LocalizationProvider>

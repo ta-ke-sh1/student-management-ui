@@ -34,13 +34,20 @@
 	width: 100%;
 }
 
+.main-container {
+	position: relative;
+	width: 100%;
+	height: fit-content;
+	margin: 0;
+}
+
 .relative-container {
 	position: relative;
 }
 
 .body-container {
 	width: 100%;
-	margin: 0 4.5vw;
+	padding: 0 4.5vw;
 }
 
 .center {
@@ -53,6 +60,9 @@
 body {
 	font-family: "Poppins-Light";
 	margin: 0;
+	width: 100vw;
+	height: 100vh;
+	overflow-x: hidden;
 }
 
 .fab {

@@ -10,13 +10,14 @@ import ListItemText from "@mui/material/ListItemText";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import CampusAdmin from "./components/campus";
-import TableRestaurantIcon from '@mui/icons-material/TableRestaurant';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import UsersAdmin from "./components/user";
 import RegistrationAdmin from "./components/registration";
 import SubjectsAdmin from "./components/subjects";
-import BookmarksIcon from '@mui/icons-material/Bookmarks';
+import BookmarksIcon from "@mui/icons-material/Bookmarks";
+import FGWClass from "./components/class";
 
 const drawerWidth = 200;
 
@@ -65,8 +66,13 @@ export default function AdminHome() {
 
     const scheduling_tabs = [
         {
-            name: "Registrations",
+            name: "Class",
             id: 2,
+            icon: <CalendarMonthIcon />,
+        },
+        {
+            name: "Registrations",
+            id: 3,
             icon: <CalendarMonthIcon />,
         },
     ];
@@ -74,22 +80,28 @@ export default function AdminHome() {
     const courses_tabs = [
         {
             name: "Subjects",
-            id: 3,
+            id: 4,
             icon: <BookmarksIcon />,
         },
         {
             name: "Schedules",
-            id: 4,
+            id: 5,
             icon: <InboxIcon />,
         },
         {
             name: "Grades",
-            id: 5,
+            id: 6,
             icon: <InboxIcon />,
         },
     ];
 
-    const components = [<CampusAdmin />, <UsersAdmin />, <RegistrationAdmin />, <SubjectsAdmin />];
+    const components = [
+        <CampusAdmin />,
+        <UsersAdmin />,
+        <FGWClass />,
+        <RegistrationAdmin />,
+        <SubjectsAdmin />,
+    ];
 
     const drawer = (
         <div className="drawer">

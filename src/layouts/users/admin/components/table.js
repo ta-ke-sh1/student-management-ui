@@ -17,10 +17,10 @@ import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import DeleteIcon from "@mui/icons-material/Delete";
-import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import { getComparator, stableSort } from "../../../../utils/utils";
-import EditIcon from '@mui/icons-material/Edit';
+import EditIcon from "@mui/icons-material/Edit";
+import AddIcon from "@mui/icons-material/Add";
 
 EnhancedTableHead.propTypes = {
     numSelected: PropTypes.number.isRequired,
@@ -85,7 +85,9 @@ export default function CustomTable(props) {
 
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - props.rows.length) : 0;
+        page > 0
+            ? Math.max(0, (1 + page) * rowsPerPage - props.rows.length)
+            : 0;
 
     const visibleRows = useMemo(
         () =>
@@ -97,9 +99,10 @@ export default function CustomTable(props) {
     );
 
     return (
-        <Box sx={{ width: "100%", paddingTop: '20px' }}>
+        <Box sx={{ width: "100%", paddingTop: "20px" }}>
             <Paper sx={{ width: "100%", mb: 2 }}>
                 <EnhancedTableToolbar
+                    handleAddEntry={props.handleAddEntry}
                     title={props.title}
                     handleEdit={props.handleEdit}
                     handleDelete={props.handleDelete}
@@ -108,11 +111,9 @@ export default function CustomTable(props) {
                 />
                 <TableContainer>
                     <Table
-                        wrapperStyle={
-                            {
-                                maxHeight: '30vh'
-                            }
-                        }
+                        wrapperStyle={{
+                            maxHeight: "30vh",
+                        }}
                         sx={{ minWidth: 750 }}
                         aria-labelledby="tableTitle"
                         size={"medium"}>
@@ -140,8 +141,11 @@ export default function CustomTable(props) {
                                         tabIndex={-1}
                                         key={row.id}
                                         selected={isItemSelected}
-
-                                        sx={{ cursor: "pointer", maxHeight: '20px', overflowY: 'auto' }}>
+                                        sx={{
+                                            cursor: "pointer",
+                                            maxHeight: "20px",
+                                            overflowY: "auto",
+                                        }}>
                                         <TableCell padding="checkbox">
                                             <Checkbox
                                                 color="primary"
@@ -151,34 +155,48 @@ export default function CustomTable(props) {
                                                 }}
                                             />
                                         </TableCell>
-                                        {
-                                            props.colNames.map((col, index) => {
-                                                return index === 0 ?
-                                                    <TableCell
-                                                        key={"row-" + props.colNames[index]}
-                                                        component="th"
-                                                        id={labelId}
-                                                        scope="row"
-                                                        padding="none">
-                                                        {row[props.colNames[index]]}
-                                                    </TableCell>
-                                                    : <TableCell
-                                                        key={"row-" + props.colNames[index]}
-                                                        align="right">
-                                                        {row[props.colNames[index]]}
-                                                    </TableCell>
-                                            })
-                                        }
+                                        {props.colNames.map((col, index) => {
+                                            return index === 0 ? (
+                                                <TableCell
+                                                    key={
+                                                        "row-" +
+                                                        props.colNames[index]
+                                                    }
+                                                    component="th"
+                                                    id={labelId}
+                                                    scope="row"
+                                                    padding="none">
+                                                    {row[props.colNames[index]]}
+                                                </TableCell>
+                                            ) : (
+                                                <TableCell
+                                                    key={
+                                                        "row-" +
+                                                        props.colNames[index]
+                                                    }
+                                                    align="right">
+                                                    {row[props.colNames[index]]}
+                                                </TableCell>
+                                            );
+                                        })}
                                     </TableRow>
                                 );
                             })}
                             {emptyRows > 0 && (
-                                <TableRow
-                                    style={{
-                                        height: (53) * emptyRows,
-                                    }}>
-                                    <TableCell colSpan={6} />
-                                </TableRow>
+                                <>
+                                    {[...Array(emptyRows).keys()].map((i) => {
+                                        return (
+                                            <TableRow
+                                                style={{
+                                                    width: "100%",
+                                                    height: 20 * emptyRows,
+                                                }}>
+                                                <TableCell padding="checkbox"></TableCell>
+                                                <TableCell colSpan={6} />
+                                            </TableRow>
+                                        );
+                                    })}
+                                </>
                             )}
                         </TableBody>
                     </Table>
@@ -222,9 +240,6 @@ function EnhancedTableHead(props) {
                         }
                         checked={rowCount > 0 && numSelected === rowCount}
                         onChange={onSelectAllClick}
-                        inputProps={{
-                            "aria-label": "select all desserts",
-                        }}
                     />
                 </TableCell>
                 {props.headCells.map((headCell) => (
@@ -288,34 +303,42 @@ function EnhancedTableToolbar(props) {
             )}
 
             {numSelected === 0 ? (
-                <Tooltip title="Filter list">
-                    <IconButton>
-                        <FilterListIcon />
-                    </IconButton>
-                </Tooltip>
-            ) : numSelected === 1 ?
-                (
-                    <>
-                        <Tooltip title="Edit">
-                            <IconButton onClick={() => props.handleEdit(selected[0])}>
-                                <EditIcon />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Delete">
-                            <IconButton onClick={() => props.handleDelete(selected[0])}>
-                                <DeleteIcon />
-                            </IconButton>
-                        </Tooltip>
-                    </>
-                )
-                : (
-
+                <>
+                    <Tooltip title="Add New Entry">
+                        <IconButton
+                            onClick={() => {
+                                if (props.handleAddEntry) {
+                                    props.handleAddEntry();
+                                } else {
+                                    console.log("Add event not binded");
+                                }
+                            }}>
+                            <AddIcon />
+                        </IconButton>
+                    </Tooltip>
+                </>
+            ) : numSelected === 1 ? (
+                <>
+                    <Tooltip title="Edit">
+                        <IconButton
+                            onClick={() => props.handleEdit(selected[0])}>
+                            <EditIcon />
+                        </IconButton>
+                    </Tooltip>
                     <Tooltip title="Delete">
-                        <IconButton onClick={() => props.handleDelete(selected)}>
+                        <IconButton
+                            onClick={() => props.handleDelete(selected[0])}>
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>
-                )}
+                </>
+            ) : (
+                <Tooltip title="Delete">
+                    <IconButton onClick={() => props.handleDelete(selected)}>
+                        <DeleteIcon />
+                    </IconButton>
+                </Tooltip>
+            )}
         </Toolbar>
     );
 }

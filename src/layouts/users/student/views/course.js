@@ -15,7 +15,6 @@ export default function CourseUser() {
         name: "Requirements Management",
     }
 
-
     return (
         <>
             <div className="main-container">
@@ -28,8 +27,6 @@ export default function CourseUser() {
                 <div className="page-content">
                     <div className="serif" style={{
                         fontSize: '4rem',
-                        marginLeft: '40px',
-                        marginBottom: '40px'
                     }}>
                         {course.class} - {course.teacher} - {course.name}
                     </div>
@@ -162,6 +159,31 @@ export default function CourseUser() {
                                     <Typography>Notes & Guides</Typography>
                                 </AccordionSummary>
                                 <AccordionDetails></AccordionDetails>
+                            </Accordion>
+                            <br />
+                            <div className='course-item-title'>
+                                <h2>Course Details</h2>
+                            </div>
+                            <br />
+                            <Accordion TransitionProps={{ unmountOnExit: true }} >
+                                <AccordionSummary
+                                    sx={{
+                                        borderBottom: '3px solid #F11A7B'
+                                    }}
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header">
+                                    <Typography>See More</Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <p>
+                                        This site will provide you all the key information and learning resources for this module. Please ensure you familiarise yourself with the University of Greenwich Vietnam's Handbook where you will find all the information regarding the module, weekly schedule, assessments and more.
+                                        If you have any questions or no content is being shown in this CMS Page, please get in touch with your lecturer in the first instance. Alternatively, you may wish to contact your Programme Leader or Head of Department/School.
+                                    </p>
+                                    <p>
+                                        If you experience technical difficulties please visit: https://www.gre.ac.uk/it-and-library
+                                    </p>
+                                </AccordionDetails>
                             </Accordion>
                             <br />
                         </Grid>

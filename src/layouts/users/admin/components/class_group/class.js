@@ -8,14 +8,17 @@ import {
     Button,
     Grid,
 } from "@mui/material";
-import CustomTable from "./table";
+import CustomTable from "../../../../../components/table/table";
 
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { mockGroup } from "../mockData/mock";
+import { mockGroup } from "../../mockData/mock";
+import ScheduleWidget from "./widgets/scheduleWidget";
+import ParticipantsWidget from "./widgets/participantsWidget";
+import GroupWidget from "./widgets/groupWidget";
 
 function createData(id, programme, building, number) {
     return {
@@ -186,22 +189,9 @@ export default function FGWClass() {
         console.log(index);
     };
 
-    const handleConfirm = (e) => {
+    const handleSearchGroup = (e) => {
         e.preventDefault();
-        console.log({
-            id: roomId,
-            programme: programme,
-            building: building,
-            number: number,
-        });
-
-        if (building === "" || number === "" || programme === "") return;
-
-        setDialogTitle("Edit Group information");
-        setDialogContent(
-            "This room will be edited, are you sure? This change cannot be undone"
-        );
-        setOpen(true);
+        setGroups(mockGroup);
     };
 
     const handleClose = () => {
@@ -294,7 +284,7 @@ export default function FGWClass() {
                                     fullWidth
                                     variant="outlined"
                                     sx={{ padding: "15px 30px" }}
-                                    onClick={(e) => handleConfirm(e)}>
+                                    onClick={(e) => handleSearchGroup(e)}>
                                     Search
                                 </Button>
                             </Grid>
@@ -315,96 +305,10 @@ export default function FGWClass() {
                         }}></div>
                 </Grid>
             </Grid>
-            <Grid
-                container
-                spacing={4}
-                style={{ marginBottom: "30px", width: "98.5%" }}>
-                <Grid item xs={12}>
-                    <div className="big-widget">
-                        <h2>Group List</h2>
-                        {groups.length == 0 ? (
-                            <p>Please select programme & term</p>
-                        ) : (
-                            <Grid container spacing={2}>
-                                {groups.map((group) => {
-                                    return (
-                                        <Grid
-                                            item
-                                            xs={2}
-                                            sx={{ alignItems: "center" }}>
-                                            <Button
-                                                fullWidth
-                                                sx={{
-                                                    borderRadius: "10px",
-                                                    padding: "10px 5px",
-                                                    backgroundColor: "black",
-                                                }}
-                                                variant={"contained"}
-                                                className="group-chip">
-                                                {group.name}
-                                            </Button>
-                                        </Grid>
-                                    );
-                                })}
-                            </Grid>
-                        )}
-                    </div>
-                </Grid>
-            </Grid>
 
-            <Grid
-                container
-                spacing={4}
-                style={{ marginBottom: "30px", width: "98.5%" }}>
-                <Grid item xs={12}>
-                    <div className="big-widget">
-                        <h2>Participants List</h2>
-                        <div className="programme-list">
-                            <CustomTable
-                                handleAddEntry={handleAddParticipant}
-                                title={"Campus"}
-                                rows={rows}
-                                headCells={headCells}
-                                colNames={[
-                                    "id",
-                                    "programme",
-                                    "building",
-                                    "number",
-                                ]}
-                                handleEdit={handleEdit}
-                                handleDelete={handleDelete}
-                            />
-                        </div>
-                    </div>
-                </Grid>
-            </Grid>
-
-            <Grid
-                container
-                spacing={4}
-                style={{ marginBottom: "30px", width: "98.5%" }}>
-                <Grid item xs={12}>
-                    <div className="big-widget">
-                        <h2>Schedule List</h2>
-                        <div className="programme-list">
-                            <CustomTable
-                                handleAddEntry={handleAddSchedule}
-                                title={"Campus"}
-                                rows={rows}
-                                headCells={headCells}
-                                colNames={[
-                                    "id",
-                                    "programme",
-                                    "building",
-                                    "number",
-                                ]}
-                                handleEdit={handleEdit}
-                                handleDelete={handleDelete}
-                            />
-                        </div>
-                    </div>
-                </Grid>
-            </Grid>
+            <GroupWidget groups={groups} />
+            <ParticipantsWidget rows={rows} />
+            <ScheduleWidget rows={rows} />
 
             <Dialog
                 open={open}
@@ -427,6 +331,6 @@ export default function FGWClass() {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </>
+        </ >
     );
 }

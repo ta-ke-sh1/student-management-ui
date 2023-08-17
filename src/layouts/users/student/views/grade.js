@@ -28,8 +28,6 @@ export default function GradeUser() {
                 <div className="page-content">
                     <div className="serif" style={{
                         fontSize: '4rem',
-                        marginLeft: '40px',
-                        marginBottom: '40px'
                     }}>
                         {course.class} - {course.teacher} - {course.name}
                     </div>

@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
-import { TextField, Select, MenuItem, InputLabel, FormControl, Button, Grid } from "@mui/material";
-import CustomTable from "./table";
+import { TextField, Select, MenuItem, InputLabel, FormControl, Button, Grid, Modal, Box, Typography } from "@mui/material";
+import CustomTable from "../../../../../components/table/table";
 
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import CampusForm from "./campusForm";
 
 function createData(id, campus, building, number) {
     return {
@@ -72,10 +73,13 @@ export default function CampusAdmin() {
     const [building, setBuilding] = useState('')
     const [number, setNumber] = useState('');
 
+    const [room, setRoom] = useState({})
+
     const [dialogTitle, setDialogTitle] = useState("")
     const [dialogContent, setDialogContent] = useState("")
 
     const [open, setOpen] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
 
     useEffect(() => {
         fetchRows()
@@ -97,10 +101,13 @@ export default function CampusAdmin() {
 
     const handleEdit = (id) => {
         let room = fetchRoom(id)
-        setRoomId(room.id)
-        setCampus(room.campus)
-        setBuilding(room.building)
-        setNumber(room.number)
+        setRoom({
+            id: room.id,
+            campus: room.campus,
+            building: room.building,
+            number: room.number
+        })
+        setOpenModal(true)
     }
 
     const handleDelete = (index) => {
@@ -112,15 +119,7 @@ export default function CampusAdmin() {
 
     const handleConfirm = (e) => {
         e.preventDefault()
-        console.log({
-            id: roomId,
-            campus: campus,
-            building: building,
-            number: number
-        })
-
         if (building === "" || number === "" || campus === "") return
-
         setDialogTitle("Edit Room information")
         setDialogContent("This room will be edited, are you sure? This change cannot be undone")
         setOpen(true);
@@ -130,13 +129,22 @@ export default function CampusAdmin() {
         setOpen(false);
     };
 
+    const handleOpenModal = () => {
+        setRoom({})
+        setOpenModal(true)
+    }
+
+    const handleCloseModal = () => {
+        setOpenModal(false)
+    }
+
     return (
         <>
-            <Grid container spacing={4} sx={{ width: '98.5%' }}>
+            <Grid container spacing={4} >
                 <Grid item sm={12} md={6} style={{ marginBottom: '30px' }}>
                     <div className="big-widget" style={{ paddingBottom: '25px' }}>
                         <h2>Room Control</h2>
-                        <p>Edit or Add new roow here</p>
+                        <p>Search for your room</p>
                         <br />
                         <Grid container spacing={3}>
                             <Grid item xs={12} md={3}>
@@ -176,7 +184,7 @@ export default function CampusAdmin() {
                                 />
                             </Grid>
                             <Grid item xs={12} md={3}>
-                                <Button fullWidth variant="outlined" sx={{ padding: '15px 30px' }} onClick={(e) => handleConfirm(e)}>Save</Button>
+                                <Button fullWidth variant="outlined" sx={{ padding: '15px 30px' }} onClick={(e) => handleConfirm(e)}>Search</Button>
                             </Grid>
                         </Grid>
                     </div>
@@ -192,11 +200,12 @@ export default function CampusAdmin() {
                     </div>
                 </Grid>
             </Grid>
-            <Grid container style={{ width: '97%' }}>
+            <Grid container spacing={4}>
                 <Grid item xs={12}>
                     <div className="big-widget" >
                         <div className="campus-list">
                             <CustomTable
+                                handleAddEntry={() => { handleOpenModal() }}
                                 title={"Campus"}
                                 rows={rows}
                                 headCells={headCells}
@@ -232,6 +241,18 @@ export default function CampusAdmin() {
                     </Button>
                 </DialogActions>
             </Dialog>
+
+            <Modal open={openModal} onClose={() => setOpenModal(false)} sx={{
+                zIndex: 100000000000
+            }}>
+                <Box sx={{
+                    bgcolor: 'background.paper',
+                    boxShadow: 12,
+                    p: 4,
+                }} className={'modal'}>
+                    <CampusForm closeHandler={handleCloseModal} room={room} />
+                </Box>
+            </Modal>
         </>
 
     );

@@ -8,6 +8,7 @@ import ScheduleHome from "./layouts/schedule/views/schedule";
 import NavBar from "./navBar";
 import CourseUser from "./layouts/users/student/views/course";
 import GradeUser from "./layouts/users/student/views/grade";
+import UserHome from "./layouts/users/student/home";
 
 function App() {
     return (
@@ -23,6 +24,7 @@ function App() {
                 <Route path="/course" element={<><NavBar /><CourseUser /></>} />
                 <Route path="/" element={<><NavBar /><CommonHome /></>} />
                 <Route path="/schedule" element={<><NavBar /><ScheduleHome /></>} />
+                <Route path="/home" element={<><NavBar /><UserHome /></>} />
                 <Route path="/test" element={<><NavBar /><AdminHome /></>} />
                 <Route path="/login" element={<><LoginScreen /></>} />
                 <Route element={<RequireAuth props={{ clearance: 0 }} />}>

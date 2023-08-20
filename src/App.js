@@ -4,7 +4,6 @@ import { AuthProvider, RequireAuth } from "./hooks/auth/useAuth";
 import AdminHome from "./layouts/users/admin/home";
 import CommonHome from "./layouts/home/home";
 import LoginScreen from "./layouts/login";
-import ScheduleHome from "./layouts/schedule/views/schedule";
 import NavBar from "./navBar";
 import CourseUser from "./layouts/users/student/views/course";
 import GradeUser from "./layouts/users/student/views/grade";
@@ -20,21 +19,16 @@ function App() {
                         <ErrorPage />
                     </>
                 } />
-                <Route path="/grade" element={<><NavBar /><GradeUser /></>} />
-                <Route path="/course" element={<><NavBar /><CourseUser /></>} />
                 <Route path="/" element={<><NavBar /><CommonHome /></>} />
-                <Route path="/schedule" element={<><NavBar /><ScheduleHome /></>} />
-                <Route path="/home" element={<><NavBar /><UserHome /></>} />
-                <Route path="/test" element={<><NavBar /><AdminHome /></>} />
                 <Route path="/login" element={<><LoginScreen /></>} />
                 <Route element={<RequireAuth props={{ clearance: 0 }} />}>
-                    <Route path="/admin" element={<><NavBar /><AdminHome /></>} />
-                </Route>
-                <Route element={<RequireAuth props={{ clearance: 3 }} />}>
-                    <Route path="/staff" element={<><NavBar /><AdminHome /></>} />
+                    <Route path="/grade" element={<><NavBar /><GradeUser /></>} />
+                    <Route path="/course" element={<><NavBar /><CourseUser /></>} />
+                    <Route path="/home" element={<><NavBar /><UserHome /></>} />
+                    <Route path="/test" element={<><NavBar /><AdminHome /></>} />
                 </Route>
                 <Route element={<RequireAuth props={{ clearance: 2 }} />}>
-                    <Route path="/student" element={<><NavBar /><AdminHome /></>} />
+                    <Route path="/admin" element={<><NavBar /><AdminHome /></>} />
                 </Route>
             </Routes>
         </AuthProvider>

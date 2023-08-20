@@ -40,9 +40,11 @@ export function AuthProvider({ children }) {
 export function RequireAuth({ props }) {
     let auth = useAuth();
 
-    if (!auth.token) {
-        return <Navigate to="/" />;
-    }
+    console.log(auth)
+
+    // if (!auth.token) {
+    //     return <Navigate to="/" />;
+    // }
 
     if (props) {
         var clearance = auth.clearance;
@@ -50,7 +52,7 @@ export function RequireAuth({ props }) {
             console.log(
                 "Your level of authority is too low! Level: " + props.clearance
             );
-            return <Navigate to="/" />;
+            // return <Navigate to="/" />;
         }
     } else {
         console.log("Null props");

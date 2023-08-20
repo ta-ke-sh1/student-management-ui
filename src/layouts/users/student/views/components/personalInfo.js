@@ -16,10 +16,7 @@ export default function PersonalInfo(props) {
     }
 
     return (
-        <div className="big-widget" style={{
-            overflowY: 'auto',
-            padding: '20px'
-        }}>
+        <>
             <div
                 className="basic-info"
                 style={{
@@ -30,7 +27,7 @@ export default function PersonalInfo(props) {
                 }}>
                 </div>
                 <div className="user-contact">
-                    <div className="serif" style={{
+                    <div className="bold" style={{
                         fontSize: '1.75rem',
                         marginBottom: 0
                     }}>
@@ -49,8 +46,8 @@ export default function PersonalInfo(props) {
                             <EditIcon />
                         </IconButton>
                     </Tooltip>
-                    <h3>Personal Information</h3>
-                    <Grid container className="grid-container">
+                    <h3 className="bold">Personal Information</h3>
+                    <Grid container className="personal-details-container">
                         <Grid item xs={12} sm={6}>
                             <p>First Name</p>
                             <h4>{user.firstName}</h4>
@@ -87,8 +84,8 @@ export default function PersonalInfo(props) {
                             <EditIcon />
                         </IconButton>
                     </Tooltip>
-                    <h3>Address</h3>
-                    <Grid container className="grid-container">
+                    <h3 className="bold">Address</h3>
+                    <Grid container className="personal-details-container">
                         <Grid item xs={12} sm={6}>
                             <p>Country</p>
                             <h4>Vietnam</h4>
@@ -104,6 +101,6 @@ export default function PersonalInfo(props) {
                     </Grid>
                 </div>
             </div>
-        </div>
+        </>
     )
 }

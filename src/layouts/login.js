@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
@@ -6,21 +6,40 @@ import Grid from '@mui/material/Grid';
 import { Divider, Alert, AlertTitle } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { randomIntWithinRange } from '../utils/utils';
+import { decodeToken, randomIntWithinRange } from '../utils/utils';
+import { useAuth } from '../hooks/auth/useAuth';
 
 
 export default function LoginScreen() {
 
     const navigate = useNavigate();
+    const auth = useAuth();
 
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
-
     const [curr, setCurr] = useState(randomIntWithinRange(2, 5))
+    const [isLoggedIn, setLoggedIn] = useState(false);
+
+    useEffect(() => {
+        checkExistingToken()
+    })
+
+    const checkExistingToken = () => {
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            setLoggedIn(true);
+            return;
+        }
+        const decodedToken = decodeToken(token);
+        if (decodedToken.exp < Date.now()) {
+            handleNavigate(decodedToken);
+        } else {
+            setLoggedIn(true);
+        }
+    }
 
     const handleSubmit = async (event) => {
-
         event.preventDefault();
         console.log({
             username: username,
@@ -35,12 +54,42 @@ export default function LoginScreen() {
             if (response.data.error) {
                 setError(response.data.error)
             } else {
-                navigate("/")
+                let t = response.data.accessToken;
+                localStorage.setItem("access_token", t)
+                if (t) {
+                    auth.token = t
+                    const token = decodeToken(response.data.accessToken)
+                    auth.clearance = token.role
+                    handleNavigate(token)
+                } else {
+                    setError("Failed to retrieve a valid token!")
+                }
             }
         }).catch((error) => {
             setError(error)
         })
     };
+
+    const handleNavigate = (token) => {
+        console.log(token)
+        if (token.role === 1) {
+            navigate("/home")
+        }
+
+        if (token.role === 2) {
+            navigate("/home")
+        }
+
+        if (token.role === 3) {
+            navigate("/admin")
+        }
+
+        return;
+    }
+
+    if (!isLoggedIn) {
+        return <><h1>Checking data</h1></>
+    }
 
     return (
         <div className='login-container'>
@@ -83,8 +132,7 @@ export default function LoginScreen() {
                             />
                             <Divider />
                             {error && error !== "" ? <Alert severity="error">
-                                <AlertTitle>Error</AlertTitle>
-                                {error}
+                                <AlertTitle>{error}</AlertTitle>
                             </Alert> : <></>}
                             <Button
                                 type="submit"

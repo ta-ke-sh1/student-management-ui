@@ -56,7 +56,9 @@ export default function CommonHome() {
     ]
 
     return (
-        <div className="body">
+        <div className="body" style={{
+            overflowX: 'hidden'
+        }}>
             <div
                 className="banner relative-container"
                 style={{
@@ -81,17 +83,13 @@ export default function CommonHome() {
                     style={{
                         marginTop: "105vh",
                     }}>
-                    <h1>Your Courses</h1>
+                    <h1>Ongoing Courses</h1>
+                    <br />
                     <CoursesCards courses={coursesRegistration} />
                 </div>
                 <div className="relative-container w-100 mt-50">
-                    <h1>Information Access</h1>
-                    <Grid container spacing={3}>
-                        {infomationAccessItems.map((item) => <NavItem imageUrl={item.banner} title={item.title} />)}
-                    </Grid>
-                </div>
-                <div className="relative-container w-100 mt-50">
                     <h1>Regulations</h1>
+                    <br />
                     <Grid container spacing={3}>
                         {regulationItems.map((item) => <NavItem imageUrl={item.banner} title={item.title} />)}
                     </Grid>

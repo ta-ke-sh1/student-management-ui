@@ -62,7 +62,6 @@ body {
 	margin: 0;
 	width: 100vw;
 	height: 100vh;
-	overflow-x: hidden;
 }
 
 .fab {
@@ -92,4 +91,16 @@ h1 {
 	min-width: 400px;
 	border-radius: 10px;
 
+}
+
+.primary-color-bg {
+	background-color: #1976d2;
+}
+
+.primary-color-text {
+	background-color: white;
+}
+
+.white-text {
+	color: white
 }

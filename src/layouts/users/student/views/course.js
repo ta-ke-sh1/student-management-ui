@@ -20,13 +20,12 @@ export default function CourseUser() {
             <div className="main-container">
                 <div className="course-head-banner" style={{
                     backgroundImage: `url(${process.env.PUBLIC_URL}/banner/banner` + 1 + ".jpg)",
-                    backgroundSize: 'contain',
-                    borderBottomLeftRadius: '50px'
                 }}>
                 </div>
                 <div className="page-content">
                     <div className="serif" style={{
-                        fontSize: '4rem',
+                        fontSize: '3rem',
+                        marginLeft: '2vw'
                     }}>
                         {course.class} - {course.teacher} - {course.name}
                     </div>

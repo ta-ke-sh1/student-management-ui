@@ -11,7 +11,7 @@ import CampusAdmin from "./components/campus/campus";
 import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import UsersAdmin from "./components/user";
+import UsersAdmin from "./components/user/user";
 import RegistrationAdmin from "./components/registration";
 import SubjectsAdmin from "./components/subject/subjects";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
@@ -47,7 +47,7 @@ export default function AdminHome() {
         setMobileOpen(!mobileOpen);
     };
 
-    const [current, setCurrent] = useState(0);
+    const [current, setCurrent] = useState(1);
 
     const nav_tabs = [
         {
@@ -98,9 +98,9 @@ export default function AdminHome() {
                     id: 6,
                     icon: <InboxIcon />,
                 },
-            ]
-        }
-    ]
+            ],
+        },
+    ];
 
     const components = [
         <CampusAdmin />,
@@ -113,37 +113,54 @@ export default function AdminHome() {
     const drawer = (
         <div className="drawer">
             <Toolbar />
-            {
-                nav_tabs.map((tab) => {
-                    return (
-                        <>
-                            <h3>{tab.title}</h3>
-                            {
-                                tab.tabs.map((tab) =>
-                                    <>
-                                        <ListItem
+            {nav_tabs.map((tab) => {
+                return (
+                    <>
+                        <h3>{tab.title}</h3>
+                        {tab.tabs.map((tab) => (
+                            <>
+                                <ListItem
+                                    sx={{
+                                        padding: "5px 10px",
+                                    }}
+                                    key={tab.name}
+                                    onClick={() => {
+                                        setCurrent(tab.id);
+                                    }}>
+                                    <ListItemButton
+                                        sx={{
+                                            backgroundColor:
+                                                tab.id === current
+                                                    ? "#F0F7FF"
+                                                    : "white",
+                                            borderRadius: "5px",
+                                        }}>
+                                        <ListItemIcon
                                             sx={{
-                                                padding: '5px 10px'
+                                                color:
+                                                    tab.id === current
+                                                        ? "#1976d2"
+                                                        : "#757575",
+                                                padding: 0,
+                                            }}>
+                                            {tab.icon}
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            sx={{
+                                                color:
+                                                    tab.id === current
+                                                        ? "#1976d2"
+                                                        : "#757575",
                                             }}
-                                            key={tab.name}
-                                            onClick={() => {
-                                                setCurrent(tab.id);
-                                            }}>
-                                            <ListItemButton sx={{
-                                                backgroundColor: tab.id === current ? '#F0F7FF' : 'white',
-                                                borderRadius: '5px'
-                                            }}>
-                                                <ListItemIcon sx={{ color: tab.id === current ? '#1976d2' : '#757575', padding: 0 }}>{tab.icon}</ListItemIcon>
-                                                <ListItemText sx={{ color: tab.id === current ? '#1976d2' : '#757575' }} primary={tab.name} />
-                                            </ListItemButton>
-                                        </ListItem>
-                                    </>
-                                )
-                            }
-                        </>
-                    )
-                })
-            }
+                                            primary={tab.name}
+                                        />
+                                    </ListItemButton>
+                                </ListItem>
+                            </>
+                        ))}
+                    </>
+                );
+            })}
         </div>
     );
 

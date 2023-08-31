@@ -1,12 +1,20 @@
-import { Grid, FormControl, Button, TextField, InputLabel, Select, MenuItem, Divider } from "@mui/material"
+import {
+    Grid,
+    FormControl,
+    Button,
+    TextField,
+    InputLabel,
+    Select,
+    MenuItem,
+    Divider,
+} from "@mui/material";
 import { useState } from "react";
-import axios from "axios"
+import axios from "axios";
 
 export default function CampusForm(props) {
-
-    const [roomId, setRoomId] = useState(props.room.roomId)
+    const [roomId, setRoomId] = useState(props.room.roomId);
     const [campus, setCampus] = useState(props.room.campus);
-    const [building, setBuilding] = useState(props.room.building)
+    const [building, setBuilding] = useState(props.room.building);
     const [number, setNumber] = useState(props.room.number);
 
     const handleConfirm = () => {
@@ -14,34 +22,37 @@ export default function CampusForm(props) {
             id: roomId,
             campus: campus,
             building: building,
-            number: number
-        })
-    }
+            number: number,
+        });
+    };
 
     let campuses = [
         {
-            id: 'HN',
-            name: 'Ha Noi'
+            id: "HN",
+            name: "Ha Noi",
         },
         {
-            id: 'HCM',
-            name: 'Ho Chi Minh'
+            id: "HCM",
+            name: "Ho Chi Minh",
         },
         {
-            id: 'DN',
-            name: 'Da Nang'
+            id: "DN",
+            name: "Da Nang",
         },
         {
-            id: 'CT',
-            name: 'Can Tho'
+            id: "CT",
+            name: "Can Tho",
         },
-    ]
+    ];
 
     return (
         <>
-            <Grid container spacing={3} sx={{
-                maxWidth: '500px'
-            }}>
+            <Grid
+                container
+                spacing={3}
+                sx={{
+                    maxWidth: "500px",
+                }}>
                 <Grid item xs={12} md={12}>
                     <h2 style={{ margin: 0 }}>Manage room</h2>
                     <p>You can manage your room using this form</p>
@@ -56,10 +67,13 @@ export default function CampusForm(props) {
                             value={campus}
                             label="Campus"
                             onChange={(e) => {
-                                setCampus(e.target.value)
-                            }}
-                        >
-                            {campuses.map((campus) => <MenuItem key={campus.id} value={campus.id}>{campus.name}</MenuItem>)}
+                                setCampus(e.target.value);
+                            }}>
+                            {campuses.map((campus) => (
+                                <MenuItem key={campus.id} value={campus.id}>
+                                    {campus.name}
+                                </MenuItem>
+                            ))}
                         </Select>
                     </FormControl>
                 </Grid>
@@ -84,12 +98,24 @@ export default function CampusForm(props) {
                     />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                    <Button fullWidth variant="outlined" sx={{ padding: '15px 30px' }} onClick={(e) => handleConfirm(e)}>Save</Button>
+                    <Button
+                        fullWidth
+                        variant="outlined"
+                        sx={{ padding: "15px 30px" }}
+                        onClick={(e) => handleConfirm(e)}>
+                        Save
+                    </Button>
                 </Grid>
                 <Grid item xs={12} md={6}>
-                    <Button fullWidth variant="outlined" sx={{ padding: '15px 30px' }} onClick={props.closeHandler}>Cancel</Button>
+                    <Button
+                        fullWidth
+                        variant="outlined"
+                        sx={{ padding: "15px 30px" }}
+                        onClick={props.closeHandler}>
+                        Cancel
+                    </Button>
                 </Grid>
             </Grid>
         </>
-    )
+    );
 }

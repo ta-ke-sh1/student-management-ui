@@ -57,7 +57,12 @@ export function getCurrentDateAsDBFormat() {
 }
 
 export function decodeToken(token) {
-    return jwt_decode(token.substring(7, token.length));
+    if (token) {
+        return jwt_decode(token.substring(7, token.length));
+    } else {
+        return "-1"
+    }
+
 }
 
 export const getDeviceType = () => {

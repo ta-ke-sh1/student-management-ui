@@ -10,7 +10,6 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }) {
-    const navigate = useNavigate();
     const [token, setToken] = useState(localStorage.getItem("access_token"));
     const [clearance, setClearance] = useState(
         localStorage.getItem("clearance")
@@ -25,7 +24,7 @@ export function AuthProvider({ children }) {
     const logout = () => {
         setToken(null);
         setClearance(0);
-        navigate("/", { replace: true });
+        localStorage.removeItem("access_token")
     };
 
     let value = useMemo(() => ({ token, clearance, login, logout }), [token]);
@@ -42,9 +41,9 @@ export function RequireAuth({ props }) {
 
     console.log(auth)
 
-    // if (!auth.token) {
-    //     return <Navigate to="/" />;
-    // }
+    if (!auth.token) {
+        return <Navigate to="/" />;
+    }
 
     if (props) {
         var clearance = auth.clearance;
@@ -52,7 +51,6 @@ export function RequireAuth({ props }) {
             console.log(
                 "Your level of authority is too low! Level: " + props.clearance
             );
-            // return <Navigate to="/" />;
         }
     } else {
         console.log("Null props");

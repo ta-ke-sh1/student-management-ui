@@ -1,12 +1,29 @@
 import { Button } from "@mui/material";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "./hooks/auth/useAuth";
+import { decodeToken } from "./utils/utils";
 
 export default function NavBar() {
-
+    const auth = useAuth()
     const navigator = useNavigate();
 
-    return (
+    const [isLoggedIn, setLoggedIn] = useState(true)
+
+    useEffect(() => {
+        let decode = decodeToken(auth.token)
+        console.log(decode)
+        setLoggedIn(decode === "-1")
+    })
+
+    const handleLogout = () => {
+        auth.logout();
+        setLoggedIn(true)
+        navigator("/");
+        window.location.reload(false);
+    }
+
+    return !window.location.toString().includes("login") ? (
         <>
             <div className="navbar" id="nav-bar">
                 <div className="nav-container">
@@ -24,22 +41,36 @@ export default function NavBar() {
                                 />
                             </div>
                         </Link>
-                        <Button
-                            onClick={() => {
-                                navigator("/login")
-                            }}
-                            variant="contained"
-                            disableElevation={true}
-                            style={{
-                                marginLeft: "auto",
-                                marginRight: "45px",
-                            }}>
-                            Login
-                        </Button>
-
+                        {
+                            isLoggedIn ?
+                                <Button
+                                    onClick={() => {
+                                        navigator("/login")
+                                    }}
+                                    variant="contained"
+                                    disableElevation={true}
+                                    style={{
+                                        marginLeft: "auto",
+                                        marginRight: "45px",
+                                    }}>
+                                    Login
+                                </Button> :
+                                <Button
+                                    onClick={() => {
+                                        handleLogout()
+                                    }}
+                                    variant="contained"
+                                    disableElevation={true}
+                                    style={{
+                                        marginLeft: "auto",
+                                        marginRight: "45px",
+                                    }}>
+                                    Logout
+                                </Button>
+                        }
                     </div>
                 </div>
             </div>
         </>
-    );
+    ) : <></>;
 }

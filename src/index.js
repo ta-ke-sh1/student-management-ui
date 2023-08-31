@@ -16,6 +16,8 @@ import "./styles/footer.scss";
 import "./styles/widget.scss";
 import "./styles/login.scss";
 import "./styles/profile.scss";
+import NavBar from "./navBar";
+import { AuthProvider } from "./hooks/auth/useAuth";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -23,7 +25,10 @@ root.render(
     <React.StrictMode>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <BrowserRouter>
-                <App />
+                <AuthProvider>
+                    <NavBar />
+                    <App />
+                </AuthProvider>
             </BrowserRouter>
         </LocalizationProvider>
     </React.StrictMode>

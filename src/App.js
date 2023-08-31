@@ -11,27 +11,25 @@ import UserHome from "./layouts/users/student/home";
 
 function App() {
     return (
-        <AuthProvider>
-            <Routes>
-                <Route path="*" element={
-                    <>
-                        <NavBar />
-                        <ErrorPage />
-                    </>
-                } />
-                <Route path="/" element={<><NavBar /><CommonHome /></>} />
-                <Route path="/login" element={<><LoginScreen /></>} />
-                <Route element={<RequireAuth props={{ clearance: 0 }} />}>
-                    <Route path="/grade" element={<><NavBar /><GradeUser /></>} />
-                    <Route path="/course" element={<><NavBar /><CourseUser /></>} />
-                    <Route path="/home" element={<><NavBar /><UserHome /></>} />
-                    <Route path="/test" element={<><NavBar /><AdminHome /></>} />
-                </Route>
-                <Route element={<RequireAuth props={{ clearance: 2 }} />}>
-                    <Route path="/admin" element={<><NavBar /><AdminHome /></>} />
-                </Route>
-            </Routes>
-        </AuthProvider>
+
+        <Routes>
+            <Route path="*" element={
+                <>
+                    <ErrorPage />
+                </>
+            } />
+            <Route path="/" element={<><CommonHome /></>} />
+            <Route path="/login" element={<><LoginScreen /></>} />
+            <Route element={<RequireAuth props={{ clearance: 0 }} />}>
+                <Route path="/grade" element={<><GradeUser /></>} />
+                <Route path="/course" element={<><CourseUser /></>} />
+                <Route path="/home" element={<><UserHome /></>} />
+                <Route path="/test" element={<><AdminHome /></>} />
+            </Route>
+            <Route element={<RequireAuth props={{ clearance: 2 }} />}>
+                <Route path="/admin" element={<><AdminHome /></>} />
+            </Route>
+        </Routes>
     );
 }
 

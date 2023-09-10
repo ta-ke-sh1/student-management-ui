@@ -1,19 +1,23 @@
-import { useEffect, useState } from "react";
-import { Grid, Hidden, IconButton, Tooltip } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Divider, Paper, Typography, TableContainer, TableRow, TableCell, Table, Button, Modal } from "@mui/material"
+import { useFetchCourses } from "../users/student/hooks/useFetchCourse"
+import { useState, useMemo, useEffect } from "react";
 import { Drawer, Box, Fab } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import PersonalInfo from "./views/components/personalInfo"
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import ScheduleHome from "./views/components/schedule/schedule";
+
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import ViewListIcon from '@mui/icons-material/ViewList';
-import CurriculumTab from "./views/components/curriculum";
-import ClassIcon from '@mui/icons-material/Class';
+import { styled } from "@mui/material/styles";
+import GradingIcon from '@mui/icons-material/Grading';
+
+import { useAuth } from "../../hooks/auth/useAuth";
+import { decodeToken } from "../../utils/utils";
+import CourseworkTab from "./courseworkTab";
+import CourseworkFormModal from "./components/modal/coursework_form_modal";
+import CourseworkMaterialModal from "./components/modal/coursework_material_modal";
 
 const drawerWidth = 240;
 
@@ -36,49 +40,78 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
     })
 );
 
-export default function UserHome(props) {
+export default function CourseUser() {
+    const auth = useAuth()
+    const decoded = useMemo(() => decodeToken(auth.token), [auth])
+
     const _container =
         window !== undefined ? () => window.document.body : undefined;
-    const [current, setCurrent] = useState(props.index ?? 0)
     const [mobileOpen, setMobileOpen] = useState(true);
+    // const { courseData } = useFetchCourses("test");
+    const [current, setCurrent] = useState(0);
+
+    const [openCourseworkModal, setOpenCourseworkModal] = useState(false)
+    const [openMaterialModal, setOpenMaterialModal] = useState(false)
+
+    useEffect(() => {
+        console.log(decoded)
+    }, [])
+
+    const course = {
+        class: "COMP-1787",
+        teacher: "VinhNT",
+        semester: "Spring 2023",
+        name: "Requirements Management",
+        assignment: [
+            {
+                name: "Assignment 1",
+                deadline: "2023"
+            },
+            {
+                name: "Assignment 2",
+                deadline: "2023"
+            }
+        ]
+    }
+
+    const handleOpenCourseworkModal = () => {
+        setOpenCourseworkModal(true)
+    }
+
+    const handleOpenMaterialModal = () => {
+        setOpenMaterialModal(true)
+    }
 
     const components = [
-        <PersonalInfo />,
-        <ScheduleHome />,
-        <CurriculumTab />,
-    ];
+        <CourseworkTab decoded={decoded} course={course} handleOpenCourseworkModal={handleOpenCourseworkModal} handleOpenMaterialModal={handleOpenMaterialModal} />
+    ]
+
+    const handleDrawerToggle = () => {
+        setMobileOpen(!mobileOpen);
+    };
 
     const nav_tabs = [
         {
             title: "Navigation",
             tabs: [
                 {
-                    name: "Personal Info",
+                    name: "Coursework",
                     id: 0,
-                    icon: <AccountCircleIcon />,
+                    icon: <GradingIcon />,
                 },
                 {
-                    name: "Schedule",
+                    name: "Attendance",
                     id: 1,
                     icon: <EventNoteIcon />,
                 },
                 {
-                    name: "Curriculum",
+                    name: "Participants",
                     id: 2,
                     icon: <ViewListIcon />,
-                },
-                {
-                    name: "Courses",
-                    id: 3,
-                    icon: <ClassIcon />,
                 },
             ],
         },
     ]
-
-    const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
-    };
 
     const drawer = (
         <div className="drawer">
@@ -148,6 +181,7 @@ export default function UserHome(props) {
                     </Drawer>
                 </Box>
                 <Main open={mobileOpen}>
+
                     <div className="course-head-banner" style={{
                         backgroundImage: `url(${process.env.PUBLIC_URL}/banner/banner` + 5 + ".jpg)",
                     }}>
@@ -158,12 +192,16 @@ export default function UserHome(props) {
                             overflowY: 'auto',
                             padding: '20px'
                         }}>
+                            <div className="serif" style={{
+                                fontSize: '3rem',
+                            }}>
+                                {course.class} - {course.teacher} - {course.name}
+                            </div>
                             {components[current]}
                         </div>
                     </div>
                 </Main>
             </Box>
-
             <div className={"fab"}>
                 <Fab onClick={handleDrawerToggle}>
                     <svg
@@ -184,6 +222,40 @@ export default function UserHome(props) {
                     </svg>
                 </Fab>
             </div>
+            <Modal
+                open={openCourseworkModal}
+                onClose={() => setOpenCourseworkModal(false)}
+                sx={{
+                    zIndex: 100000000000,
+                }}>
+                <Box
+                    sx={{
+                        bgcolor: "background.paper",
+                        boxShadow: 12,
+                        p: 4,
+                    }}
+                    className={"modal"}>
+                    <CourseworkFormModal closeHandler={() => setOpenCourseworkModal(false)} />
+                </Box>
+            </Modal>
+            <Modal
+                open={openMaterialModal}
+                onClose={() => setOpenMaterialModal(false)}
+
+                sx={{
+                    zIndex: 100000000000,
+                }}>
+                <Box
+                    sx={{
+                        bgcolor: "background.paper",
+                        boxShadow: 12,
+                        p: 4,
+                    }}
+                    className={"modal"}>
+                    <CourseworkMaterialModal closeHandler={() => setOpenMaterialModal(false)} />
+                </Box>
+            </Modal>
         </>
     )
 }
+

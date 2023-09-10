@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "./hooks/auth/useAuth";
 import { decodeToken } from "./utils/utils";
@@ -7,13 +7,11 @@ import { decodeToken } from "./utils/utils";
 export default function NavBar() {
     const auth = useAuth()
     const navigator = useNavigate();
-
+    const decoded = useMemo(() => decodeToken(auth.token), [auth])
     const [isLoggedIn, setLoggedIn] = useState(true)
 
     useEffect(() => {
-        let decode = decodeToken(auth.token)
-        console.log(decode)
-        setLoggedIn(decode === "-1")
+        setLoggedIn(decoded === "-1")
     })
 
     const handleLogout = () => {

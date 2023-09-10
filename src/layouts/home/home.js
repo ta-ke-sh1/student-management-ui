@@ -1,11 +1,23 @@
-import { Grid } from "@mui/material";
+import { Box, Button, Grid, Modal } from "@mui/material";
 import { useFetchHomeData } from "./hooks/useFetchHomeData";
 import CoursesCards from "./coursesCards";
 import Footer from "../../footer";
 import { Link } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { useAuth } from "../../hooks/auth/useAuth";
+import { decodeToken } from "../../utils/utils";
+import CourseForm from "./courseForm";
 
 export default function CommonHome() {
+    const auth = useAuth();
+    const decoded = useMemo(() => decodeToken(auth.token), [auth])
     const { coursesRegistration } = useFetchHomeData();
+
+    const [openModal, setOpenModal] = useState(false)
+
+    useEffect(() => {
+        console.log(auth)
+    }, [])
 
     const infomationAccessItems = [
         {
@@ -55,6 +67,10 @@ export default function CommonHome() {
         }
     ]
 
+    const handleAddCourse = () => {
+        navigator("")
+    }
+
     return (
         <div className="body" style={{
             overflowX: 'hidden'
@@ -77,25 +93,48 @@ export default function CommonHome() {
                     </div>
                 </div>
             </div>
+
             <div className="body-container">
                 <div
                     className="relative-container w-90"
                     style={{
                         marginTop: "105vh",
                     }}>
-                    <h1>Ongoing Courses</h1>
+                    <div className="row-space-between">
+                        <h1>Ongoing Courses</h1>
+                        <Button variant="outlined" onClick={() => { setOpenModal(true) }}>Join Course</Button>
+                    </div>
                     <br />
-                    <CoursesCards courses={coursesRegistration} />
+                    {coursesRegistration.length == 0 ? <>
+                        <div className="row-space-evenly">No ongoing course</div>
+                    </> : <CoursesCards courses={coursesRegistration} />}
                 </div>
                 <div className="relative-container w-100 mt-50">
                     <h1>Regulations</h1>
                     <br />
                     <Grid container spacing={3}>
-                        {regulationItems.map((item) => <NavItem imageUrl={item.banner} title={item.title} />)}
+                        {regulationItems.map((item) => <NavItem key={item.title} imageUrl={item.banner} title={item.title} />)}
                     </Grid>
                 </div>
             </div>
             <Footer />
+
+            <Modal
+                open={openModal}
+                onClose={() => setOpenModal(false)}
+                sx={{
+                    zIndex: 100000000000,
+                }}>
+                <Box
+                    sx={{
+                        bgcolor: "background.paper",
+                        boxShadow: 12,
+                        p: 4,
+                    }}
+                    className={"modal"}>
+                    <CourseForm closeHandler={() => setOpenModal(false)} />
+                </Box>
+            </Modal>
         </div>
     );
 }

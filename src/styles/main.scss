@@ -104,3 +104,13 @@ h1 {
 .white-text {
 	color: white
 }
+
+.row-space-between {
+	display: flex;
+	justify-content: space-between;
+}
+
+.row-space-evenly {
+	display: flex;
+	justify-content: center;
+}

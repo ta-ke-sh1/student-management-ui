@@ -86,3 +86,15 @@
 		}
 	}
 }
+
+.item-list-date {
+	display: flex;
+	width: 100%;
+	justify-content: space-between;
+	padding: 10px;
+	padding-left: 12px;
+
+	span {
+		font-family: "Poppins-Bold";
+	}
+}

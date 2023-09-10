@@ -23,6 +23,9 @@ export function randomIntWithinRange(min, max) { // min and max included
     return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
+export const fromMilisecondsToDateString = (milisecondsSinceEpoch) => {
+    return moment(milisecondsSinceEpoch).format("DD MMM YYYY HH:mm:ss");
+};
 
 export const fromMilisecondsToDate = (milisecondsSinceEpoch) => {
     const date = new Date(milisecondsSinceEpoch * 1000);

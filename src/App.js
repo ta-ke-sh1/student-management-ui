@@ -5,7 +5,7 @@ import AdminHome from "./layouts/users/admin/home";
 import CommonHome from "./layouts/home/home";
 import LoginScreen from "./layouts/login";
 import NavBar from "./navBar";
-import CourseUser from "./layouts/users/student/views/course";
+import CourseUser from "./layouts/course/course";
 import GradeUser from "./layouts/users/student/views/grade";
 import UserHome from "./layouts/users/student/home";
 

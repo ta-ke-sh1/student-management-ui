@@ -170,7 +170,7 @@ export default function CustomTable(props) {
                                             <TableRow
                                                 style={{
                                                     width: "100%",
-                                                    height: 20 * emptyRows,
+                                                    height: 12.5 * emptyRows,
                                                 }}>
                                                 <TableCell padding="checkbox"></TableCell>
                                                 <TableCell colSpan={6} />

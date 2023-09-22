@@ -264,7 +264,7 @@ export default function UsersAdmin() {
 
     return (
         <>
-            <Grid container spacing={4} sx={{ width: "98.5%" }}>
+            <Grid container spacing={4} sx={{ width: "100%" }}>
                 <Grid item sm={12} md={8} style={{ marginBottom: "30px" }}>
                     <div
                         className="big-widget"
@@ -425,8 +425,7 @@ export default function UsersAdmin() {
                         }}></div>
                 </Grid>
             </Grid>
-
-            <Grid container style={{ width: "97%" }}>
+            <Grid container style={{ width: "98%" }}>
                 <Grid item xs={12}>
                     <div className="big-widget">
                         <div className="campus-list">

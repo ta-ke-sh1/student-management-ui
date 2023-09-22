@@ -80,8 +80,8 @@ export default function CustomTable(props) {
     );
 
     return (
-        <Box sx={{ width: "100%", paddingTop: "20px" }}>
-            <Paper sx={{ width: "100%", mb: 2 }}>
+        <Box sx={{ width: "100%", paddingTop: "20px", overflow: "auto" }}>
+            <Box sx={{ width: "100%", mb: 2, display: "table", tableLayout: "fixed" }}>
                 <EnhancedTableToolbar
                     handleAddEntry={props.handleAddEntry}
                     title={props.title}
@@ -95,7 +95,6 @@ export default function CustomTable(props) {
                         wrapperStyle={{
                             maxHeight: "30vh",
                         }}
-                        sx={{ minWidth: 750 }}
                         aria-labelledby="tableTitle"
                         size={"medium"}>
                         <EnhancedTableHead
@@ -175,7 +174,7 @@ export default function CustomTable(props) {
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
-            </Paper>
+            </Box>
         </Box>
     );
 }

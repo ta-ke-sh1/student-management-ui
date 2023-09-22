@@ -182,16 +182,8 @@ export default function UsersAdmin() {
     const handleEdit = (id) => {
         let user = fetchUser(id);
         console.log(user);
-        setPassword(user.password);
-        setId(id);
-        setAuth(user.role);
-        setFirstName(user.firstName);
-        setLastName(user.lastName);
-        setDob(dayjs(user.dob));
-        setPhone(user.phone.replaceAll(" ", ""));
-        setStatus(user.status);
-        setDepartment(user.department_id);
-        setEmail(user.email);
+        setUser(user)
+        setOpenModal(true)
     };
 
     const handleDelete = (index) => {
@@ -210,7 +202,7 @@ export default function UsersAdmin() {
             role: auth,
             firstName: firstName,
             lastName: lastName,
-            dob: dayjs(dob).format("YYYY-MM-DD"),
+            dob: dayjs(dob),
             phone: phone,
             status: status,
             department_id: department,
@@ -276,10 +268,9 @@ export default function UsersAdmin() {
                 <Grid item sm={12} md={8} style={{ marginBottom: "30px" }}>
                     <div
                         className="big-widget"
-                        style={{ paddingBottom: "25px" }}>
+                        style={{ paddingBottom: "15px" }}>
                         <h2>Users Control</h2>
                         <p>Edit or add new user here</p>
-                        <br />
                         <Grid container spacing={3}>
                             <Grid item xs={12} md={3}>
                                 <FormControl fullWidth>
@@ -405,7 +396,7 @@ export default function UsersAdmin() {
                                     variant="contained"
                                     sx={{ padding: "15px 30px" }}
                                     onClick={(e) => handleConfirm(e)}>
-                                    Save
+                                    Search
                                 </Button>
                             </Grid>
                             <Grid item xs={6} md={2}>
@@ -428,7 +419,7 @@ export default function UsersAdmin() {
                                 3 +
                                 ".jpg)",
                             width: "100%",
-                            height: "385px",
+                            height: "350px",
                             borderRadius: "10px",
                             backgroundSize: "contain",
                         }}></div>
@@ -489,22 +480,18 @@ export default function UsersAdmin() {
                 </DialogActions>
             </Dialog>
 
-            <Modal
+            <Dialog
+                className="modal"
+                fullWidth={true}
                 open={openModal}
-                onClose={() => setOpenModal(false)}
-                sx={{
-                    zIndex: 100000000000,
+                onClose={() => setOpenModal(false)}>
+                <DialogContent sx={{
+                    bgcolor: "background.paper",
+                    boxShadow: 12,
                 }}>
-                <Box
-                    sx={{
-                        bgcolor: "background.paper",
-                        boxShadow: 12,
-                        p: 4,
-                    }}
-                    className={"modal"}>
                     <UserForm closeHandler={handleCloseModal} user={user} />
-                </Box>
-            </Modal>
+                </DialogContent>
+            </Dialog>
         </>
     );
 }

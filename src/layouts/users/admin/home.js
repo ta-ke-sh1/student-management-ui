@@ -47,7 +47,7 @@ export default function AdminHome() {
         setMobileOpen(!mobileOpen);
     };
 
-    const [current, setCurrent] = useState(0);
+    const [current, setCurrent] = useState(1);
 
     const nav_tabs = [
         {

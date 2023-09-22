@@ -16,16 +16,16 @@ import { DesktopDatePicker } from "@mui/x-date-pickers";
 import { MuiTelInput } from "mui-tel-input";
 
 export default function UserForm(props) {
-    const [id, setId] = useState("");
-    const [password, setPassword] = useState("");
-    const [auth, setAuth] = useState("");
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [dob, setDob] = useState(dayjs(new Date()));
-    const [phone, setPhone] = useState("+84");
-    const [status, setStatus] = useState("");
-    const [department, setDepartment] = useState("");
-    const [email, setEmail] = useState("");
+    const [id, setId] = useState(props.user.id);
+    const [password, setPassword] = useState(props.user.password);
+    const [auth, setAuth] = useState(props.user.auth ?? 1);
+    const [firstName, setFirstName] = useState(props.user.firstName);
+    const [lastName, setLastName] = useState(props.user.lastName);
+    const [dob, setDob] = useState(props.user.dob ? dayjs(props.user.dob) : dayjs(new Date()));
+    const [phone, setPhone] = useState(props.user.phone ?? "+84");
+    const [status, setStatus] = useState(props.user.status);
+    const [department, setDepartment] = useState(props.user.department ?? "GCH");
+    const [email, setEmail] = useState(props.user.email);
 
     const departments = [
         {
@@ -50,6 +50,14 @@ export default function UserForm(props) {
         },
     ];
 
+    const handleDeactivate = (e) => {
+        axios.get(process.env.REACT_APP_HOST_URL + "/user/deactivate?id=" + id).then((res) => {
+            if (res.status === 200) {
+                props.closeHandler()
+            }
+        });
+    }
+
     const handleConfirm = (e) => {
         e.preventDefault();
         let user = {
@@ -66,20 +74,32 @@ export default function UserForm(props) {
         };
 
         if (
-            id === "" ||
-            auth === "" ||
-            firstName === "" ||
-            lastName === "" ||
-            dob === "" ||
-            phone === "" ||
-            status === "" ||
-            department === "" ||
-            email === ""
-        )
-            return;
-
-        console.log(user);
-    };
+            id &&
+            auth &&
+            firstName &&
+            lastName &&
+            dob &&
+            phone &&
+            status &&
+            department &&
+            email
+        ) {
+            if (id) {
+                axios.put(process.env.REACT_APP_HOST_URL + "/user?id=" + id, user).then((res) => {
+                    if (res.status === 200) {
+                        props.closeHandler()
+                    }
+                });
+            } else {
+                axios.post(process.env.REACT_APP_HOST_URL + "/user", user).then((res) => {
+                    if (res.status === 200) {
+                        props.closeHandler()
+                    }
+                });
+            }
+            console.log(user);
+        };
+    }
 
     const handlePhoneChange = (newValue) => {
         setPhone(newValue);
@@ -87,26 +107,24 @@ export default function UserForm(props) {
 
     const handleClear = (e) => {
         e.preventDefault();
-        setPassword("");
-        setId("");
-        setAuth("");
-        setFirstName("");
-        setLastName("");
-        setDob(dayjs(new Date()));
-        setPhone("+84");
-        setStatus("");
-        setDepartment("");
-        setEmail("");
+        // setPassword("");
+        // setId("");
+        // setAuth("");
+        // setFirstName("");
+        // setLastName("");
+        // setDob(dayjs(new Date()));
+        // setPhone("+84");
+        // setStatus("");
+        // setDepartment("");
+        // setEmail("");
+        props.closeHandler()
     };
 
     return (
         <>
             <Grid
                 container
-                spacing={3}
-                sx={{
-                    maxWidth: "700px",
-                }}>
+                spacing={3}>
                 <Grid item xs={12} md={12}>
                     <h2 style={{ margin: 0 }}>Manage user</h2>
                     <p>You can manage the user data using this form</p>
@@ -206,17 +224,21 @@ export default function UserForm(props) {
                         variant="outlined"
                     />
                 </Grid>
-                <Grid item xs={4} md={4}>
-                    <Button
-                        fullWidth
-                        variant="contained"
-                        sx={{ padding: "15px 30px" }}
-                        color="error"
-                        onClick={(e) => handleConfirm(e)}>
-                        Deactivate
-                    </Button>
-                </Grid>
-                <Grid item xs={4} md={4}>
+                {
+                    id && (
+                        <Grid item xs={4} md={4}>
+                            <Button
+                                fullWidth
+                                variant="contained"
+                                sx={{ padding: "15px 30px" }}
+                                color="error"
+                                onClick={(e) => handleDeactivate(e)}>
+                                Deactivate
+                            </Button>
+                        </Grid>
+                    )
+                }
+                <Grid item xs={id ? 4 : 6} >
                     <Button
                         fullWidth
                         variant="contained"
@@ -225,7 +247,7 @@ export default function UserForm(props) {
                         Save
                     </Button>
                 </Grid>
-                <Grid item xs={4} md={4}>
+                <Grid item xs={id ? 4 : 6}>
                     <Button
                         fullWidth
                         variant="outlined"
@@ -238,3 +260,4 @@ export default function UserForm(props) {
         </>
     );
 }
+

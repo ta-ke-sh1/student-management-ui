@@ -163,22 +163,6 @@ export default function CustomTable(props) {
                                     </TableRow>
                                 );
                             })}
-                            {emptyRows > 0 && (
-                                <>
-                                    {[...Array(emptyRows).keys()].map((i) => {
-                                        return (
-                                            <TableRow
-                                                style={{
-                                                    width: "100%",
-                                                    height: 12.5 * emptyRows,
-                                                }}>
-                                                <TableCell padding="checkbox"></TableCell>
-                                                <TableCell colSpan={6} />
-                                            </TableRow>
-                                        );
-                                    })}
-                                </>
-                            )}
                         </TableBody>
                     </Table>
                 </TableContainer>

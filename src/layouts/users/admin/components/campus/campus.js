@@ -33,30 +33,30 @@ const rooms = [
     { id: "Room-HN-100", campus: "HN", room: "100", building: "Pham Van Bach", capacity: 100 },
     { id: "Room-HN-101", campus: "HN", room: "101", building: "Pham Van Bach", capacity: 100 },
     { id: "Room-HN-102", campus: "HN", room: "102", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-103", campus: "HN", room: "103", building: "Pham Van Bach", capacity: 100 },
+    { id: "Room-HN-103", campus: "HCM", room: "103", building: "Pham Van Bach", capacity: 100 },
     { id: "Room-HN-104", campus: "HN", room: "104", building: "Pham Van Bach", capacity: 100 },
     { id: "Room-HN-105", campus: "HN", room: "105", building: "Pham Van Bach", capacity: 100 },
     { id: "Room-HN-106", campus: "HN", room: "106", building: "Pham Van Bach", capacity: 100 },
     { id: "Room-HN-107", campus: "HN", room: "107", building: "Pham Van Bach", capacity: 100 },
     { id: "Room-HN-108", campus: "HN", room: "108", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-109", campus: "HN", room: "109", building: "Pham Van Bach", capacity: 100 },
+    { id: "Room-HN-109", campus: "DN", room: "109", building: "Pham Van Bach", capacity: 100 },
     { id: "Room-HN-110", campus: "HN", room: "110", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-111", campus: "HN", room: "111", building: "Pham Van Bach", capacity: 100 },
+    { id: "Room-HN-111", campus: "DN", room: "111", building: "Pham Van Bach", capacity: 100 },
     { id: "Room-HN-112", campus: "HN", room: "112", building: "Pham Van Bach", capacity: 100 },
     { id: "Room-HN-113", campus: "HN", room: "113", building: "Pham Van Bach", capacity: 100 },
     { id: "Room-HN-114", campus: "HN", room: "114", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-407", campus: "HN", room: "407", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-408", campus: "HN", room: "408", building: "Pham Van Bach", capacity: 100 },
+    { id: "Room-HN-407", campus: "CT", room: "407", building: "Pham Van Bach", capacity: 100 },
+    { id: "Room-HN-408", campus: "CT", room: "408", building: "Pham Van Bach", capacity: 100 },
     { id: "Room-HN-409", campus: "HN", room: "409", building: "Pham Van Bach", capacity: 100 },
     { id: "Room-HN-410", campus: "HN", room: "410", building: "Pham Van Bach", capacity: 100 },
     { id: "Room-HN-411", campus: "HN", room: "411", building: "Pham Van Bach", capacity: 100 },
     { id: "Room-HN-412", campus: "HN", room: "412", building: "Pham Van Bach", capacity: 100 },
     { id: "Room-HN-413", campus: "HN", room: "413", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-414", campus: "HN", room: "414", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-415", campus: "HN", room: "415", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-416", campus: "HN", room: "416", building: "Pham Van Bach", capacity: 100 },
+    { id: "Room-HN-414", campus: "HCM", room: "414", building: "Pham Van Bach", capacity: 100 },
+    { id: "Room-HN-415", campus: "HCM", room: "415", building: "Pham Van Bach", capacity: 100 },
+    { id: "Room-HN-416", campus: "HCM", room: "416", building: "Pham Van Bach", capacity: 100 },
     { id: "Room-HN-417", campus: "HN", room: "417", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-418", campus: "HN", room: "418", building: "Pham Van Bach", capacity: 100 },
+    { id: "Room-HN-418", campus: "DN", room: "418", building: "Pham Van Bach", capacity: 100 },
     { id: "Room-HN-419", campus: "HN", room: "419", building: "Pham Van Bach", capacity: 100 },
 ];
 
@@ -74,16 +74,16 @@ const headCells = [
         label: "Campus",
     },
     {
-        id: "building",
-        numeric: true,
-        disablePadding: false,
-        label: "Building",
-    },
-    {
         id: "number",
         numeric: true,
         disablePadding: false,
         label: "Room Number",
+    },
+    {
+        id: "building",
+        numeric: true,
+        disablePadding: false,
+        label: "Building",
     },
     {
         id: "capacity",
@@ -114,10 +114,10 @@ export default function CampusAdmin() {
     ];
 
     const [campus, setCampus] = useState("HN");
-    const [rows, setRows] = useState([]);
-    const [building, setBuilding] = useState("");
-    const [number, setNumber] = useState("");
 
+    const [rowData, setRowData] = useState([]);
+    const [rows, setRows] = useState([]);
+    const [number, setNumber] = useState("");
     const [room, setRoom] = useState({});
 
     const [dialogTitle, setDialogTitle] = useState("");
@@ -128,9 +128,11 @@ export default function CampusAdmin() {
 
     const [selected, setSelected] = useState([])
 
+    const [tableTitle, setTableTitle] = useState("All Rooms")
+
     useEffect(() => {
         fetchRows();
-    }, [rows]);
+    }, []);
 
     const fetchRows = () => {
         let res = [];
@@ -140,6 +142,7 @@ export default function CampusAdmin() {
             );
         });
         setRows(res);
+        setRowData(res);
     };
 
     const fetchRoom = (id) => {
@@ -164,7 +167,6 @@ export default function CampusAdmin() {
             "This room will be deleted, are you sure? This change cannot be undone"
         );
         setOpen(true);
-
         setSelected(index)
         console.log(index);
     };
@@ -184,15 +186,33 @@ export default function CampusAdmin() {
         })
     };
 
-    const handleConfirm = (e) => {
+    const handleSearch = (e) => {
         e.preventDefault();
-        if (building === "" || number === "" || campus === "") return;
-        setDialogTitle("Edit Room information");
-        setDialogContent(
-            "This room will be edited, are you sure? This change cannot be undone"
-        );
-        setOpen(true);
+
+        let query = "Campus: ";
+        let searchResult = rowData.filter((r) => r.campus === campus)
+        query += campus
+
+        if (number !== "") {
+            query += (" / Room number: " + number)
+            searchResult = rowData.filter((r) => r.campus === campus && r.number === number)
+        }
+
+        if (!Array.isArray(searchResult)) {
+            searchResult = [];
+        }
+
+        setRows(searchResult)
+        setTableTitle(query)
     };
+
+    const handleClearSearch = (e) => {
+        e.preventDefault();
+        setRows(rowData);
+        setCampus("HN")
+        setNumber("")
+        setTableTitle("All Rooms")
+    }
 
     const handleClose = () => {
         setOpen(false);
@@ -243,18 +263,6 @@ export default function CampusAdmin() {
                             </Grid>
                             <Grid item xs={12} md={3}>
                                 <TextField
-                                    onChange={(e) =>
-                                        setBuilding(e.target.value)
-                                    }
-                                    value={building}
-                                    id="form-building"
-                                    fullWidth
-                                    label="Building"
-                                    variant="outlined"
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={3}>
-                                <TextField
                                     value={number}
                                     onChange={(e) => setNumber(e.target.value)}
                                     id="form-number"
@@ -268,8 +276,18 @@ export default function CampusAdmin() {
                                     fullWidth
                                     variant="outlined"
                                     sx={{ padding: "15px 30px" }}
-                                    onClick={(e) => handleConfirm(e)}>
+                                    onClick={(e) => handleSearch(e)}>
                                     Search
+                                </Button>
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <Button
+                                    color="error"
+                                    fullWidth
+                                    variant="outlined"
+                                    sx={{ padding: "15px 30px" }}
+                                    onClick={(e) => handleClearSearch(e)}>
+                                    Clear
                                 </Button>
                             </Grid>
                         </Grid>
@@ -297,14 +315,14 @@ export default function CampusAdmin() {
                                 handleAddEntry={() => {
                                     handleOpenModal();
                                 }}
-                                title={"Campus"}
+                                title={tableTitle}
                                 rows={rows}
                                 headCells={headCells}
                                 colNames={[
                                     "id",
                                     "campus",
-                                    "building",
                                     "number",
+                                    "building",
                                     "capacity",
                                 ]}
                                 handleEdit={handleEdit}

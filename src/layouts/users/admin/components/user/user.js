@@ -34,7 +34,11 @@ function createData(
     status,
     department_id,
     email,
-    password
+    password,
+    city,
+    district,
+    ward,
+    address
 ) {
     return {
         id,
@@ -47,6 +51,10 @@ function createData(
         department_id,
         email,
         password,
+        city,
+        district,
+        ward,
+        address,
     };
 }
 
@@ -56,6 +64,18 @@ const headCells = [
         numeric: false,
         disablePadding: true,
         label: "Id",
+    },
+    {
+        id: "department",
+        numeric: true,
+        disablePadding: false,
+        label: "Dept",
+    },
+    {
+        id: "email",
+        numeric: true,
+        disablePadding: false,
+        label: "Email",
     },
     {
         id: "role",
@@ -79,7 +99,7 @@ const headCells = [
         id: "dob",
         numeric: true,
         disablePadding: false,
-        label: "Date of Birth",
+        label: "Dob",
     },
     {
         id: "phone",
@@ -93,17 +113,33 @@ const headCells = [
         disablePadding: false,
         label: "Status",
     },
+
     {
-        id: "department",
+        id: "city",
         numeric: true,
         disablePadding: false,
-        label: "Department",
+        label: "City",
     },
+
     {
-        id: "email",
+        id: "district",
         numeric: true,
         disablePadding: false,
-        label: "Email",
+        label: "District",
+    },
+
+    {
+        id: "ward",
+        numeric: true,
+        disablePadding: false,
+        label: "Ward",
+    },
+
+    {
+        id: "address",
+        numeric: true,
+        disablePadding: false,
+        label: "Address",
     },
 ];
 
@@ -150,6 +186,8 @@ export default function UsersAdmin() {
     const [openModal, setOpenModal] = useState(false);
     const [rows, setRows] = useState([]);
 
+    const [rowData, setRowData] = useState("");
+
     useEffect(() => {
         fetchRows();
     }, [rows]);
@@ -173,6 +211,7 @@ export default function UsersAdmin() {
             );
         });
         setRows(res);
+        setRowData(rowData);
     };
 
     const fetchUser = (id) => {
@@ -182,8 +221,8 @@ export default function UsersAdmin() {
     const handleEdit = (id) => {
         let user = fetchUser(id);
         console.log(user);
-        setUser(user)
-        setOpenModal(true)
+        setUser(user);
+        setOpenModal(true);
     };
 
     const handleDelete = (index) => {
@@ -270,7 +309,7 @@ export default function UsersAdmin() {
                         className="big-widget"
                         style={{ paddingBottom: "15px" }}>
                         <h2>Users Control</h2>
-                        <p>Edit or add new user here</p>
+                        <p>Search for an user using the following fields</p>
                         <Grid container spacing={3}>
                             <Grid item xs={12} md={3}>
                                 <FormControl fullWidth>
@@ -288,6 +327,28 @@ export default function UsersAdmin() {
                                         <MenuItem value={1}>User</MenuItem>
                                         <MenuItem value={2}>Staff</MenuItem>
                                         <MenuItem value={3}>Admin</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="department-select-label">
+                                        Status
+                                    </InputLabel>
+                                    <Select
+                                        id="form-campus"
+                                        labelId="status-select-label"
+                                        value={status}
+                                        label="Status"
+                                        onChange={(e) => {
+                                            setStatus(e.target.value);
+                                        }}>
+                                        <MenuItem value={"activated"}>
+                                            Activated
+                                        </MenuItem>
+                                        <MenuItem value={"deactivated"}>
+                                            Deactivated
+                                        </MenuItem>
                                     </Select>
                                 </FormControl>
                             </Grid>
@@ -316,28 +377,6 @@ export default function UsersAdmin() {
                                 />
                             </Grid>
                             <Grid item xs={12} md={3}>
-                                <DesktopDatePicker
-                                    sx={{
-                                        width: "100%",
-                                    }}
-                                    onChange={(e) => {
-                                        setDob(e);
-                                    }}
-                                    value={dob}
-                                    id="form-dob"
-                                    label="Date of Birth"
-                                    variant="outlined"
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <MuiTelInput
-                                    onlyCountries={["VN"]}
-                                    fullWidth
-                                    value={phone}
-                                    onChange={handlePhoneChange}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={3}>
                                 <FormControl fullWidth>
                                     <InputLabel id="department-select-label">
                                         Department
@@ -362,23 +401,37 @@ export default function UsersAdmin() {
                             </Grid>
                             <Grid item xs={12} md={3}>
                                 <TextField
+                                    onChange={(e) =>
+                                        setLastName(e.target.value)
+                                    }
+                                    value={lastName}
+                                    id="form-lastName"
+                                    fullWidth
+                                    label="City"
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <TextField
+                                    onChange={(e) =>
+                                        setLastName(e.target.value)
+                                    }
+                                    value={lastName}
+                                    id="form-lastName"
+                                    fullWidth
+                                    label="District"
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <TextField
                                     onChange={(e) => setEmail(e.target.value)}
                                     value={email}
                                     id="form-email"
                                     fullWidth
-                                    label="Email"
+                                    label="Ward"
                                     variant="outlined"
                                 />
-                            </Grid>
-                            <Grid item xs={6} md={4}>
-                                <Button
-                                    fullWidth
-                                    variant="contained"
-                                    sx={{ padding: "15px 30px" }}
-                                    color="error"
-                                    onClick={(e) => handleConfirm(e)}>
-                                    Deactivate
-                                </Button>
                             </Grid>
                             <Grid item xs={6} md={4}>
                                 <Button
@@ -390,7 +443,7 @@ export default function UsersAdmin() {
                                     Reset Password
                                 </Button>
                             </Grid>
-                            <Grid item xs={6} md={2}>
+                            <Grid item xs={6} md={4}>
                                 <Button
                                     fullWidth
                                     variant="contained"
@@ -399,7 +452,7 @@ export default function UsersAdmin() {
                                     Search
                                 </Button>
                             </Grid>
-                            <Grid item xs={6} md={2}>
+                            <Grid item xs={6} md={4}>
                                 <Button
                                     fullWidth
                                     variant="outlined"
@@ -439,15 +492,18 @@ export default function UsersAdmin() {
                                 headCells={headCells}
                                 colNames={[
                                     "id",
+                                    "department_id",
+                                    "email",
                                     "role",
                                     "firstName",
                                     "lastName",
                                     "dob",
                                     "phone",
                                     "status",
-                                    "department_id",
-                                    "email",
-                                    "password",
+                                    "city",
+                                    "district",
+                                    "ward",
+                                    "address",
                                 ]}
                                 handleEdit={handleEdit}
                                 handleDelete={handleDelete}
@@ -480,14 +536,16 @@ export default function UsersAdmin() {
             </Dialog>
 
             <Dialog
+                maxWidth="md"
                 className="modal"
                 fullWidth={true}
                 open={openModal}
                 onClose={() => setOpenModal(false)}>
-                <DialogContent sx={{
-                    bgcolor: "background.paper",
-                    boxShadow: 12,
-                }}>
+                <DialogContent
+                    sx={{
+                        bgcolor: "background.paper",
+                        boxShadow: 12,
+                    }}>
                     <UserForm closeHandler={handleCloseModal} user={user} />
                 </DialogContent>
             </Dialog>

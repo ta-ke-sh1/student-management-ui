@@ -81,7 +81,13 @@ export default function CustomTable(props) {
 
     return (
         <Box sx={{ width: "100%", paddingTop: "20px", overflow: "auto" }}>
-            <Box sx={{ width: "100%", mb: 2, display: "table", tableLayout: "fixed" }}>
+            <Box
+                sx={{
+                    width: "100%",
+                    mb: 2,
+                    display: "table",
+                    tableLayout: "fixed",
+                }}>
                 <EnhancedTableToolbar
                     handleAddEntry={props.handleAddEntry}
                     title={props.title}
@@ -155,7 +161,9 @@ export default function CustomTable(props) {
                                                         props.colNames[index]
                                                     }
                                                     align="right">
-                                                    {row[props.colNames[index]]}
+                                                    {row[
+                                                        props.colNames[index]
+                                                    ] ?? "N/A"}
                                                 </TableCell>
                                             );
                                         })}

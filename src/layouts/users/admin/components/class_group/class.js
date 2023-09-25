@@ -19,6 +19,8 @@ import { mockGroup } from "../../mockData/mock";
 import ScheduleWidget from "./widgets/scheduleWidget";
 import ParticipantsWidget from "./widgets/participantsWidget";
 import GroupWidget from "./widgets/groupWidget";
+import axios from "axios";
+import GroupForm from "./forms/groupForm";
 
 function createData(id, programme, building, number) {
     return {
@@ -99,13 +101,10 @@ export default function FGWClass() {
 
     const [roomId, setGroupId] = useState("");
 
-    const [programme, setCampus] = useState("");
+    const [programme, setProgramme] = useState("");
     const [term, setTerm] = useState("");
-    const [group, setGroup] = useState("");
 
     const [rows, setRows] = useState([]);
-    const [building, setBuilding] = useState("");
-    const [number, setNumber] = useState("");
 
     const [terms, setTerms] = useState([
         {
@@ -146,6 +145,9 @@ export default function FGWClass() {
         },
     ]);
 
+    const [openGroupModal, setOpenGroupModal] = useState(false);
+
+    const [group, setGroup] = useState(null)
     const [groups, setGroups] = useState([]);
 
     const [dialogTitle, setDialogTitle] = useState("");
@@ -175,9 +177,7 @@ export default function FGWClass() {
     const handleEdit = (id) => {
         let room = fetchGroup(id);
         setGroupId(room.id);
-        setCampus(room.programme);
-        setBuilding(room.building);
-        setNumber(room.number);
+        setProgramme(room.programme);
     };
 
     const handleDelete = (index) => {
@@ -189,10 +189,21 @@ export default function FGWClass() {
         console.log(index);
     };
 
-    const handleSearchGroup = (e) => {
+    const handleSearchGroup = async (e) => {
         e.preventDefault();
-        setGroups(mockGroup);
+        if (programme && term) {
+            await axios.get(process.env.REACT_APP_HOST_URL + "/schedule?programme=" + programme + "&term=" + term).then((res) => {
+                console.log(res)
+            })
+
+            setGroups(mockGroup);
+        }
     };
+
+    const handleClearSearchGroup = () => {
+        setProgramme("")
+        setTerm("")
+    }
 
     const handleClose = () => {
         setOpen(false);
@@ -205,6 +216,14 @@ export default function FGWClass() {
     const handleAddSchedule = () => {
         console.log("Add new schedule");
     };
+
+    const handleOpenGroupModal = () => {
+        setOpenGroupModal(true)
+    }
+
+    const handleCloseGroupFormModal = () => {
+        setOpenGroupModal(false)
+    }
 
     return (
         <>
@@ -226,7 +245,7 @@ export default function FGWClass() {
                                         value={programme}
                                         label="Programme"
                                         onChange={(e) => {
-                                            setCampus(e.target.value);
+                                            setProgramme(e.target.value);
                                         }}>
                                         {programmes.map((programme) =>
                                             programme.id === -1 ? (
@@ -279,13 +298,23 @@ export default function FGWClass() {
                                     </Select>
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={12} md={4}>
+                            <Grid item xs={12} md={2}>
                                 <Button
                                     fullWidth
                                     variant="outlined"
                                     sx={{ padding: "15px 30px" }}
                                     onClick={(e) => handleSearchGroup(e)}>
                                     Search
+                                </Button>
+                            </Grid>
+                            <Grid item xs={12} md={2}>
+                                <Button
+                                    color="error"
+                                    fullWidth
+                                    variant="outlined"
+                                    sx={{ padding: "15px 30px" }}
+                                    onClick={(e) => handleClearSearchGroup(e)}>
+                                    Clear
                                 </Button>
                             </Grid>
                         </Grid>
@@ -306,7 +335,7 @@ export default function FGWClass() {
                 </Grid>
             </Grid>
 
-            <GroupWidget groups={groups} />
+            <GroupWidget handleAddEntry={() => { handleOpenGroupModal(); }} groups={groups} />
             <ParticipantsWidget rows={rows} />
             <ScheduleWidget rows={rows} />
 
@@ -330,6 +359,19 @@ export default function FGWClass() {
                         Cancel
                     </Button>
                 </DialogActions>
+            </Dialog>
+
+            <Dialog
+                className="modal"
+                fullWidth={true}
+                open={openGroupModal}
+                onClose={() => setOpenGroupModal(false)}>
+                <DialogContent sx={{
+                    bgcolor: "background.paper",
+                    boxShadow: 12,
+                }}>
+                    <GroupForm closeHandler={handleCloseGroupFormModal} group={group} />
+                </DialogContent>
             </Dialog>
         </ >
     );

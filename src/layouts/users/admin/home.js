@@ -89,13 +89,8 @@ export default function AdminHome() {
                     icon: <BookmarksIcon />,
                 },
                 {
-                    name: "Schedules",
-                    id: 5,
-                    icon: <InboxIcon />,
-                },
-                {
                     name: "Grades",
-                    id: 6,
+                    id: 5,
                     icon: <InboxIcon />,
                 },
             ],

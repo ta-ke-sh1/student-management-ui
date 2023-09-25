@@ -7,6 +7,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import SubjectForm from "./subjectForm";
 
 function createData(id, name, description, prerequisites, degree, slots) {
     return {
@@ -91,18 +92,13 @@ const headCells = [
 ];
 
 export default function SubjectsAdmin() {
-
-    const [subjectId, setSubjectId] = useState('')
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState('')
-    const [prerequisites, setPrerequisites] = useState('');
-    const [degree, setDegree] = useState('')
-    const [slots, setSlots] = useState('');
-
     const [dialogTitle, setDialogTitle] = useState("")
     const [dialogContent, setDialogContent] = useState("")
     const [rows, setRows] = useState([])
     const [open, setOpen] = useState(false);
+
+    const [subject, setSubject] = useState({})
+    const [openSubjectModal, setOpenSubjectModal] = useState(false)
 
     useEffect(() => {
         fetchRows()
@@ -118,27 +114,6 @@ export default function SubjectsAdmin() {
         setRows(res)
     }
 
-    const fetchSlot = (id) => {
-        return rows.find((row) => row.id === id)
-    }
-
-    const handleClear = () => {
-        setName()
-        setDescription()
-        setPrerequisites()
-        setDegree()
-        setSlots()
-    }
-
-    const handleEdit = (id) => {
-        let subject = fetchSlot(id)
-        setName(subject.name)
-        setDescription(subject.description)
-        setPrerequisites(subject.prerequisites)
-        setDegree(subject.degree)
-        setSlots(subject.slots)
-    }
-
     const handleDelete = (index) => {
         setDialogTitle("Delete Room")
         setDialogContent("This room will be deleted, are you sure? This change cannot be undone")
@@ -146,25 +121,36 @@ export default function SubjectsAdmin() {
         console.log(index)
     }
 
-    const handleConfirm = (e) => {
-        e.preventDefault()
-        // console.log({
-        //     id: roomId,
-        //     campus: campus,
-        //     building: building,
-        //     number: number
-        // })
-
-        // if (building === "" || number === "" || campus === "") return
-
-        setDialogTitle("Edit Room information")
-        setDialogContent("This room will be edited, are you sure? This change cannot be undone")
-        setOpen(true);
-    }
-
     const handleClose = () => {
         setOpen(false);
     };
+
+
+    const handleOpenSubjectModal = () => {
+        setSubject({});
+        setOpenSubjectModal(true)
+    }
+
+    const handleCloseSubjectModal = () => {
+        setOpenSubjectModal(false)
+    }
+
+    const fetchSubject = (id) => {
+        return rows.find((row) => row.id === id)
+    }
+
+    const handleEdit = (id) => {
+        let subject = fetchSubject(id)
+        setSubject({
+            id: subject.id,
+            name: subject.name,
+            description: subject.description,
+            prerequisites: subject.prerequisites,
+            degree: subject.degree,
+            slots: subject.slots
+        })
+        setOpenSubjectModal(true);
+    }
 
     return (
         <>
@@ -179,75 +165,8 @@ export default function SubjectsAdmin() {
                     }}>
                     </div>
                 </Grid>
-                <Grid item sm={12} md={3} style={{ marginBottom: '30px' }}>
-                    <div className="big-widget" style={{ paddingBottom: '25px' }}>
-                        <h2>Subjects Control</h2>
-                        <p>Edit or Add new course here</p>
-                        <br />
-                        <Grid container spacing={3}>
-                            <Grid item xs={12}>
-                                <TextField
-                                    onChange={(e) => setName(e.target.value)}
-                                    value={name}
-                                    id="form-name"
-                                    fullWidth
-                                    label="Name"
-                                    variant="outlined"
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    fullWidth
-                                    onChange={(e) => setDescription(e.target.value)}
-                                    value={description}
-                                    id="form-description"
-                                    label="Description"
-                                    variant="outlined"
-                                    rows={3}
-                                    maxRows={3}
-                                    multiline
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    fullWidth
-                                    value={prerequisites}
-                                    onChange={(e) => setPrerequisites(e.target.value)}
-                                    id="form-prerequisites"
-                                    label="Prerequisites"
-                                    variant="outlined"
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    fullWidth
-                                    value={degree}
-                                    onChange={(e) => setDegree(e.target.value)}
-                                    id="form-degree"
-                                    label="Degree"
-                                    variant="outlined"
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    fullWidth
-                                    value={slots}
-                                    onChange={(e) => setSlots(e.target.value)}
-                                    id="form-slots"
-                                    label="Slot Number"
-                                    variant="outlined"
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <Button fullWidth variant="contained" sx={{ padding: '15px 30px' }} onClick={(e) => handleConfirm(e)}>Save</Button>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <Button fullWidth variant="outlined" sx={{ padding: '15px 30px' }} onClick={(e) => handleConfirm(e)}>Clear</Button>
-                            </Grid>
-                        </Grid>
-                    </div>
-                </Grid>
-                <Grid item xs={12} md={9}>
+
+                <Grid item xs={12} md={12}>
                     <div className="big-widget" >
                         <div className="campus-list">
                             <CustomTable
@@ -258,6 +177,9 @@ export default function SubjectsAdmin() {
                                 colNames={['id', 'name', 'description', 'prerequisites', 'degree', 'slots']}
                                 handleEdit={handleEdit}
                                 handleDelete={handleDelete}
+                                handleAddEntry={() => {
+                                    handleOpenSubjectModal();
+                                }}
                             />
                         </div>
                     </div>
@@ -286,6 +208,19 @@ export default function SubjectsAdmin() {
                         Cancel
                     </Button>
                 </DialogActions>
+            </Dialog>
+
+            <Dialog
+                className="modal"
+                fullWidth={true}
+                open={openSubjectModal}
+                onClose={() => setOpenSubjectModal(false)}>
+                <DialogContent sx={{
+                    bgcolor: "background.paper",
+                    boxShadow: 12,
+                }}>
+                    <SubjectForm closeHandler={handleCloseSubjectModal} subject={subject} />
+                </DialogContent>
             </Dialog>
         </>
 

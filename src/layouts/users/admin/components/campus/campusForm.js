@@ -31,8 +31,8 @@ export default function CampusForm(props) {
                 axios
                     .put(
                         process.env.REACT_APP_HOST_URL +
-                            "/campus/room?id=" +
-                            roomId,
+                        "/campus/room?id=" +
+                        roomId,
                         room
                     )
                     .then((res) => {

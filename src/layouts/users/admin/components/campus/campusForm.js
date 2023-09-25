@@ -16,7 +16,7 @@ export default function CampusForm(props) {
     const [campus, setCampus] = useState(props.room.campus);
     const [building, setBuilding] = useState(props.room.building);
     const [number, setNumber] = useState(props.room.number);
-    const [capacity, setCapacity] = useState(props.room.capacity)
+    const [capacity, setCapacity] = useState(props.room.capacity);
 
     const handleConfirm = () => {
         const room = {
@@ -24,21 +24,30 @@ export default function CampusForm(props) {
             building: building,
             number: number,
             capacity: capacity,
-        }
+        };
 
         if (campus && building && number && capacity) {
             if (roomId) {
-                axios.put(process.env.REACT_APP_HOST_URL + "/campus/room?id=" + roomId, room).then((res) => {
-                    if (res.status === 200) {
-                        props.closeHandler()
-                    }
-                });
+                axios
+                    .put(
+                        process.env.REACT_APP_HOST_URL +
+                            "/campus/room?id=" +
+                            roomId,
+                        room
+                    )
+                    .then((res) => {
+                        if (res.status === 200) {
+                            props.closeHandler();
+                        }
+                    });
             } else {
-                axios.post(process.env.REACT_APP_HOST_URL + "/campus/room", room).then((res) => {
-                    if (res.status === 200) {
-                        props.closeHandler()
-                    }
-                });
+                axios
+                    .post(process.env.REACT_APP_HOST_URL + "/campus/room", room)
+                    .then((res) => {
+                        if (res.status === 200) {
+                            props.closeHandler();
+                        }
+                    });
             }
         }
     };
@@ -64,9 +73,7 @@ export default function CampusForm(props) {
 
     return (
         <>
-            <Grid
-                container
-                spacing={3}>
+            <Grid container spacing={3}>
                 <Grid item xs={12} md={12}>
                     <h2 style={{ margin: 0 }}>Manage room</h2>
                     <p>You can manage your room using this form</p>
@@ -74,16 +81,18 @@ export default function CampusForm(props) {
                 <Divider />
                 <Grid item xs={12} md={12}>
                     <FormControl fullWidth>
-                        <InputLabel id="campus-select-label-form">Campus</InputLabel>
+                        <InputLabel id="campus-select-label-form">
+                            Campus
+                        </InputLabel>
                         <Select
                             defaultValue={campus ?? "HN"}
                             value={campus ?? "default"}
                             label="Campus"
                             MenuProps={{
                                 disablePortal: true, // <--- HERE
-                                onClick: e => {
+                                onClick: (e) => {
                                     e.preventDefault();
-                                }
+                                },
                             }}
                             onChange={(e) => {
                                 setCampus(e.target.value);

@@ -115,9 +115,13 @@ export default function CampusAdmin() {
 
     const [campus, setCampus] = useState("HN");
 
+    // Campus room data
     const [rowData, setRowData] = useState([]);
     const [rows, setRows] = useState([]);
+
     const [number, setNumber] = useState("");
+
+    // Selected room state for editing
     const [room, setRoom] = useState({});
 
     const [dialogTitle, setDialogTitle] = useState("");

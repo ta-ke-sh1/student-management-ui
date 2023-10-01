@@ -80,6 +80,26 @@ const rooms = [
 ];
 
 export default function FGWClass() {
+
+    let departments = [
+        {
+            id: "GBH",
+            name: "Business",
+        },
+        {
+            id: "GCH",
+            name: "Computing",
+        },
+        {
+            id: "GDH",
+            name: "Graphic Design",
+        },
+        {
+            id: "GFH",
+            name: "Finance",
+        },
+    ]
+
     let programmes = [
         {
             id: "ENG",
@@ -112,36 +132,16 @@ export default function FGWClass() {
             name: "Please select a term",
         },
         {
-            id: "SP-21",
-            name: "Spring 2021",
+            id: "SP",
+            name: "Spring",
         },
         {
-            id: "SU-21",
-            name: "Summer 2021",
+            id: "SU",
+            name: "Summer",
         },
         {
-            id: "FA-21",
-            name: "Fall 2021",
-        },
-        {
-            id: "SP-22",
-            name: "Spring 2022",
-        },
-        {
-            id: "SU-22",
-            name: "Summer 2022",
-        },
-        {
-            id: "FA-22",
-            name: "Fall 2022",
-        },
-        {
-            id: "SP-23",
-            name: "Spring 2023",
-        },
-        {
-            id: "SU-23",
-            name: "Summer 2023",
+            id: "FA",
+            name: "Fall",
         },
     ]);
 
@@ -150,6 +150,9 @@ export default function FGWClass() {
     const [group, setGroup] = useState(null)
     const [groups, setGroups] = useState([]);
 
+    const [year, setYear] = useState(2023)
+    const [department, setDepartment] = useState("");
+
     const [dialogTitle, setDialogTitle] = useState("");
     const [dialogContent, setDialogContent] = useState("");
 
@@ -157,7 +160,6 @@ export default function FGWClass() {
 
     useEffect(() => {
         fetchRows();
-        setGroups(mockGroup);
     }, [rows]);
 
     const fetchRows = () => {
@@ -170,12 +172,16 @@ export default function FGWClass() {
         setRows(res);
     };
 
-    const fetchGroup = (id) => {
+    const fetchGroup = () => {
+
+    }
+
+    const fetchGroupById = (id) => {
         return rows.find((row) => row.id === id);
     };
 
     const handleEdit = (id) => {
-        let room = fetchGroup(id);
+        let room = fetchGroupById(id);
         setGroupId(room.id);
         setProgramme(room.programme);
     };
@@ -191,12 +197,10 @@ export default function FGWClass() {
 
     const handleSearchGroup = async (e) => {
         e.preventDefault();
-        if (programme && term) {
-            await axios.get(process.env.REACT_APP_HOST_URL + "/schedule?programme=" + programme + "&term=" + term).then((res) => {
-                console.log(res)
+        if (programme && term && year && department) {
+            await axios.get(process.env.REACT_APP_HOST_URL + "/schedule?programme=" + programme + "&term=" + (term + "-" + year.toString().substr(2, 2)) + "&department=" + department).then((res) => {
+                setGroups(res.data.data ?? []);
             })
-
-            setGroups(mockGroup);
         }
     };
 
@@ -228,13 +232,13 @@ export default function FGWClass() {
     return (
         <>
             <Grid container spacing={4} sx={{ width: "98.5%" }}>
-                <Grid item sm={12} md={6} style={{ marginBottom: "30px" }}>
+                <Grid item sm={12} md={9} style={{ marginBottom: "30px" }}>
                     <div
                         className="big-widget"
                         style={{ paddingBottom: "25px" }}>
                         <h2>Class Schedule Control</h2>
                         <Grid container spacing={3}>
-                            <Grid item xs={12} md={4}>
+                            <Grid item xs={12} md={3}>
                                 <FormControl fullWidth>
                                     <InputLabel id="programme-select-label">
                                         Programme
@@ -266,7 +270,7 @@ export default function FGWClass() {
                                     </Select>
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={12} md={4}>
+                            <Grid item xs={12} md={3}>
                                 <FormControl fullWidth>
                                     <InputLabel id="term-select-label">
                                         Term
@@ -298,7 +302,49 @@ export default function FGWClass() {
                                     </Select>
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={12} md={2}>
+                            <Grid item xs={12} md={3}>
+                                <TextField
+                                    onChange={(e) => setYear(e.target.value)}
+                                    value={year}
+                                    id="year"
+                                    fullWidth
+                                    label="Year"
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="department-select-label">
+                                        Department
+                                    </InputLabel>
+                                    <Select
+                                        id="form-department"
+                                        labelId="department-select-label"
+                                        value={department}
+                                        label="Department"
+                                        onChange={(e) => {
+                                            setDepartment(e.target.value);
+                                        }}>
+                                        {departments.map((term) =>
+                                            term.id === -1 ? (
+                                                <MenuItem
+                                                    disabled={true}
+                                                    key={term.id}
+                                                    value={term.id}>
+                                                    {term.name}
+                                                </MenuItem>
+                                            ) : (
+                                                <MenuItem
+                                                    key={term.id}
+                                                    value={term.id}>
+                                                    {term.name}
+                                                </MenuItem>
+                                            )
+                                        )}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12} md={6}>
                                 <Button
                                     fullWidth
                                     variant="outlined"
@@ -307,7 +353,7 @@ export default function FGWClass() {
                                     Search
                                 </Button>
                             </Grid>
-                            <Grid item xs={12} md={2}>
+                            <Grid item xs={12} md={6}>
                                 <Button
                                     color="error"
                                     fullWidth
@@ -320,7 +366,7 @@ export default function FGWClass() {
                         </Grid>
                     </div>
                 </Grid>
-                <Grid item sm={12} md={6}>
+                <Grid item sm={12} md={3}>
                     <div
                         style={{
                             backgroundImage:
@@ -328,7 +374,7 @@ export default function FGWClass() {
                                 5 +
                                 ".jpg)",
                             width: "100%",
-                            height: "160px",
+                            height: "240px",
                             borderRadius: "10px",
                             backgroundSize: "contain",
                         }}></div>
@@ -362,6 +408,7 @@ export default function FGWClass() {
             </Dialog>
 
             <Dialog
+                maxWidth="md"
                 className="modal"
                 fullWidth={true}
                 open={openGroupModal}

@@ -44,7 +44,7 @@ export default function GroupWidget(props) {
                                             }}
                                             variant={"contained"}
                                             className="group-chip">
-                                            {group.name}
+                                            {group.id}
                                         </Button>
                                     </Grid>
                                 );

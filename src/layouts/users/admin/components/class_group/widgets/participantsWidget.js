@@ -41,7 +41,7 @@ export default function ParticipantsWidget(props) {
                         <CustomTable
                             handleAddEntry={props.handleAddParticipant}
                             title={"Campus"}
-                            rows={props.rows}
+                            rows={props.participants}
                             headCells={headCells}
                             colNames={[
                                 "id",

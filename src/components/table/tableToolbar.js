@@ -6,6 +6,8 @@ import Tooltip from "@mui/material/Tooltip";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
+import DateRangeIcon from '@mui/icons-material/DateRange';
+import PeopleIcon from '@mui/icons-material/People';
 
 export default function EnhancedTableToolbar(props) {
     const { numSelected, selected, title } = props;
@@ -70,6 +72,21 @@ export default function EnhancedTableToolbar(props) {
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>
+                    {
+                        props.isCampusControl ?
+                            <>
+                                <Tooltip title="View Schedule">
+                                    <IconButton onClick={() => props.handleSeachSchedule(selected[0])}>
+                                        <DateRangeIcon />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title="View Students List">
+                                    <IconButton onClick={() => props.handleSeachStudents(selected[0])}>
+                                        <PeopleIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </> : <></>
+                    }
                 </>
             ) : (
                 <Tooltip title="Delete">

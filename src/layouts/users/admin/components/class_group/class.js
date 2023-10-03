@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
     TextField,
     Select,
@@ -7,77 +7,21 @@ import {
     FormControl,
     Button,
     Grid,
+    IconButton, Tooltip
 } from "@mui/material";
-import CustomTable from "../../../../../components/table/table";
 
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { mockGroup } from "../../mockData/mock";
 import ScheduleWidget from "./widgets/scheduleWidget";
 import ParticipantsWidget from "./widgets/participantsWidget";
 import GroupWidget from "./widgets/groupWidget";
 import axios from "axios";
 import GroupForm from "./forms/groupForm";
 
-function createData(id, programme, building, number) {
-    return {
-        id,
-        programme,
-        building,
-        number,
-    };
-}
 
-const headCells = [
-    {
-        id: "name",
-        numeric: false,
-        disablePadding: true,
-        label: "Group Id",
-    },
-    {
-        id: "programme",
-        numeric: true,
-        disablePadding: false,
-        label: "Campus",
-    },
-    {
-        id: "building",
-        numeric: true,
-        disablePadding: false,
-        label: "Building",
-    },
-    {
-        id: "number",
-        numeric: true,
-        disablePadding: false,
-        label: "Group Number",
-    },
-];
-
-const rooms = [
-    {
-        id: "Group-HN-100",
-        programme: "HN",
-        room: "100",
-        building: "Pham Van Bach",
-    },
-    {
-        id: "Group-HN-101",
-        programme: "HN",
-        room: "101",
-        building: "Pham Van Bach",
-    },
-    {
-        id: "Group-HN-102",
-        programme: "HN",
-        room: "102",
-        building: "Pham Van Bach",
-    },
-];
 
 export default function FGWClass() {
 
@@ -119,14 +63,13 @@ export default function FGWClass() {
         },
     ];
 
-    const [roomId, setGroupId] = useState("");
-
     const [programme, setProgramme] = useState("");
     const [term, setTerm] = useState("");
 
-    const [rows, setRows] = useState([]);
+    const [participants, setParticipants] = useState([]);
+    const [schedules, setSchedules] = useState([]);
 
-    const [terms, setTerms] = useState([
+    const terms = [
         {
             id: -1,
             name: "Please select a term",
@@ -143,12 +86,40 @@ export default function FGWClass() {
             id: "FA",
             name: "Fall",
         },
-    ]);
+    ];
 
     const [openGroupModal, setOpenGroupModal] = useState(false);
 
     const [group, setGroup] = useState(null)
-    const [groups, setGroups] = useState([]);
+    const [groups, setGroups] = useState([
+        {
+            id: 'TCH2011',
+            slots: '42',
+            subject: 'COMP1786',
+            lecturer: 'TungDT',
+            programme: 'UOG',
+            term: 'SU-23',
+            department: 'GCH'
+        },
+        {
+            id: 'TCH2101',
+            slots: 42,
+            subject: '2',
+            lecturer: 'quandh',
+            programme: 'UOG',
+            term: 'SU-23',
+            department: 'GCH'
+        },
+        {
+            id: 'Testing',
+            slots: '2',
+            subject: '1',
+            lecturer: '1',
+            programme: 'UOG',
+            term: 'SU-23',
+            department: 'GCH'
+        }
+    ]);
 
     const [year, setYear] = useState(2023)
     const [department, setDepartment] = useState("");
@@ -156,53 +127,27 @@ export default function FGWClass() {
     const [dialogTitle, setDialogTitle] = useState("");
     const [dialogContent, setDialogContent] = useState("");
 
+    const [selected, setSelected] = useState(null);
+
     const [open, setOpen] = useState(false);
 
-    useEffect(() => {
-        fetchRows();
-    }, [rows]);
-
-    const fetchRows = () => {
-        let res = [];
-        rooms.forEach((room) => {
-            res.push(
-                createData(room.id, room.programme, room.building, room.room)
-            );
-        });
-        setRows(res);
-    };
-
-    const fetchGroup = () => {
-
-    }
-
-    const fetchGroupById = (id) => {
-        return rows.find((row) => row.id === id);
-    };
-
-    const handleEdit = (id) => {
-        let room = fetchGroupById(id);
-        setGroupId(room.id);
-        setProgramme(room.programme);
-    };
-
-    const handleDelete = (index) => {
-        setDialogTitle("Delete Group");
-        setDialogContent(
-            "This room will be deleted, are you sure? This change cannot be undone"
-        );
-        setOpen(true);
-        console.log(index);
-    };
-
-    const handleSearchGroup = async (e) => {
-        e.preventDefault();
+    const handleSearchGroup = async () => {
         if (programme && term && year && department) {
             await axios.get(process.env.REACT_APP_HOST_URL + "/schedule?programme=" + programme + "&term=" + (term + "-" + year.toString().substr(2, 2)) + "&department=" + department).then((res) => {
                 setGroups(res.data.data ?? []);
             })
         }
     };
+
+    const handleSearchSchedule = async (e) => {
+        console.log(selected)
+        console.log("search schedule")
+    }
+
+    const handleSearchStudent = async () => {
+        console.log(selected)
+        console.log("search student")
+    }
 
     const handleClearSearchGroup = () => {
         setProgramme("")
@@ -213,20 +158,39 @@ export default function FGWClass() {
         setOpen(false);
     };
 
-    const handleAddParticipant = () => {
-        console.log("Add new class");
-    };
+    const handleOpenGroupModal = (e) => {
 
-    const handleAddSchedule = () => {
-        console.log("Add new schedule");
-    };
-
-    const handleOpenGroupModal = () => {
         setOpenGroupModal(true)
     }
 
     const handleCloseGroupFormModal = () => {
         setOpenGroupModal(false)
+    }
+
+    const fetchDataFromArrayUsingId = (data, id) => {
+        return data.find((row) => row.id === id)
+    }
+
+    const handleSeachSchedule = async (id) => {
+        let data = fetchDataFromArrayUsingId(groups, id)
+        console.log(data)
+        await axios.get(process.env.REACT_APP_HOST_URL + "/semester/schedules?id=" + id + "&programme=" + data.programme + "&term=" + data.term + "&department=" + data.department).then((res) => {
+            console.log(res.data)
+            if (res.data.status) {
+                setSchedules(res.data.data ?? [])
+            }
+        })
+    }
+
+    const handleSeachParticipants = async (id) => {
+        let data = fetchDataFromArrayUsingId(groups, id)
+        console.log(data)
+        await axios.get(process.env.REACT_APP_HOST_URL + "/semester/participants?id=" + id + "&programme=" + data.programme + "&term=" + data.term + "&department=" + data.department).then((res) => {
+            console.log(res.data)
+            if (res.data.status) {
+                setParticipants(res.data.data ?? [])
+            }
+        })
     }
 
     return (
@@ -381,9 +345,27 @@ export default function FGWClass() {
                 </Grid>
             </Grid>
 
-            <GroupWidget handleAddEntry={() => { handleOpenGroupModal(); }} groups={groups} />
-            <ParticipantsWidget rows={rows} />
-            <ScheduleWidget rows={rows} />
+            <GroupWidget
+                handleSeachSchedule={handleSeachSchedule}
+                handleSeachStudents={handleSeachParticipants}
+                handleAddEntry={() => { handleOpenGroupModal(); }}
+                groups={groups}
+                programme={programme}
+                department={department}
+                term={term + "-" + year.toString().substr(2, 2)} />
+            {
+                participants.length > 0 ? <>
+                    <ParticipantsWidget
+                        handleAddEntry={() => { handleOpenGroupModal(); }}
+                        participants={participants} />
+
+                </> : <></>
+            }
+            {
+                schedules.length > 0 ? <>
+                    <ScheduleWidget schedules={schedules} />
+                </> : <></>
+            }
 
             <Dialog
                 open={open}

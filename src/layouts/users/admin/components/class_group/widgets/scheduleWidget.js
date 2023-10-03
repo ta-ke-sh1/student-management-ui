@@ -41,7 +41,7 @@ export default function ScheduleWidget(props) {
                         <CustomTable
                             handleAddEntry={props.handleAddSchedule}
                             title={"Campus"}
-                            rows={props.rows}
+                            rows={props.schedules}
                             headCells={headCells}
                             colNames={[
                                 "id",

@@ -12,10 +12,13 @@ import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import UsersAdmin from "./components/user/user";
-import RegistrationAdmin from "./components/registration";
 import SubjectsAdmin from "./components/subject/subjects";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
 import FGWClass from "./components/class_group/class";
+import ScheduleAdmin from "./components/schedules/schedule";
+import GradeAdmin from "./components/grades/grade";
+import RegulationAndFiles from "./components/regulations/regulation";
+import RequestAdmin from "./components/requests/request";
 
 const drawerWidth = 240;
 
@@ -43,7 +46,7 @@ export default function AdminHome() {
         window !== undefined ? () => window.document.body : undefined;
 
     const [mobileOpen, setMobileOpen] = useState(true);
-    const [current, setCurrent] = useState(2);
+    const [current, setCurrent] = useState(3);
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -71,13 +74,17 @@ export default function AdminHome() {
             title: "Scheduling",
             tabs: [
                 {
-                    name: "Class",
+                    name: "Groups",
                     id: 2,
                     icon: <CalendarMonthIcon />,
                 },
                 {
-                    name: "Registrations",
+                    name: "Schedules",
                     id: 3,
+                    icon: <CalendarMonthIcon />,
+                }, {
+                    name: "Grades",
+                    id: 4,
                     icon: <CalendarMonthIcon />,
                 },
             ],
@@ -87,12 +94,22 @@ export default function AdminHome() {
             tabs: [
                 {
                     name: "Subjects",
-                    id: 4,
+                    id: 5,
+                    icon: <BookmarksIcon />,
+                },
+            ],
+        },
+        {
+            title: "Others",
+            tabs: [
+                {
+                    name: "Regulations & Forms",
+                    id: 6,
                     icon: <BookmarksIcon />,
                 },
                 {
-                    name: "Grades",
-                    id: 5,
+                    name: "Requests",
+                    id: 7,
                     icon: <InboxIcon />,
                 },
             ],
@@ -103,8 +120,11 @@ export default function AdminHome() {
         <CampusAdmin />,
         <UsersAdmin />,
         <FGWClass />,
-        <RegistrationAdmin />,
+        <ScheduleAdmin />,
+        <GradeAdmin />,
         <SubjectsAdmin />,
+        <RegulationAndFiles />,
+        <RequestAdmin />
     ];
 
     const drawer = (
@@ -169,6 +189,7 @@ export default function AdminHome() {
                     sx={{
                         width: { sm: drawerWidth },
                         flexShrink: { sm: 0 },
+                        zIndex: 10,
                     }}
                     aria-label="mailbox folders">
                     <Drawer
@@ -178,11 +199,12 @@ export default function AdminHome() {
                         sx={{
                             width: drawerWidth,
                             flexShrink: 0,
+
                             "& .MuiDrawer-paper": {
                                 width: drawerWidth,
                                 boxSizing: "border-box",
                                 borderWidth: 0,
-                                marginTop: "70px",
+                                marginTop: "60px",
                             },
                             border: "none",
                         }}

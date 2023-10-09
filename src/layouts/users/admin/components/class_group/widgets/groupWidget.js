@@ -81,8 +81,7 @@ export default function GroupWidget(props) {
     return (
         <Grid
             container
-            spacing={4}
-            style={{ marginBottom: "30px", width: "98.5%" }}>
+            spacing={4}>
             <Grid item xs={12}>
                 <div className="big-widget">
                     {props.groups.length == 0 ? (

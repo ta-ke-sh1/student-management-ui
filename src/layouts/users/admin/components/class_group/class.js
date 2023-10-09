@@ -7,16 +7,12 @@ import {
     FormControl,
     Button,
     Grid,
-    IconButton, Tooltip
 } from "@mui/material";
-
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import ScheduleWidget from "./widgets/scheduleWidget";
-import ParticipantsWidget from "./widgets/participantsWidget";
 import GroupWidget from "./widgets/groupWidget";
 import axios from "axios";
 import GroupForm from "./forms/groupForm";
@@ -67,7 +63,10 @@ export default function FGWClass() {
     const [term, setTerm] = useState("");
 
     const [participants, setParticipants] = useState([]);
-    const [schedules, setSchedules] = useState([]);
+    const [schedules, setSchedules] = useState([
+        { id: 'Hk9fDfwrmY3TEdrVdTBj', date: '2023-10-3', slot: '1' },
+        { id: 'bCgOHYyAZMZZAE6yYrVE', date: '2023-10-4', slot: '4' }
+    ]);
 
     const terms = [
         {
@@ -139,16 +138,6 @@ export default function FGWClass() {
         }
     };
 
-    const handleSearchSchedule = async (e) => {
-        console.log(selected)
-        console.log("search schedule")
-    }
-
-    const handleSearchStudent = async () => {
-        console.log(selected)
-        console.log("search student")
-    }
-
     const handleClearSearchGroup = () => {
         setProgramme("")
         setTerm("")
@@ -195,12 +184,12 @@ export default function FGWClass() {
 
     return (
         <>
-            <Grid container spacing={4} sx={{ width: "98.5%" }}>
+            <Grid container spacing={4} >
                 <Grid item sm={12} md={9} style={{ marginBottom: "30px" }}>
                     <div
                         className="big-widget"
                         style={{ paddingBottom: "25px" }}>
-                        <h2>Class Schedule Control</h2>
+                        <h2>Class Group Control</h2>
                         <Grid container spacing={3}>
                             <Grid item xs={12} md={3}>
                                 <FormControl fullWidth>
@@ -344,7 +333,6 @@ export default function FGWClass() {
                         }}></div>
                 </Grid>
             </Grid>
-
             <GroupWidget
                 handleSeachSchedule={handleSeachSchedule}
                 handleSeachStudents={handleSeachParticipants}
@@ -353,20 +341,6 @@ export default function FGWClass() {
                 programme={programme}
                 department={department}
                 term={term + "-" + year.toString().substr(2, 2)} />
-            {
-                participants.length > 0 ? <>
-                    <ParticipantsWidget
-                        handleAddEntry={() => { handleOpenGroupModal(); }}
-                        participants={participants} />
-
-                </> : <></>
-            }
-            {
-                schedules.length > 0 ? <>
-                    <ScheduleWidget schedules={schedules} />
-                </> : <></>
-            }
-
             <Dialog
                 open={open}
                 onClose={handleClose}

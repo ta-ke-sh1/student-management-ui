@@ -123,6 +123,7 @@ export default function UserHome(props) {
                 <Box
                     component="nav"
                     sx={{
+                        zIndex: 10,
                         width: { sm: drawerWidth },
                         flexShrink: { sm: 0 },
                     }}

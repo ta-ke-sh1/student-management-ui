@@ -32,11 +32,9 @@ export default function ParticipantsWidget(props) {
     return (
         <Grid
             container
-            spacing={4}
-            style={{ marginBottom: "30px", width: "98.5%" }}>
+            spacing={4}>
             <Grid item xs={12}>
                 <div className="big-widget">
-                    <h2>Participants List</h2>
                     <div className="programme-list">
                         <CustomTable
                             handleAddEntry={props.handleAddParticipant}

@@ -2447,3 +2447,41 @@ export const mockGroup = [
         name: "COMP1422",
     },
 ];
+
+export const departments = [
+    {
+        id: "GBH",
+        name: "Business",
+    },
+    {
+        id: "GCH",
+        name: "Computing",
+    },
+    {
+        id: "GDH",
+        name: "Graphic Design",
+    },
+    {
+        id: "GFH",
+        name: "Finance",
+    },
+]
+
+export const programmes = [
+    {
+        id: "ENG",
+        name: "English Programme",
+    },
+    {
+        id: "F2G",
+        name: "F2G",
+    },
+    {
+        id: "SUP",
+        name: "Supplementary Courses",
+    },
+    {
+        id: "UOG",
+        name: "Top-Up",
+    },
+];

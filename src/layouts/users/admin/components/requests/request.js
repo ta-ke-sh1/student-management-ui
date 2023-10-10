@@ -9,7 +9,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
 import axios from "axios";
-import RequestsForm from "./requesttú stuForm";
+import RequestsForm from "./requestForm";
 import { programmes } from "../../mockData/mock";
 
 function createData(id, campus, building, number, capacity) {

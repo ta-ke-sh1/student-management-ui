@@ -9,7 +9,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
 import axios from "axios";
-import ScheduleForm from "./scheduleForm";
+import DocumentsForm from "./documentsForm";
 import { programmes } from "../../mockData/mock";
 
 function createData(id, campus, building, number, capacity) {
@@ -22,12 +22,12 @@ function createData(id, campus, building, number, capacity) {
   };
 }
 
-const schedules = [
-  { id: "Schedule-HN-100", campus: "HN", schedule: "100", building: "Pham Van Bach", capacity: 100 },
-  { id: "Schedule-HN-101", campus: "HN", schedule: "101", building: "Pham Van Bach", capacity: 100 },
-  { id: "Schedule-HN-102", campus: "HN", schedule: "102", building: "Pham Van Bach", capacity: 100 },
-  { id: "Schedule-HN-103", campus: "HCM", schedule: "103", building: "Pham Van Bach", capacity: 100 },
-  { id: "Schedule-HN-419", campus: "HN", schedule: "419", building: "Pham Van Bach", capacity: 100 },
+const documentss = [
+  { id: "Documents-HN-100", campus: "HN", documents: "100", building: "Pham Van Bach", capacity: 100 },
+  { id: "Documents-HN-101", campus: "HN", documents: "101", building: "Pham Van Bach", capacity: 100 },
+  { id: "Documents-HN-102", campus: "HN", documents: "102", building: "Pham Van Bach", capacity: 100 },
+  { id: "Documents-HN-103", campus: "HCM", documents: "103", building: "Pham Van Bach", capacity: 100 },
+  { id: "Documents-HN-419", campus: "HN", documents: "419", building: "Pham Van Bach", capacity: 100 },
 ];
 
 const headCells = [
@@ -35,7 +35,7 @@ const headCells = [
     id: "name",
     numeric: false,
     disablePadding: true,
-    label: "Schedule Id",
+    label: "Documents Id",
   },
   {
     id: "campus",
@@ -47,7 +47,7 @@ const headCells = [
     id: "number",
     numeric: true,
     disablePadding: false,
-    label: "Schedule Number",
+    label: "Documents Number",
   },
   {
     id: "building",
@@ -63,36 +63,17 @@ const headCells = [
   },
 ];
 
-export default function ScheduleAdmin(props) {
-  let campuses = [
-    {
-      id: "HN",
-      name: "Ha Noi",
-    },
-    {
-      id: "HCM",
-      name: "Ho Chi Minh",
-    },
-    {
-      id: "DN",
-      name: "Da Nang",
-    },
-    {
-      id: "CT",
-      name: "Can Tho",
-    },
-  ];
-
+export default function DocumentsAdmin(props) {
   const [campus, setCampus] = useState("HN");
 
-  // Campus schedule data
+  // Campus documents data
   const [rowData, setRowData] = useState([]);
   const [rows, setRows] = useState([]);
 
   const [number, setNumber] = useState("");
 
-  // Selected schedule state for editing
-  const [schedule, setSchedule] = useState({});
+  // Selected documents state for editing
+  const [documents, setDocuments] = useState({});
 
   const [programme, setProgramme] = useState("");
 
@@ -104,7 +85,7 @@ export default function ScheduleAdmin(props) {
 
   const [selected, setSelected] = useState([]);
 
-  const [tableTitle, setTableTitle] = useState("All Schedules");
+  const [tableTitle, setTableTitle] = useState("All Documentss");
 
   useEffect(() => {
     fetchRows();
@@ -112,32 +93,32 @@ export default function ScheduleAdmin(props) {
 
   const fetchRows = () => {
     let res = [];
-    schedules.forEach((schedule) => {
-      res.push(createData(schedule.id, schedule.campus, schedule.building, schedule.schedule, schedule.capacity));
+    documentss.forEach((documents) => {
+      res.push({ ...documents });
     });
     setRows(res);
     setRowData(res);
   };
 
-  const fetchSchedule = (id) => {
+  const fetchDocuments = (id) => {
     return rows.find((row) => row.id === id);
   };
 
   const handleEdit = (id) => {
-    let schedule = fetchSchedule(id);
-    setSchedule({
-      id: schedule.id,
-      campus: schedule.campus,
-      building: schedule.building,
-      number: schedule.number,
-      capacity: schedule.capacity,
+    let documents = fetchDocuments(id);
+    setDocuments({
+      id: documents.id,
+      campus: documents.campus,
+      building: documents.building,
+      number: documents.number,
+      capacity: documents.capacity,
     });
     setOpenModal(true);
   };
 
   const handleDelete = (index) => {
-    setDialogTitle("Delete Schedule");
-    setDialogContent("This schedule will be deleted, are you sure? This change cannot be undone");
+    setDialogTitle("Delete Documents");
+    setDialogContent("This documents will be deleted, are you sure? This change cannot be undone");
     setOpen(true);
     setSelected(index);
     console.log(index);
@@ -152,7 +133,7 @@ export default function ScheduleAdmin(props) {
     }
 
     console.log(query);
-    axios.delete(process.env.REACT_APP_HOST_URL + "/campus/schedule?q=" + query).then((res) => {
+    axios.delete(process.env.REACT_APP_HOST_URL + "/campus/documents?q=" + query).then((res) => {
       console.log(res);
       setOpen(false);
     });
@@ -166,7 +147,7 @@ export default function ScheduleAdmin(props) {
     query += campus;
 
     if (number !== "") {
-      query += " / Schedule number: " + number;
+      query += " / Documents number: " + number;
       searchResult = rowData.filter((r) => r.campus === campus && r.number === number);
     }
 
@@ -183,7 +164,7 @@ export default function ScheduleAdmin(props) {
     setRows(rowData);
     setCampus("HN");
     setNumber("");
-    setTableTitle("All Schedules");
+    setTableTitle("All Documentss");
   };
 
   const handleClose = () => {
@@ -191,7 +172,7 @@ export default function ScheduleAdmin(props) {
   };
 
   const handleOpenModal = () => {
-    setSchedule({});
+    setDocuments({});
     setOpenModal(true);
   };
 
@@ -204,8 +185,8 @@ export default function ScheduleAdmin(props) {
       <Grid container spacing={4}>
         <Grid item sm={12} md={8} xl={6} style={{ marginBottom: "30px" }}>
           <div className="big-widget" style={{ paddingBottom: "25px" }}>
-            <h2>Schedule Control</h2>
-            <p>Search for a schedule</p>
+            <h2>Documents Control</h2>
+            <p>Search for a documents</p>
             <br />
             <Grid container spacing={3}>
               <Grid item xs={12} md={3}>
@@ -235,7 +216,7 @@ export default function ScheduleAdmin(props) {
                 </FormControl>
               </Grid>
               <Grid item xs={12} md={3}>
-                <TextField value={number} onChange={(e) => setNumber(e.target.value)} id="form-number" fullWidth label="Schedule Number" variant="outlined" />
+                <TextField value={number} onChange={(e) => setNumber(e.target.value)} id="form-number" fullWidth label="Documents Number" variant="outlined" />
               </Grid>
               <Grid item xs={12} md={3}>
                 <Button fullWidth variant="outlined" sx={{ padding: "15px 30px" }} onClick={(e) => handleSearch(e)}>
@@ -309,7 +290,7 @@ export default function ScheduleAdmin(props) {
             boxShadow: 12,
           }}
         >
-          <ScheduleForm closeHandler={handleCloseModal} schedule={schedule} />
+          <DocumentsForm closeHandler={handleCloseModal} documents={documents} />
         </DialogContent>
       </Dialog>
     </>

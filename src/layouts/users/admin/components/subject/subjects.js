@@ -154,7 +154,7 @@ export default function SubjectsAdmin() {
 
     return (
         <>
-            <Grid container spacing={4} sx={{ width: '98.5%' }}>
+            <Grid container spacing={4}>
                 <Grid item sm={12} md={12}>
                     <div style={{
                         backgroundImage: `url(${process.env.PUBLIC_URL}/banner/banner` + 2 + ".jpg)",

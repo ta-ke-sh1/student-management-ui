@@ -234,7 +234,7 @@ export default function CampusAdmin() {
     return (
         <>
             <Grid container spacing={4}>
-                <Grid item sm={12} md={8} xl={6} style={{ marginBottom: "30px" }}>
+                <Grid item sm={12} md={8} xl={6}>
                     <div
                         className="big-widget"
                         style={{ paddingBottom: "25px" }}>
@@ -297,7 +297,7 @@ export default function CampusAdmin() {
                         </Grid>
                     </div>
                 </Grid>
-                <Grid item sm={12} md={4} xl={6} style={{ marginBottom: "30px" }}>
+                <Grid item sm={12} md={4} xl={6}>
                     <div
                         style={{
                             backgroundImage:
@@ -310,8 +310,6 @@ export default function CampusAdmin() {
                             backgroundSize: "contain",
                         }}></div>
                 </Grid>
-            </Grid>
-            <Grid container spacing={4}>
                 <Grid item xs={12}>
                     <div className="big-widget">
                         <div className="campus-list">

@@ -183,7 +183,7 @@ export default function DocumentsAdmin(props) {
   return (
     <>
       <Grid container spacing={4}>
-        <Grid item sm={12} md={8} xl={6} style={{ marginBottom: "30px" }}>
+        <Grid item sm={12} md={8} xl={6}>
           <div className="big-widget" style={{ paddingBottom: "25px" }}>
             <h2>Documents Control</h2>
             <p>Search for a documents</p>
@@ -231,7 +231,7 @@ export default function DocumentsAdmin(props) {
             </Grid>
           </div>
         </Grid>
-        <Grid item sm={12} md={4} xl={6} style={{ marginBottom: "30px" }}>
+        <Grid item sm={12} md={4} xl={6}>
           <div
             style={{
               backgroundImage: `url(${process.env.PUBLIC_URL}/banner/banner` + 5 + ".jpg)",
@@ -242,8 +242,6 @@ export default function DocumentsAdmin(props) {
             }}
           ></div>
         </Grid>
-      </Grid>
-      <Grid container spacing={4}>
         <Grid item xs={12}>
           <div className="big-widget">
             <div className="campus-list">

@@ -9,7 +9,7 @@ export const useFetchHomeData = () => {
             process.env.REACT_APP_HOST_URL + "/course?campus=HaNoi"
         );
 
-        if (response && response.data) setCoursesRegistration(response.data);
+        if (response && response.data) setCoursesRegistration(response.data.data ?? []);
     };
 
     useEffect(() => {

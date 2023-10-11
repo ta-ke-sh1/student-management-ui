@@ -79,7 +79,7 @@ export default function AdminHome() {
           icon: <CalendarMonthIcon />,
         },
         {
-          name: "Grades",
+          name: "Submissions",
           id: 4,
           icon: <CalendarMonthIcon />,
         },

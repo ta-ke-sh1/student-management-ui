@@ -185,7 +185,7 @@ export default function FGWClass() {
     return (
         <>
             <Grid container spacing={4} >
-                <Grid item sm={12} md={9} style={{ marginBottom: "30px" }}>
+                <Grid item sm={12} md={9}>
                     <div
                         className="big-widget"
                         style={{ paddingBottom: "25px" }}>

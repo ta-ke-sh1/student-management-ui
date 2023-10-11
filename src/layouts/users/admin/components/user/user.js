@@ -303,8 +303,8 @@ export default function UsersAdmin() {
 
     return (
         <>
-            <Grid container spacing={4} sx={{ width: "100%" }}>
-                <Grid item sm={12} md={8} style={{ marginBottom: "30px" }}>
+            <Grid container spacing={4}>
+                <Grid item sm={12} md={8}>
                     <div
                         className="big-widget"
                         style={{ paddingBottom: "15px" }}>
@@ -464,7 +464,7 @@ export default function UsersAdmin() {
                         </Grid>
                     </div>
                 </Grid>
-                <Grid item sm={12} md={4} style={{ marginBottom: "30px" }}>
+                <Grid item sm={12} md={4}>
                     <div
                         style={{
                             backgroundImage:
@@ -477,8 +477,6 @@ export default function UsersAdmin() {
                             backgroundSize: "contain",
                         }}></div>
                 </Grid>
-            </Grid>
-            <Grid container style={{ width: "98%" }}>
                 <Grid item xs={12}>
                     <div className="big-widget">
                         <div className="campus-list">
@@ -512,7 +510,6 @@ export default function UsersAdmin() {
                     </div>
                 </Grid>
             </Grid>
-
             <Dialog
                 open={open}
                 onClose={handleClose}

@@ -183,7 +183,7 @@ export default function GradeAdmin(props) {
   return (
     <>
       <Grid container spacing={4}>
-        <Grid item sm={12} md={8} xl={6} style={{ marginBottom: "30px" }}>
+        <Grid item sm={12} md={8} xl={6}>
           <div className="big-widget" style={{ paddingBottom: "25px" }}>
             <h2>Grade Control</h2>
             <p>Search for a grade</p>
@@ -242,8 +242,6 @@ export default function GradeAdmin(props) {
             }}
           ></div>
         </Grid>
-      </Grid>
-      <Grid container spacing={4}>
         <Grid item xs={12}>
           <div className="big-widget">
             <div className="campus-list">

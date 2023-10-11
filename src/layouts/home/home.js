@@ -10,7 +10,6 @@ import CourseForm from "./courseForm";
 
 export default function CommonHome() {
     const auth = useAuth();
-    const decoded = useMemo(() => decodeToken(auth.token), [auth])
     const { coursesRegistration } = useFetchHomeData();
 
     const [openModal, setOpenModal] = useState(false)

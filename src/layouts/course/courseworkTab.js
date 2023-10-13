@@ -20,8 +20,8 @@ export default function CourseworkTab(props) {
             </div>
             <br />
             {
-                props.course.assignment && props.course.assignment.map((assignment) => {
-                    return <SubmmissionAccordion assignment={assignment} />
+                props.course.assignments && props.course.assignments.map((assignment) => {
+                    return <SubmmissionAccordion course={props.course} decoded={props.decoded} assignment={assignment} />
                 })
             }
             <Divider sx={{ margin: '20px 0' }} />

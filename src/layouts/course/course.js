@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, Divider, Paper, Typography, TableContainer, TableRow, TableCell, Table, Button, Modal } from "@mui/material"
+import { Accordion, AccordionDetails, AccordionSummary, Divider, Paper, Typography, TableContainer, TableRow, TableCell, Table, Button, Modal, Dialog, DialogContent, Snackbar } from "@mui/material"
 import { useFetchCourses } from "../users/student/hooks/useFetchCourse"
 import { useState, useMemo, useEffect } from "react";
 import { Drawer, Box, Fab } from "@mui/material";
@@ -18,6 +18,11 @@ import { decodeToken } from "../../utils/utils";
 import CourseworkTab from "./courseworkTab";
 import CourseworkFormModal from "./components/modal/coursework_form_modal";
 import CourseworkMaterialModal from "./components/modal/coursework_material_modal";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 
 const drawerWidth = 240;
 
@@ -43,6 +48,10 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
 export default function CourseUser() {
     const auth = useAuth()
     const decoded = useMemo(() => decodeToken(auth.token), [auth])
+    const { id } = useParams();
+
+    const [openToast, setOpenToast] = useState(false);
+    const [error, setError] = useState("")
 
     const _container =
         window !== undefined ? () => window.document.body : undefined;
@@ -53,26 +62,35 @@ export default function CourseUser() {
     const [openCourseworkModal, setOpenCourseworkModal] = useState(false)
     const [openMaterialModal, setOpenMaterialModal] = useState(false)
 
+    const memo_course = useMemo(() => fetchCourse(), [id])
+
+
+
     useEffect(() => {
-        console.log(decoded)
+        console.log(id)
+        fetchCourse();
+
+        console.log(memo_course)
     }, [])
 
-    const course = {
-        class: "COMP-1787",
-        teacher: "VinhNT",
-        semester: "Spring 2023",
-        name: "Requirements Management",
-        assignment: [
-            {
-                name: "Assignment 1",
-                deadline: "2023"
-            },
-            {
-                name: "Assignment 2",
-                deadline: "2023"
+
+
+    function fetchCourse() {
+        let c = {};
+        axios.get(process.env.REACT_APP_HOST_URL + "/course/details/?id=" + id).then((res) => {
+            if (res.data.status) {
+                c = res.data.data
+                setCourse(res.data.data)
+            } else {
+                setError(res.data.data)
+                setOpenToast(true)
             }
-        ]
+        })
+
+        return c;
     }
+
+    const [course, setCourse] = useState({});
 
     const handleOpenCourseworkModal = () => {
         setOpenCourseworkModal(true)
@@ -150,8 +168,29 @@ export default function CourseUser() {
         </div>
     );
 
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenToast(false);
+    }
+
+    const action = (
+        <>
+            <IconButton
+                size="small"
+                aria-label="close"
+                color="inherit"
+                onClick={handleClose}
+            >
+                <CloseIcon fontSize="small" />
+            </IconButton>
+        </>
+    );
+
     return (
         <>
+            <Snackbar open={openToast} message={error} autoHideDuration={2000} action={action} />
             <Box sx={{ display: "flex" }} style={{ zIndex: -1 }}>
                 <Box
                     component="nav"
@@ -181,7 +220,6 @@ export default function CourseUser() {
                     </Drawer>
                 </Box>
                 <Main open={mobileOpen}>
-
                     <div className="course-head-banner" style={{
                         backgroundImage: `url(${process.env.PUBLIC_URL}/banner/banner` + 5 + ".jpg)",
                     }}>
@@ -195,7 +233,7 @@ export default function CourseUser() {
                             <div className="serif" style={{
                                 fontSize: '3rem',
                             }}>
-                                {course.class} - {course.teacher} - {course.name}
+                                {course.group} - {course.lecturer} - {course.name}
                             </div>
                             {components[current]}
                         </div>
@@ -222,39 +260,33 @@ export default function CourseUser() {
                     </svg>
                 </Fab>
             </div>
-            <Modal
+            <Dialog
+                maxWidth="md"
                 open={openCourseworkModal}
-                onClose={() => setOpenCourseworkModal(false)}
-                sx={{
-                    zIndex: 100000000000,
-                }}>
-                <Box
+                onClose={() => setOpenCourseworkModal(false)}>
+                <DialogContent
                     sx={{
                         bgcolor: "background.paper",
                         boxShadow: 12,
-                        p: 4,
                     }}
                     className={"modal"}>
                     <CourseworkFormModal closeHandler={() => setOpenCourseworkModal(false)} />
-                </Box>
-            </Modal>
-            <Modal
+                </DialogContent>
+            </Dialog>
+            <Dialog
+                className="modal"
+                fullWidth={true}
                 open={openMaterialModal}
-                onClose={() => setOpenMaterialModal(false)}
-
-                sx={{
-                    zIndex: 100000000000,
-                }}>
-                <Box
+                onClose={() => setOpenMaterialModal(false)}>
+                <DialogContent
                     sx={{
                         bgcolor: "background.paper",
                         boxShadow: 12,
-                        p: 4,
                     }}
                     className={"modal"}>
                     <CourseworkMaterialModal closeHandler={() => setOpenMaterialModal(false)} />
-                </Box>
-            </Modal>
+                </DialogContent>
+            </Dialog>
         </>
     )
 }

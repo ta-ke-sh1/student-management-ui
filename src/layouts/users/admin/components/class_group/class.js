@@ -332,15 +332,18 @@ export default function FGWClass() {
                             backgroundSize: "contain",
                         }}></div>
                 </Grid>
+                <Grid item sm={12} md={12}>
+                    <GroupWidget
+                        handleSeachSchedule={handleSeachSchedule}
+                        handleSeachStudents={handleSeachParticipants}
+                        handleAddEntry={() => { handleOpenGroupModal(); }}
+                        groups={groups}
+                        programme={programme}
+                        department={department}
+                        term={term + "-" + year.toString().substr(2, 2)} />
+                </Grid>
             </Grid>
-            <GroupWidget
-                handleSeachSchedule={handleSeachSchedule}
-                handleSeachStudents={handleSeachParticipants}
-                handleAddEntry={() => { handleOpenGroupModal(); }}
-                groups={groups}
-                programme={programme}
-                department={department}
-                term={term + "-" + year.toString().substr(2, 2)} />
+
             <Dialog
                 open={open}
                 onClose={handleClose}

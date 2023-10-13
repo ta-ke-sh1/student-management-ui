@@ -4,12 +4,12 @@ import jwt_decode from "jwt-decode";
 export const host_url = "https://tch2202.onrender.com";
 
 export const convertSecondsToTime = (input) => {
-    var seconds = input;
-    var days = Math.floor(seconds / (3600 * 24));
+    let seconds = input;
+    let days = Math.floor(seconds / (3600 * 24));
     seconds -= days * 3600 * 24;
-    var hrs = Math.floor(seconds / 3600);
+    let hrs = Math.floor(seconds / 3600);
     seconds -= hrs * 3600;
-    var mnts = Math.floor(seconds / 60);
+    let mnts = Math.floor(seconds / 60);
     seconds -= mnts * 60;
     return {
         days: days,
@@ -51,7 +51,7 @@ export function isExpiredToken(secondsSinceEpoch) {
 }
 
 export function convertDateToDayOfTheWeek(date) {
-    var day = moment(date, "DD MMM YYYY");
+    let day = moment(date, "DD MMM YYYY");
     return day.format("ddd");
 }
 
@@ -66,6 +66,23 @@ export function decodeToken(token) {
         return "-1"
     }
 
+}
+
+export function subtractTime(date_now, date_future) {
+    let delta = Math.abs(date_future - date_now);
+    let days = Math.floor(delta / 86400);
+    delta -= days * 86400;
+    let hours = Math.floor(delta / 3600) % 24;
+    delta -= hours * 3600;
+    let minutes = Math.floor(delta / 60) % 60;
+    delta -= minutes * 60;
+    let seconds = delta % 60;
+
+    let str = ""
+    str += days > 0 ? days + " days, " : ""
+    str += hours > 0 ? hours + " hours, " : ""
+    str += minutes + " minutes"
+    return str
 }
 
 export const getDeviceType = () => {

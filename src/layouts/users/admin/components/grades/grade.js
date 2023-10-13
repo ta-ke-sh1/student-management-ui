@@ -63,6 +63,8 @@ const headCells = [
   },
 ];
 
+const searchType = [];
+
 export default function GradeAdmin(props) {
   const [campus, setCampus] = useState("HN");
 
@@ -75,7 +77,12 @@ export default function GradeAdmin(props) {
   // Selected grade state for editing
   const [grade, setGrade] = useState({});
 
-  const [programme, setProgramme] = useState("");
+  const [searchType, setSearchType] = useState("");
+
+  const [group, setGroup] = useState("");
+  const [grade_id, setGradeId] = useState("");
+  const [year, setYear] = useState("2023");
+  const [semester, setSemester] = useState("");
 
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogContent, setDialogContent] = useState("");
@@ -189,32 +196,7 @@ export default function GradeAdmin(props) {
             <p>Search for a grade</p>
             <br />
             <Grid container spacing={3}>
-              <Grid item xs={12} md={3}>
-                <FormControl fullWidth>
-                  <InputLabel id="programme-select-label">Programme</InputLabel>
-                  <Select
-                    id="form-programme"
-                    labelId="programme-select-label"
-                    value={programme}
-                    label="Programme"
-                    onChange={(e) => {
-                      setProgramme(e.target.value);
-                    }}
-                  >
-                    {programmes.map((programme) =>
-                      programme.id === -1 ? (
-                        <MenuItem disabled={true} key={programme.id} value={programme.id}>
-                          {programme.name}
-                        </MenuItem>
-                      ) : (
-                        <MenuItem key={programme.id} value={programme.id}>
-                          {programme.name}
-                        </MenuItem>
-                      )
-                    )}
-                  </Select>
-                </FormControl>
-              </Grid>
+              <Grid item xs={12} md={3}></Grid>
               <Grid item xs={12} md={3}>
                 <TextField value={number} onChange={(e) => setNumber(e.target.value)} id="form-number" fullWidth label="Grade Number" variant="outlined" />
               </Grid>

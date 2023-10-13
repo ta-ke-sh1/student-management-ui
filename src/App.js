@@ -8,6 +8,7 @@ import NavBar from "./navBar";
 import CourseUser from "./layouts/course/course";
 import GradeUser from "./layouts/users/student/views/grade";
 import UserHome from "./layouts/users/student/home";
+import Test from "./test";
 
 function App() {
   return (
@@ -46,7 +47,7 @@ function App() {
         }
       />
       <Route
-        path="/course"
+        path="/course/:id"
         element={
           <>
             <CourseUser />
@@ -65,7 +66,7 @@ function App() {
         path="/test"
         element={
           <>
-            <AdminHome />
+            <Test />
           </>
         }
       />

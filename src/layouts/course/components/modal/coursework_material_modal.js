@@ -18,10 +18,7 @@ export default function CourseworkMaterialModal(props) {
         <>
             <Grid
                 container
-                spacing={3}
-                sx={{
-                    maxWidth: "600px",
-                }}>
+                spacing={3}>
                 <Grid item xs={12} md={12}>
                     <h2 style={{ margin: 0, marginBottom: "10px" }}>
                         Add Coursework Materials.

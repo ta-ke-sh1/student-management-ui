@@ -16,8 +16,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import GroupWidget from "./widgets/groupWidget";
 import axios from "axios";
 import GroupForm from "./forms/groupForm";
-
-
+import ParticipantsWidget from "./widgets/participantsWidget";
 
 export default function FGWClass() {
 
@@ -63,10 +62,6 @@ export default function FGWClass() {
     const [term, setTerm] = useState("");
 
     const [participants, setParticipants] = useState([]);
-    const [schedules, setSchedules] = useState([
-        { id: 'Hk9fDfwrmY3TEdrVdTBj', date: '2023-10-3', slot: '1' },
-        { id: 'bCgOHYyAZMZZAE6yYrVE', date: '2023-10-4', slot: '4' }
-    ]);
 
     const terms = [
         {
@@ -126,7 +121,7 @@ export default function FGWClass() {
     const [dialogTitle, setDialogTitle] = useState("");
     const [dialogContent, setDialogContent] = useState("");
 
-    const [selected, setSelected] = useState(null);
+    const [firstClick, setFirstClick] = useState(false);
 
     const [open, setOpen] = useState(false);
 
@@ -160,15 +155,12 @@ export default function FGWClass() {
         return data.find((row) => row.id === id)
     }
 
-    const handleSeachSchedule = async (id) => {
-        let data = fetchDataFromArrayUsingId(groups, id)
-        console.log(data)
-        await axios.get(process.env.REACT_APP_HOST_URL + "/semester/schedules?id=" + id + "&programme=" + data.programme + "&term=" + data.term + "&department=" + data.department).then((res) => {
-            console.log(res.data)
-            if (res.data.status) {
-                setSchedules(res.data.data ?? [])
-            }
-        })
+    const handleEditGroup = (id) => {
+
+    }
+
+    const handleAddParticipants = async (id) => {
+
     }
 
     const handleSeachParticipants = async (id) => {
@@ -180,6 +172,7 @@ export default function FGWClass() {
                 setParticipants(res.data.data ?? [])
             }
         })
+        setFirstClick(true);
     }
 
     return (
@@ -334,13 +327,18 @@ export default function FGWClass() {
                 </Grid>
                 <Grid item sm={12} md={12}>
                     <GroupWidget
-                        handleSeachSchedule={handleSeachSchedule}
                         handleSeachStudents={handleSeachParticipants}
                         handleAddEntry={() => { handleOpenGroupModal(); }}
                         groups={groups}
                         programme={programme}
                         department={department}
                         term={term + "-" + year.toString().substr(2, 2)} />
+                </Grid>
+                <Grid item sm={12} md={12}>
+                    <ParticipantsWidget
+                        firstClick={firstClick}
+                        handleAddEntry={() => { handleOpenGroupModal(); }}
+                        participants={participants} />
                 </Grid>
             </Grid>
 

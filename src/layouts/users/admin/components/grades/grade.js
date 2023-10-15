@@ -192,13 +192,12 @@ export default function GradeAdmin(props) {
       <Grid container spacing={4}>
         <Grid item sm={12} md={8} xl={6}>
           <div className="big-widget" style={{ paddingBottom: "25px" }}>
-            <h2>Grade Control</h2>
-            <p>Search for a grade</p>
+            <h2>Assignment Control</h2>
+            <p>Search for an assignment</p>
             <br />
             <Grid container spacing={3}>
-              <Grid item xs={12} md={3}></Grid>
-              <Grid item xs={12} md={3}>
-                <TextField value={number} onChange={(e) => setNumber(e.target.value)} id="form-number" fullWidth label="Grade Number" variant="outlined" />
+              <Grid item xs={12} md={6}>
+                <TextField value={number} onChange={(e) => setNumber(e.target.value)} id="form-number" fullWidth label="Assignment Id" variant="outlined" />
               </Grid>
               <Grid item xs={12} md={3}>
                 <Button fullWidth variant="outlined" sx={{ padding: "15px 30px" }} onClick={(e) => handleSearch(e)}>
@@ -213,7 +212,7 @@ export default function GradeAdmin(props) {
             </Grid>
           </div>
         </Grid>
-        <Grid item sm={12} md={4} xl={6} style={{ marginBottom: "30px" }}>
+        <Grid item sm={12} md={4} xl={6} >
           <div
             style={{
               backgroundImage: `url(${process.env.PUBLIC_URL}/banner/banner` + 5 + ".jpg)",

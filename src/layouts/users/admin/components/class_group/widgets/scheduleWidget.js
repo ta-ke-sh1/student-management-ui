@@ -31,8 +31,7 @@ const headCells = [
 export default function ScheduleWidget(props) {
     return (
         <Grid
-            container
-            spacing={4}>
+            container>
             <Grid item xs={12}>
                 <div className="big-widget">
                     <div className="programme-list">

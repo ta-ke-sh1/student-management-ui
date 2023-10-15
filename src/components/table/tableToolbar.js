@@ -76,11 +76,6 @@ export default function EnhancedTableToolbar(props) {
                     {
                         props.isCampusControl ?
                             <>
-                                <Tooltip title="View Schedule">
-                                    <IconButton onClick={() => props.handleSeachSchedule(selected[0])}>
-                                        <DateRangeIcon />
-                                    </IconButton>
-                                </Tooltip>
                                 <Tooltip title="View Students List">
                                     <IconButton onClick={() => props.handleSeachStudents(selected[0])}>
                                         <PeopleIcon />

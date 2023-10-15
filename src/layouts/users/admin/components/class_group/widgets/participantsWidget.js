@@ -31,25 +31,27 @@ const headCells = [
 export default function ParticipantsWidget(props) {
     return (
         <Grid
-            container
-            spacing={4}>
+            container>
             <Grid item xs={12}>
                 <div className="big-widget">
                     <div className="programme-list">
-                        <CustomTable
-                            handleAddEntry={props.handleAddParticipant}
-                            title={"Campus"}
-                            rows={props.participants}
-                            headCells={headCells}
-                            colNames={[
-                                "id",
-                                "programme",
-                                "building",
-                                "number",
-                            ]}
-                            handleEdit={props.handleEdit}
-                            handleDelete={props.handleDelete}
-                        />
+                        {
+                            props.firstClick ? <CustomTable
+                                handleAddEntry={props.handleAddParticipant}
+                                title={"Campus"}
+                                rows={props.participants}
+                                headCells={headCells}
+                                colNames={[
+                                    "id",
+                                    "programme",
+                                    "building",
+                                    "number",
+                                ]}
+                                handleEdit={props.handleEdit}
+                                handleDelete={props.handleDelete}
+                            /> : <><h3>Please select a group to see its participants</h3></>
+                        }
+
                     </div>
                 </div>
             </Grid>

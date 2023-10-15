@@ -43,7 +43,7 @@ export default function AdminHome() {
   const _container = window !== undefined ? () => window.document.body : undefined;
 
   const [mobileOpen, setMobileOpen] = useState(true);
-  const [current, setCurrent] = useState(6);
+  const [current, setCurrent] = useState(2);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -79,7 +79,7 @@ export default function AdminHome() {
           icon: <CalendarMonthIcon />,
         },
         {
-          name: "Submissions",
+          name: "Assignments",
           id: 4,
           icon: <CalendarMonthIcon />,
         },

@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, Divider, Paper, Typography, TableContainer, TableRow, TableCell, Table, Button } from "@mui/material"
+import { Accordion, AccordionDetails, AccordionSummary, Divider, Paper, Typography, TableContainer, TableRow, TableCell, Table, Button, Grid, Grow } from "@mui/material"
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useEffect, useState } from "react";
 import { fromMilisecondsToDateString, subtractTime } from "../../../utils/utils";
@@ -31,7 +31,10 @@ export default function SubmmissionAccordion(props) {
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1a-content"
                     id="panel1a-header">
-                    <Typography>{props.assignment.id} - Deadline: {fromMilisecondsToDateString(props.assignment.deadline * 1000)}</Typography>
+                    <Grid container>
+                        <Grid item sm={2} md={2}>{props.assignment.id}</Grid>
+                        <Grid item sm={3} md={3}> <b>Deadline: </b>  {fromMilisecondsToDateString(props.assignment.deadline * 1000)}</Grid>
+                    </Grid>
                 </AccordionSummary>
                 <AccordionDetails>
                     <h4>Submission Status</h4>

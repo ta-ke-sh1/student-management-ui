@@ -89,6 +89,7 @@ export default function CustomTable(props) {
                     tableLayout: "fixed",
                 }}>
                 <EnhancedTableToolbar
+                    isDownloadable={props.isDownloadable}
                     isCampusControl={props.isCampusControl}
                     handleSeachSchedule={props.handleSeachSchedule}
                     handleSeachStudents={props.handleSeachStudents}
@@ -98,6 +99,7 @@ export default function CustomTable(props) {
                     title={props.title}
                     handleEdit={props.handleEdit}
                     handleDelete={props.handleDelete}
+                    handleDownload={props.handleDownload}
                     numSelected={selected.length}
                     selected={selected}
                 />

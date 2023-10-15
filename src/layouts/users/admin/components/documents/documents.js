@@ -12,70 +12,51 @@ import axios from "axios";
 import DocumentsForm from "./documentsForm";
 import { programmes } from "../../mockData/mock";
 
-function createData(id, campus, building, number, capacity) {
+function createData(id, name, path, status) {
   return {
     id,
-    campus,
-    building,
-    number,
-    capacity,
+    name,
+    path,
+    status
   };
 }
 
-const documentss = [
-  { id: "Documents-HN-100", campus: "HN", documents: "100", building: "Pham Van Bach", capacity: 100 },
-  { id: "Documents-HN-101", campus: "HN", documents: "101", building: "Pham Van Bach", capacity: 100 },
-  { id: "Documents-HN-102", campus: "HN", documents: "102", building: "Pham Van Bach", capacity: 100 },
-  { id: "Documents-HN-103", campus: "HCM", documents: "103", building: "Pham Van Bach", capacity: 100 },
-  { id: "Documents-HN-419", campus: "HN", documents: "419", building: "Pham Van Bach", capacity: 100 },
-];
-
 const headCells = [
   {
-    id: "name",
+    id: "id",
     numeric: false,
     disablePadding: true,
-    label: "Documents Id",
+    label: "Id",
   },
   {
-    id: "campus",
+    id: "name",
     numeric: true,
     disablePadding: false,
-    label: "Campus",
+    label: "Name",
   },
   {
-    id: "number",
+    id: "path",
     numeric: true,
     disablePadding: false,
-    label: "Documents Number",
+    label: "Path",
   },
   {
-    id: "building",
+    id: "status",
     numeric: true,
     disablePadding: false,
-    label: "Building",
-  },
-  {
-    id: "capacity",
-    numeric: true,
-    disablePadding: false,
-    label: "Capacity",
+    label: "Status",
   },
 ];
 
 export default function DocumentsAdmin(props) {
-  const [campus, setCampus] = useState("HN");
-
   // Campus documents data
   const [rowData, setRowData] = useState([]);
   const [rows, setRows] = useState([]);
 
-  const [number, setNumber] = useState("");
+  const [id, setId] = useState("");
 
   // Selected documents state for editing
   const [documents, setDocuments] = useState({});
-
-  const [programme, setProgramme] = useState("");
 
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogContent, setDialogContent] = useState("");
@@ -85,19 +66,23 @@ export default function DocumentsAdmin(props) {
 
   const [selected, setSelected] = useState([]);
 
-  const [tableTitle, setTableTitle] = useState("All Documentss");
+  const [tableTitle, setTableTitle] = useState("All Documents");
 
   useEffect(() => {
     fetchRows();
   }, []);
 
   const fetchRows = () => {
-    let res = [];
-    documentss.forEach((documents) => {
-      res.push({ ...documents });
-    });
-    setRows(res);
-    setRowData(res);
+
+    axios.get(process.env.REACT_APP_HOST_URL + "/document").then((res) => {
+      if (res.data.status) {
+        let data = res.data.data
+        setRowData(data)
+        setRows(data)
+      } else {
+        console.log("Error!")
+      }
+    })
   };
 
   const fetchDocuments = (id) => {
@@ -105,14 +90,8 @@ export default function DocumentsAdmin(props) {
   };
 
   const handleEdit = (id) => {
-    let documents = fetchDocuments(id);
-    setDocuments({
-      id: documents.id,
-      campus: documents.campus,
-      building: documents.building,
-      number: documents.number,
-      capacity: documents.capacity,
-    });
+    let document = fetchDocuments(id);
+    setDocuments(document);
     setOpenModal(true);
   };
 
@@ -133,39 +112,12 @@ export default function DocumentsAdmin(props) {
     }
 
     console.log(query);
-    axios.delete(process.env.REACT_APP_HOST_URL + "/campus/documents?q=" + query).then((res) => {
+    axios.delete(process.env.REACT_APP_HOST_URL + "/documents?id=" + id).then((res) => {
       console.log(res);
       setOpen(false);
     });
   };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-
-    let query = "Campus: ";
-    let searchResult = rowData.filter((r) => r.campus === campus);
-    query += campus;
-
-    if (number !== "") {
-      query += " / Documents number: " + number;
-      searchResult = rowData.filter((r) => r.campus === campus && r.number === number);
-    }
-
-    if (!Array.isArray(searchResult)) {
-      searchResult = [];
-    }
-
-    setRows(searchResult);
-    setTableTitle(query);
-  };
-
-  const handleClearSearch = (e) => {
-    e.preventDefault();
-    setRows(rowData);
-    setCampus("HN");
-    setNumber("");
-    setTableTitle("All Documentss");
-  };
 
   const handleClose = () => {
     setOpen(false);
@@ -180,58 +132,32 @@ export default function DocumentsAdmin(props) {
     setOpenModal(false);
   };
 
+  const handleDownload = (e) => {
+    console.log(e)
+  }
+
+  const handleDownloadAll = () => {
+
+  }
+
   return (
     <>
       <Grid container spacing={4}>
-        <Grid item sm={12} md={8} xl={6}>
+        <Grid item sm={12} md={4} xl={3}>
           <div className="big-widget" style={{ paddingBottom: "25px" }}>
             <h2>Documents Control</h2>
-            <p>Search for a documents</p>
+            <p>Manage the documents</p>
             <br />
             <Grid container spacing={3}>
-              <Grid item xs={12} md={3}>
-                <FormControl fullWidth>
-                  <InputLabel id="programme-select-label">Programme</InputLabel>
-                  <Select
-                    id="form-programme"
-                    labelId="programme-select-label"
-                    value={programme}
-                    label="Programme"
-                    onChange={(e) => {
-                      setProgramme(e.target.value);
-                    }}
-                  >
-                    {programmes.map((programme) =>
-                      programme.id === -1 ? (
-                        <MenuItem disabled={true} key={programme.id} value={programme.id}>
-                          {programme.name}
-                        </MenuItem>
-                      ) : (
-                        <MenuItem key={programme.id} value={programme.id}>
-                          {programme.name}
-                        </MenuItem>
-                      )
-                    )}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} md={3}>
-                <TextField value={number} onChange={(e) => setNumber(e.target.value)} id="form-number" fullWidth label="Documents Number" variant="outlined" />
-              </Grid>
-              <Grid item xs={12} md={3}>
-                <Button fullWidth variant="outlined" sx={{ padding: "15px 30px" }} onClick={(e) => handleSearch(e)}>
-                  Search
-                </Button>
-              </Grid>
-              <Grid item xs={12} md={3}>
-                <Button color="error" fullWidth variant="outlined" sx={{ padding: "15px 30px" }} onClick={(e) => handleClearSearch(e)}>
-                  Clear
+              <Grid item xs={12} md={12}>
+                <Button fullWidth variant="outlined" sx={{ padding: "15px 30px" }} onClick={() => handleDownloadAll()}>
+                  Download All
                 </Button>
               </Grid>
             </Grid>
           </div>
         </Grid>
-        <Grid item sm={12} md={4} xl={6}>
+        <Grid item sm={12} md={8} xl={9}>
           <div
             style={{
               backgroundImage: `url(${process.env.PUBLIC_URL}/banner/banner` + 5 + ".jpg)",
@@ -252,9 +178,11 @@ export default function DocumentsAdmin(props) {
                 title={tableTitle}
                 rows={rows}
                 headCells={headCells}
-                colNames={["id", "campus", "number", "building", "capacity"]}
+                colNames={["id", "name", "path", "status"]}
+                isDownloadable={true}
                 handleEdit={handleEdit}
                 handleDelete={handleDelete}
+                handleDownload={handleDownload}
               />
             </div>
           </div>
@@ -288,7 +216,7 @@ export default function DocumentsAdmin(props) {
             boxShadow: 12,
           }}
         >
-          <DocumentsForm closeHandler={handleCloseModal} documents={documents} />
+          <DocumentsForm closeHandler={handleCloseModal} document={documents} />
         </DialogContent>
       </Dialog>
     </>

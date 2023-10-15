@@ -69,7 +69,13 @@ export function decodeToken(token) {
 }
 
 export function subtractTime(date_now, date_future) {
-    let delta = Math.abs(date_future - date_now);
+    let isNegative = false;
+    let delta = date_future - date_now
+    if (delta < 0) {
+        isNegative = true;
+        delta = Math.abs(delta)
+    }
+
     let days = Math.floor(delta / 86400);
     delta -= days * 86400;
     let hours = Math.floor(delta / 3600) % 24;
@@ -82,7 +88,7 @@ export function subtractTime(date_now, date_future) {
     str += days > 0 ? days + " days, " : ""
     str += hours > 0 ? hours + " hours, " : ""
     str += minutes + " minutes"
-    return str
+    return isNegative ? "-" + str : str
 }
 
 export const getDeviceType = () => {

@@ -8,6 +8,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import PeopleIcon from '@mui/icons-material/People';
+import DownloadIcon from "@mui/icons-material/Download"
 
 export default function EnhancedTableToolbar(props) {
     const { numSelected, selected, title } = props;
@@ -83,6 +84,15 @@ export default function EnhancedTableToolbar(props) {
                                 <Tooltip title="View Students List">
                                     <IconButton onClick={() => props.handleSeachStudents(selected[0])}>
                                         <PeopleIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </> : <></>
+                    }{
+                        props.isDownloadable ?
+                            <>
+                                <Tooltip>
+                                    <IconButton onClick={() => props.handleDownload(selected[0])}>
+                                        <DownloadIcon />
                                     </IconButton>
                                 </Tooltip>
                             </> : <></>

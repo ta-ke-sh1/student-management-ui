@@ -37,8 +37,8 @@ export default function ParticipantsWidget(props) {
                     <div className="programme-list">
                         {
                             props.firstClick ? <CustomTable
-                                handleAddEntry={props.handleAddParticipant}
-                                title={"Campus"}
+                                handleAddEntry={props.handleAddEntry}
+                                title={"Participants List"}
                                 rows={props.participants}
                                 headCells={headCells}
                                 colNames={[

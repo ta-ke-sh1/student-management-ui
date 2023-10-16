@@ -28,6 +28,7 @@ const headCells = [
     },
 ];
 
+
 export default function ScheduleWidget(props) {
     return (
         <Grid
@@ -36,8 +37,8 @@ export default function ScheduleWidget(props) {
                 <div className="big-widget">
                     <div className="programme-list">
                         <CustomTable
-                            handleAddEntry={props.handleAddSchedule}
-                            title={"Campus"}
+                            handleAddEntry={props.handleAddEntry}
+                            title={"Schedules"}
                             rows={props.schedules}
                             headCells={headCells}
                             colNames={[

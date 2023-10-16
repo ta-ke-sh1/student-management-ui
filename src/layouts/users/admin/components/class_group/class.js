@@ -17,6 +17,9 @@ import GroupWidget from "./widgets/groupWidget";
 import axios from "axios";
 import GroupForm from "./forms/groupForm";
 import ParticipantsWidget from "./widgets/participantsWidget";
+import ScheduleWidget from "./widgets/scheduleWidget";
+import ScheduleListForm from "./scheduleListForm";
+import ParticipantsForm from "./participantsForm";
 
 export default function FGWClass() {
 
@@ -62,6 +65,10 @@ export default function FGWClass() {
     const [term, setTerm] = useState("");
 
     const [participants, setParticipants] = useState([]);
+    const [schedules, setSchedules] = useState([{ id: 1 }]);
+
+    const [participant, setParticipant] = useState({})
+    const [schedule, setSchedule] = useState({})
 
     const terms = [
         {
@@ -83,6 +90,8 @@ export default function FGWClass() {
     ];
 
     const [openGroupModal, setOpenGroupModal] = useState(false);
+    const [openParticipantsModal, setOpenParticipantsModal] = useState(false)
+    const [openScheduleModal, setOpenScheduleModal] = useState(false)
 
     const [group, setGroup] = useState(null)
     const [groups, setGroups] = useState([
@@ -121,7 +130,7 @@ export default function FGWClass() {
     const [dialogTitle, setDialogTitle] = useState("");
     const [dialogContent, setDialogContent] = useState("");
 
-    const [firstClick, setFirstClick] = useState(false);
+    const [firstClick, setFirstClick] = useState(true);
 
     const [open, setOpen] = useState(false);
 
@@ -143,12 +152,19 @@ export default function FGWClass() {
     };
 
     const handleOpenGroupModal = (e) => {
-
         setOpenGroupModal(true)
     }
 
     const handleCloseGroupFormModal = () => {
         setOpenGroupModal(false)
+    }
+
+    const handleCloseScheduleFormModal = () => {
+        setOpenScheduleModal(false)
+    }
+
+    const handleCloseParticipantFormModal = () => {
+        setOpenParticipantsModal(false)
     }
 
     const fetchDataFromArrayUsingId = (data, id) => {
@@ -163,13 +179,25 @@ export default function FGWClass() {
 
     }
 
-    const handleSeachParticipants = async (id) => {
+    const handleSearchParticipants = async (id) => {
         let data = fetchDataFromArrayUsingId(groups, id)
         console.log(data)
         await axios.get(process.env.REACT_APP_HOST_URL + "/semester/participants?id=" + id + "&programme=" + data.programme + "&term=" + data.term + "&department=" + data.department).then((res) => {
             console.log(res.data)
             if (res.data.status) {
                 setParticipants(res.data.data ?? [])
+            }
+        })
+        setFirstClick(true);
+    }
+
+    const handleSearchSchedules = async (id) => {
+        let data = fetchDataFromArrayUsingId(groups, id)
+        console.log(data)
+        await axios.get(process.env.REACT_APP_HOST_URL + "/semester/participants?id=" + id + "&programme=" + data.programme + "&term=" + data.term + "&department=" + data.department).then((res) => {
+            console.log(res.data)
+            if (res.data.status) {
+                setSchedules(res.data.data ?? [])
             }
         })
         setFirstClick(true);
@@ -290,7 +318,7 @@ export default function FGWClass() {
                                     </Select>
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid item xs={12} md={3}>
                                 <Button
                                     fullWidth
                                     variant="outlined"
@@ -299,7 +327,25 @@ export default function FGWClass() {
                                     Search
                                 </Button>
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid item xs={12} md={3}>
+                                <Button
+                                    fullWidth
+                                    variant="outlined"
+                                    sx={{ padding: "15px 30px" }}
+                                    onClick={(e) => handleSearchGroup(e)}>
+                                    Schedule
+                                </Button>
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <Button
+                                    fullWidth
+                                    variant="outlined"
+                                    sx={{ padding: "15px 30px" }}
+                                    onClick={(e) => handleSearchGroup(e)}>
+                                    Participants
+                                </Button>
+                            </Grid>
+                            <Grid item xs={12} md={3}>
                                 <Button
                                     color="error"
                                     fullWidth
@@ -327,7 +373,8 @@ export default function FGWClass() {
                 </Grid>
                 <Grid item sm={12} md={12}>
                     <GroupWidget
-                        handleSeachStudents={handleSeachParticipants}
+                        handleSearchSchedule={handleSearchSchedules}
+                        handleSearchStudents={handleSearchParticipants}
                         handleAddEntry={() => { handleOpenGroupModal(); }}
                         groups={groups}
                         programme={programme}
@@ -335,9 +382,15 @@ export default function FGWClass() {
                         term={term + "-" + year.toString().substr(2, 2)} />
                 </Grid>
                 <Grid item sm={12} md={12}>
+                    <ScheduleWidget
+                        handleAddEntry={() => { setOpenScheduleModal(true) }}
+                        firstClick={firstClick}
+                        schedules={schedules} />
+                </Grid>
+                <Grid item sm={12} md={12}>
                     <ParticipantsWidget
                         firstClick={firstClick}
-                        handleAddEntry={() => { handleOpenGroupModal(); }}
+                        handleAddEntry={() => { setOpenParticipantsModal(true) }}
                         participants={participants} />
                 </Grid>
             </Grid>
@@ -375,6 +428,34 @@ export default function FGWClass() {
                     boxShadow: 12,
                 }}>
                     <GroupForm closeHandler={handleCloseGroupFormModal} group={group} />
+                </DialogContent>
+            </Dialog>
+
+            <Dialog
+                maxWidth="md"
+                className="modal"
+                fullWidth={true}
+                open={openScheduleModal}
+                onClose={() => setOpenScheduleModal(false)}>
+                <DialogContent sx={{
+                    bgcolor: "background.paper",
+                    boxShadow: 12,
+                }}>
+                    <ScheduleListForm closeHandler={handleCloseScheduleFormModal} schedule={schedule} />
+                </DialogContent>
+            </Dialog>
+
+            <Dialog
+                maxWidth="md"
+                className="modal"
+                fullWidth={true}
+                open={openParticipantsModal}
+                onClose={() => setOpenParticipantsModal(false)}>
+                <DialogContent sx={{
+                    bgcolor: "background.paper",
+                    boxShadow: 12,
+                }}>
+                    <ParticipantsForm closeHandler={handleCloseParticipantFormModal} participant={participant} />
                 </DialogContent>
             </Dialog>
         </ >

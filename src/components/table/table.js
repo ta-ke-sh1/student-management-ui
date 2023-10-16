@@ -88,8 +88,8 @@ export default function CustomTable(props) {
                 <EnhancedTableToolbar
                     isDownloadable={props.isDownloadable}
                     isCampusControl={props.isCampusControl}
-                    handleSeachSchedule={props.handleSeachSchedule}
-                    handleSeachStudents={props.handleSeachStudents}
+                    handleSearchSchedules={props.handleSearchSchedules}
+                    handleSearchStudents={props.handleSearchStudents}
                     handleGetSelected={props.handleGetSelected}
                     additionalTools={props.additionalTools}
                     handleAddEntry={props.handleAddEntry}
@@ -101,83 +101,84 @@ export default function CustomTable(props) {
                     selected={selected}
                 />
                 {
-                    visibleRows.length > 0 ? <><TableContainer>
-                        <Table
-                            wrapperStyle={{
-                                maxHeight: "30vh",
-                            }}
-                            aria-labelledby="tableTitle"
-                            size={"medium"}>
-                            <EnhancedTableHead
-                                headCells={props.headCells}
-                                numSelected={selected.length}
-                                order={order}
-                                orderBy={orderBy}
-                                onSelectAllClick={handleSelectAllClick}
-                                onRequestSort={handleRequestSort}
-                                rowCount={props.rows.length}
-                            />
-                            <TableBody>
-                                {visibleRows.map((row, index) => {
-                                    const isItemSelected = isSelected(row.id);
-                                    const labelId = `enhanced-table-checkbox-${index}`;
-                                    return (
-                                        <TableRow
-                                            hover
-                                            onClick={(event) =>
-                                                handleClick(event, row.id)
-                                            }
-                                            role="checkbox"
-                                            aria-checked={isItemSelected}
-                                            tabIndex={-1}
-                                            key={row.id}
-                                            selected={isItemSelected}
-                                            sx={{
-                                                cursor: "pointer",
-                                                maxHeight: "20px",
-                                                overflowY: "auto",
-                                            }}>
-                                            <TableCell padding="checkbox">
-                                                <Checkbox
-                                                    color="primary"
-                                                    checked={isItemSelected}
-                                                    inputProps={{
-                                                        "aria-labelledby": labelId,
-                                                    }}
-                                                />
-                                            </TableCell>
-                                            {props.colNames.map((col, index) => {
-                                                return index === 0 ? (
-                                                    <TableCell
-                                                        key={
-                                                            "row-" +
-                                                            props.colNames[index]
-                                                        }
-                                                        component="th"
-                                                        id={labelId}
-                                                        scope="row"
-                                                        padding="none">
-                                                        {row[props.colNames[index]]}
-                                                    </TableCell>
-                                                ) : (
-                                                    <TableCell
-                                                        key={
-                                                            "row-" +
-                                                            props.colNames[index]
-                                                        }
-                                                        align="right">
-                                                        {row[
-                                                            props.colNames[index]
-                                                        ] ?? "N/A"}
-                                                    </TableCell>
-                                                );
-                                            })}
-                                        </TableRow>
-                                    );
-                                })}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                    visibleRows.length > -1 ? <>
+                        <TableContainer>
+                            <Table
+                                wrapperStyle={{
+                                    maxHeight: "30vh",
+                                }}
+                                aria-labelledby="tableTitle"
+                                size={"medium"}>
+                                <EnhancedTableHead
+                                    headCells={props.headCells}
+                                    numSelected={selected.length}
+                                    order={order}
+                                    orderBy={orderBy}
+                                    onSelectAllClick={handleSelectAllClick}
+                                    onRequestSort={handleRequestSort}
+                                    rowCount={props.rows.length}
+                                />
+                                <TableBody>
+                                    {visibleRows.map((row, index) => {
+                                        const isItemSelected = isSelected(row.id);
+                                        const labelId = `enhanced-table-checkbox-${index}`;
+                                        return (
+                                            <TableRow
+                                                hover
+                                                onClick={(event) =>
+                                                    handleClick(event, row.id)
+                                                }
+                                                role="checkbox"
+                                                aria-checked={isItemSelected}
+                                                tabIndex={-1}
+                                                key={row.id}
+                                                selected={isItemSelected}
+                                                sx={{
+                                                    cursor: "pointer",
+                                                    maxHeight: "20px",
+                                                    overflowY: "auto",
+                                                }}>
+                                                <TableCell padding="checkbox">
+                                                    <Checkbox
+                                                        color="primary"
+                                                        checked={isItemSelected}
+                                                        inputProps={{
+                                                            "aria-labelledby": labelId,
+                                                        }}
+                                                    />
+                                                </TableCell>
+                                                {props.colNames.map((col, index) => {
+                                                    return index === 0 ? (
+                                                        <TableCell
+                                                            key={
+                                                                "row-" +
+                                                                props.colNames[index]
+                                                            }
+                                                            component="th"
+                                                            id={labelId}
+                                                            scope="row"
+                                                            padding="none">
+                                                            {row[props.colNames[index]]}
+                                                        </TableCell>
+                                                    ) : (
+                                                        <TableCell
+                                                            key={
+                                                                "row-" +
+                                                                props.colNames[index]
+                                                            }
+                                                            align="right">
+                                                            {row[
+                                                                props.colNames[index]
+                                                            ] ?? "N/A"}
+                                                        </TableCell>
+                                                    );
+                                                })}
+                                            </TableRow>
+                                        );
+                                    })}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
                         <TablePagination
                             rowsPerPageOptions={[4, 8, 12]}
                             component="div"
@@ -186,7 +187,12 @@ export default function CustomTable(props) {
                             page={page}
                             onPageChange={handleChangePage}
                             onRowsPerPageChange={handleChangeRowsPerPage}
-                        /></> : <h3>Empty data, please add some!</h3>
+                        /></> :
+                        <div style={{
+                            marginLeft: '15px'
+                        }}>
+                            <h3>Empty data, please add some!</h3>
+                        </div>
                 }
 
             </Box>

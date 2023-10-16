@@ -112,8 +112,8 @@ export default function GroupWidget(props) {
                     ) : (
                         <CustomTable
                             isCampusControl={true}
-                            handleSeachSchedule={props.handleSeachSchedule}
-                            handleSeachStudents={props.handleSeachStudents}
+                            handleSearchSchedule={props.handleSearchSchedule}
+                            handleSearchStudents={props.handleSearchStudents}
                             handleGetSelected={props.handleGetSelected}
                             getSelectedId={props.getSelectedId}
                             additionalTools={props.additionalTools}

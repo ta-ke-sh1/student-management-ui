@@ -1,4 +1,4 @@
-export default function ParticipantsForm(props) {
+export default function Attendance(props) {
     return (
         <>
             <h1>Hello world</h1>

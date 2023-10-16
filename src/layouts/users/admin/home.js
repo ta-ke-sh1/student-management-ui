@@ -15,10 +15,10 @@ import UsersAdmin from "./components/user/user";
 import SubjectsAdmin from "./components/subject/subjects";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
 import FGWClass from "./components/class_group/class";
-import ScheduleAdmin from "./components/schedules/schedule";
 import GradeAdmin from "./components/grades/grade";
 import DocumentsAdmin from "./components/documents/documents";
 import RequestAdmin from "./components/requests/request";
+import Attendance from "./components/attendance/attendance";
 
 const drawerWidth = 240;
 
@@ -74,15 +74,11 @@ export default function AdminHome() {
           icon: <CalendarMonthIcon />,
         },
         {
-          name: "Schedules",
+          name: "Attendance",
           id: 3,
           icon: <CalendarMonthIcon />,
         },
-        {
-          name: "Assignments",
-          id: 4,
-          icon: <CalendarMonthIcon />,
-        },
+
       ],
     },
     {
@@ -90,16 +86,22 @@ export default function AdminHome() {
       tabs: [
         {
           name: "Subjects",
-          id: 5,
+          id: 4,
           icon: <BookmarksIcon />,
         },
+        {
+          name: "Assignments",
+          id: 5,
+          icon: <CalendarMonthIcon />,
+        },
+
       ],
     },
     {
       title: "Others",
       tabs: [
         {
-          name: "Regulations & Forms",
+          name: "Documents",
           id: 6,
           icon: <BookmarksIcon />,
         },
@@ -112,7 +114,7 @@ export default function AdminHome() {
     },
   ];
 
-  const components = [<CampusAdmin />, <UsersAdmin />, <FGWClass />, <ScheduleAdmin />, <GradeAdmin />, <SubjectsAdmin />, <DocumentsAdmin />, <RequestAdmin />];
+  const components = [<CampusAdmin />, <UsersAdmin />, <FGWClass />, <Attendance />, <SubjectsAdmin />, <GradeAdmin />, <DocumentsAdmin />, <RequestAdmin />];
 
   const drawer = (
     <div className="drawer">
@@ -120,12 +122,12 @@ export default function AdminHome() {
       {nav_tabs.map((tab) => {
         return (
           <>
-            <h3>{tab.title}</h3>
+            <h3 style={{ marginBottom: '10px' }}>{tab.title}</h3>
             {tab.tabs.map((tab) => (
               <>
                 <ListItem
                   sx={{
-                    padding: "5px 10px",
+                    padding: "0px 10px",
                   }}
                   key={tab.name}
                   onClick={() => {

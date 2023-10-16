@@ -18,8 +18,8 @@ import axios from "axios";
 import GroupForm from "./forms/groupForm";
 import ParticipantsWidget from "./widgets/participantsWidget";
 import ScheduleWidget from "./widgets/scheduleWidget";
-import ScheduleListForm from "./scheduleListForm";
-import ParticipantsForm from "./participantsForm";
+import ScheduleListForm from "./forms/scheduleForm";
+import ParticipantsForm from "./forms/participantsForm";
 
 export default function FGWClass() {
 
@@ -432,7 +432,6 @@ export default function FGWClass() {
             </Dialog>
 
             <Dialog
-                maxWidth="md"
                 className="modal"
                 fullWidth={true}
                 open={openScheduleModal}

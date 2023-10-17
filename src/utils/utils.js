@@ -1,6 +1,18 @@
 import moment from "moment";
 import jwt_decode from "jwt-decode";
 
+export function getAllKeys(object) {
+    return Object.keys(object)
+}
+
+export function getAllHeaderColumns(headCells) {
+    let keys = []
+    headCells.forEach((header) => {
+        keys.push(header.id)
+    })
+    return keys
+}
+
 export const host_url = "https://tch2202.onrender.com";
 
 export const convertSecondsToTime = (input) => {

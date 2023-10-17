@@ -43,7 +43,7 @@ export default function AdminHome() {
   const _container = window !== undefined ? () => window.document.body : undefined;
 
   const [mobileOpen, setMobileOpen] = useState(true);
-  const [current, setCurrent] = useState(2);
+  const [current, setCurrent] = useState(3);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);

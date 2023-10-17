@@ -160,7 +160,7 @@ export default function DocumentsAdmin(props) {
         <Grid item sm={12} md={8} xl={9}>
           <div
             style={{
-              backgroundImage: `url(${process.env.PUBLIC_URL}/banner/banner` + 5 + ".jpg)",
+              backgroundImage: `url(${process.env.PUBLIC_URL}/banner/banner` + 2 + ".jpg)",
               width: "100%",
               height: "225px",
               borderRadius: "10px",

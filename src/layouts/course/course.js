@@ -23,6 +23,8 @@ import axios from "axios";
 
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import ScheduleTab from "./scheduleTab";
+import ParticipantsTab from "./participants.Tab";
 
 const drawerWidth = 240;
 
@@ -57,7 +59,7 @@ export default function CourseUser() {
         window !== undefined ? () => window.document.body : undefined;
     const [mobileOpen, setMobileOpen] = useState(true);
     // const { courseData } = useFetchCourses("test");
-    const [current, setCurrent] = useState(0);
+    const [current, setCurrent] = useState(1);
 
     const [openCourseworkModal, setOpenCourseworkModal] = useState(false)
     const [openMaterialModal, setOpenMaterialModal] = useState(false)
@@ -101,7 +103,9 @@ export default function CourseUser() {
     }
 
     const components = [
-        <CourseworkTab decoded={decoded} course={course} handleOpenCourseworkModal={handleOpenCourseworkModal} handleOpenMaterialModal={handleOpenMaterialModal} />
+        <CourseworkTab decoded={decoded} course={course} handleOpenCourseworkModal={handleOpenCourseworkModal} handleOpenMaterialModal={handleOpenMaterialModal} />,
+        <ScheduleTab />,
+        <ParticipantsTab />
     ]
 
     const handleDrawerToggle = () => {
@@ -118,7 +122,7 @@ export default function CourseUser() {
                     icon: <GradingIcon />,
                 },
                 {
-                    name: "Attendance",
+                    name: "Schedule",
                     id: 1,
                     icon: <EventNoteIcon />,
                 },

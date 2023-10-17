@@ -39,6 +39,10 @@ export const fromMilisecondsToDateString = (milisecondsSinceEpoch) => {
     return moment(milisecondsSinceEpoch).format("DD MMM YYYY HH:mm:ss");
 };
 
+export const fromMilisecondsToDisplayFormatDateString = (milisecondsSinceEpoch) => {
+    return moment(milisecondsSinceEpoch).format("DD MMM YYYY");
+}
+
 export const fromMilisecondsToDate = (milisecondsSinceEpoch) => {
     const date = new Date(milisecondsSinceEpoch * 1000);
     return date.toUTCString();

@@ -29,37 +29,6 @@ function createData(id, campus, building, number, capacity) {
     };
 }
 
-const rooms = [
-    { id: "Room-HN-100", campus: "HN", room: "100", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-101", campus: "HN", room: "101", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-102", campus: "HN", room: "102", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-103", campus: "HCM", room: "103", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-104", campus: "HN", room: "104", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-105", campus: "HN", room: "105", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-106", campus: "HN", room: "106", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-107", campus: "HN", room: "107", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-108", campus: "HN", room: "108", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-109", campus: "DN", room: "109", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-110", campus: "HN", room: "110", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-111", campus: "DN", room: "111", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-112", campus: "HN", room: "112", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-113", campus: "HN", room: "113", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-114", campus: "HN", room: "114", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-407", campus: "CT", room: "407", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-408", campus: "CT", room: "408", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-409", campus: "HN", room: "409", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-410", campus: "HN", room: "410", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-411", campus: "HN", room: "411", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-412", campus: "HN", room: "412", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-413", campus: "HN", room: "413", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-414", campus: "HCM", room: "414", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-415", campus: "HCM", room: "415", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-416", campus: "HCM", room: "416", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-417", campus: "HN", room: "417", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-418", campus: "DN", room: "418", building: "Pham Van Bach", capacity: 100 },
-    { id: "Room-HN-419", campus: "HN", room: "419", building: "Pham Van Bach", capacity: 100 },
-];
-
 const headCells = [
     {
         id: "name",
@@ -139,14 +108,17 @@ export default function CampusAdmin() {
     }, []);
 
     const fetchRows = () => {
-        let res = [];
-        rooms.forEach((room) => {
-            res.push(
-                createData(room.id, room.campus, room.building, room.room, room.capacity)
-            );
-        });
-        setRows(res);
-        setRowData(res);
+        let result = [];
+        axios.get(process.env.REACT_APP_HOST_URL + "/campus/rooms").then((res) => {
+            res.data.data.forEach((room) => {
+                result.push(
+                    createData(room.id, room.campus, room.building, room.room, room.capacity)
+                );
+            });
+            console.log(res.data)
+            setRows(result);
+            setRowData(result);
+        })
     };
 
     const fetchRoom = (id) => {

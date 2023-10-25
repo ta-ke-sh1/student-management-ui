@@ -14,6 +14,10 @@ import { DatePicker, DesktopDatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import UserForm from "./userForm";
 import axios from "axios";
+import Constants from "../../../../../utils/constants";
+import UserSearch from "./userSearch";
+import { ToastContainer, toast } from "react-toastify";
+import { getAllHeaderColumns } from "../../../../../utils/utils";
 
 function createData(id, role, firstName, lastName, dob, phone, status, department_id, email, password, city, district, ward, address) {
   return {
@@ -120,29 +124,7 @@ const headCells = [
 ];
 
 export default function UsersAdmin() {
-  let departments = [
-    {
-      id: "GBH",
-      name: "Business",
-    },
-    {
-      id: "GCH",
-      name: "Computing",
-    },
-    {
-      id: "GDH",
-      name: "Design",
-    },
-    {
-      id: "GFH",
-      name: "Finance",
-    },
-    {
-      id: "GMH",
-      name: "Marketing",
-    },
-  ];
-
+  const constants = new Constants();
   const [user, setUser] = useState({});
 
   const [id, setId] = useState("");
@@ -241,29 +223,6 @@ export default function UsersAdmin() {
     console.log(index);
   };
 
-  const handleConfirm = (e) => {
-    e.preventDefault();
-    let user = {
-      id: id,
-      role: auth,
-      firstName: firstName,
-      lastName: lastName,
-      dob: dayjs(dob),
-      phone: phone,
-      status: status,
-      department_id: department,
-      email: email,
-      password: password,
-    };
-
-    if (id === "" || auth === "" || firstName === "" || lastName === "" || dob === "" || phone === "" || status === "" || department === "" || email === "") return;
-
-    console.log(user);
-    setDialogTitle("Edit User information");
-    setDialogContent("Are you sure with those changes? Once saved, this change cannot be undone");
-    setOpen(true);
-  };
-
   const handleClose = () => {
     setOpen(false);
   };
@@ -302,7 +261,8 @@ export default function UsersAdmin() {
           <div className="big-widget" style={{ paddingBottom: "15px" }}>
             <h2>Users Control</h2>
             <p>Search for an user using the following fields</p>
-            <Grid container spacing={3}>
+            <UserSearch />
+            {/* <Grid container spacing={3}>
               <Grid item xs={12} md={3}>
                 <FormControl fullWidth>
                   <InputLabel id="auth-select-label">Auth Level</InputLabel>
@@ -356,7 +316,7 @@ export default function UsersAdmin() {
                       setDepartment(e.target.value);
                     }}
                   >
-                    {departments.map((department) => (
+                    {constants.departments.map((department) => (
                       <MenuItem key={department.id} value={department.id}>
                         {department.name}
                       </MenuItem>
@@ -388,7 +348,7 @@ export default function UsersAdmin() {
                   Clear
                 </Button>
               </Grid>
-            </Grid>
+            </Grid> */}
           </div>
         </Grid>
         <Grid item sm={12} md={4}>
@@ -413,7 +373,7 @@ export default function UsersAdmin() {
                 title="Admins"
                 rows={rowsAdmin}
                 headCells={headCells}
-                colNames={["id", "department_id", "email", "role", "firstName", "lastName", "dob", "phone", "status", "city", "district", "ward", "address"]}
+                colNames={getAllHeaderColumns(headCells)}
                 handleEdit={handleEditAdmin}
                 handleDelete={handleDelete}
               />
@@ -431,7 +391,7 @@ export default function UsersAdmin() {
                 title="Lecturers"
                 rows={rowsLecturers}
                 headCells={headCells}
-                colNames={["id", "department_id", "email", "role", "firstName", "lastName", "dob", "phone", "status", "city", "district", "ward", "address"]}
+                colNames={getAllHeaderColumns(headCells)}
                 handleEdit={handleEditLecturer}
                 handleDelete={handleDelete}
               />
@@ -449,7 +409,7 @@ export default function UsersAdmin() {
                 title="Students"
                 rows={rowsStudents}
                 headCells={headCells}
-                colNames={["id", "department_id", "email", "role", "firstName", "lastName", "dob", "phone", "status", "city", "district", "ward", "address"]}
+                colNames={getAllHeaderColumns(headCells)}
                 handleEdit={handleEditStudent}
                 handleDelete={handleDelete}
               />

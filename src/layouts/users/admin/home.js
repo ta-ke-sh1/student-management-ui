@@ -43,7 +43,7 @@ export default function AdminHome() {
   const _container = window !== undefined ? () => window.document.body : undefined;
 
   const [mobileOpen, setMobileOpen] = useState(true);
-  const [current, setCurrent] = useState(3);
+  const [current, setCurrent] = useState(5);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -78,7 +78,6 @@ export default function AdminHome() {
           id: 3,
           icon: <CalendarMonthIcon />,
         },
-
       ],
     },
     {
@@ -90,11 +89,10 @@ export default function AdminHome() {
           icon: <BookmarksIcon />,
         },
         {
-          name: "Assignments",
+          name: "Grades",
           id: 5,
           icon: <CalendarMonthIcon />,
         },
-
       ],
     },
     {
@@ -122,7 +120,7 @@ export default function AdminHome() {
       {nav_tabs.map((tab) => {
         return (
           <>
-            <h3 style={{ marginBottom: '10px' }}>{tab.title}</h3>
+            <h3 style={{ marginBottom: "10px" }}>{tab.title}</h3>
             {tab.tabs.map((tab) => (
               <>
                 <ListItem

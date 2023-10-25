@@ -11,13 +11,14 @@ import DialogTitle from "@mui/material/DialogTitle";
 import axios from "axios";
 import DocumentsForm from "./documentsForm";
 import { programmes } from "../../mockData/mock";
+import { ToastContainer, toast } from "react-toastify";
 
 function createData(id, name, path, status) {
   return {
     id,
     name,
     path,
-    status
+    status,
   };
 }
 
@@ -73,16 +74,15 @@ export default function DocumentsAdmin(props) {
   }, []);
 
   const fetchRows = () => {
-
     axios.get(process.env.REACT_APP_HOST_URL + "/document").then((res) => {
       if (res.data.status) {
-        let data = res.data.data
-        setRowData(data)
-        setRows(data)
+        let data = res.data.data;
+        setRowData(data);
+        setRows(data);
       } else {
-        console.log("Error!")
+        console.log("Error!");
       }
-    })
+    });
   };
 
   const fetchDocuments = (id) => {
@@ -118,7 +118,6 @@ export default function DocumentsAdmin(props) {
     });
   };
 
-
   const handleClose = () => {
     setOpen(false);
   };
@@ -133,12 +132,10 @@ export default function DocumentsAdmin(props) {
   };
 
   const handleDownload = (e) => {
-    console.log(e)
-  }
+    console.log(e);
+  };
 
-  const handleDownloadAll = () => {
-
-  }
+  const handleDownloadAll = () => {};
 
   return (
     <>

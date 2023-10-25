@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { Grid, Hidden, IconButton, Tooltip } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
+import { ToastContainer, toast } from "react-toastify";
 
 export default function PersonalInfo(props) {
     let user = {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { TextField, Select, MenuItem, InputLabel, FormControl, Button, Grid } from "@mui/material";
 import CustomTable from "../../../../../components/table/table";
 
@@ -9,17 +9,16 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
 import axios from "axios";
-import GradeForm from "./gradeForm";
+import ScheduleForm from "./scheduleForm";
 import { programmes } from "../../mockData/mock";
 import { ToastContainer, toast } from "react-toastify";
-import APIRequests, { useFetchRequests } from "../../../../../api/apiFunctions";
 
-const grades = [
-  { id: "Grade-HN-100", campus: "HN", grade: "100", building: "Pham Van Bach", capacity: 100 },
-  { id: "Grade-HN-101", campus: "HN", grade: "101", building: "Pham Van Bach", capacity: 100 },
-  { id: "Grade-HN-102", campus: "HN", grade: "102", building: "Pham Van Bach", capacity: 100 },
-  { id: "Grade-HN-103", campus: "HCM", grade: "103", building: "Pham Van Bach", capacity: 100 },
-  { id: "Grade-HN-419", campus: "HN", grade: "419", building: "Pham Van Bach", capacity: 100 },
+const schedules = [
+  { id: "Schedule-HN-100", campus: "HN", schedule: "100", building: "Pham Van Bach", capacity: 100 },
+  { id: "Schedule-HN-101", campus: "HN", schedule: "101", building: "Pham Van Bach", capacity: 100 },
+  { id: "Schedule-HN-102", campus: "HN", schedule: "102", building: "Pham Van Bach", capacity: 100 },
+  { id: "Schedule-HN-103", campus: "HCM", schedule: "103", building: "Pham Van Bach", capacity: 100 },
+  { id: "Schedule-HN-419", campus: "HN", schedule: "419", building: "Pham Van Bach", capacity: 100 },
 ];
 
 const headCells = [
@@ -27,7 +26,7 @@ const headCells = [
     id: "name",
     numeric: false,
     disablePadding: true,
-    label: "Grade Id",
+    label: "Schedule Id",
   },
   {
     id: "campus",
@@ -39,7 +38,7 @@ const headCells = [
     id: "number",
     numeric: true,
     disablePadding: false,
-    label: "Grade Number",
+    label: "Schedule Number",
   },
   {
     id: "building",
@@ -55,54 +54,62 @@ const headCells = [
   },
 ];
 
-const searchType = [];
-
-export default function GradeAdmin(props) {
-  const { data } = useFetchRequests("https://jsonplaceholder.typicode.com/todos/");
-
+export default function ScheduleAdmin(props) {
   const [campus, setCampus] = useState("HN");
-  // Campus grade data
-  const [rowData, setRowData] = useState(data);
-  const [rows, setRows] = useState(data);
+
+  // Campus schedule data
+  const [rowData, setRowData] = useState([]);
+  const [rows, setRows] = useState([]);
+
   const [number, setNumber] = useState("");
-  // Selected grade state for editing
-  const [grade, setGrade] = useState({});
-  const [searchType, setSearchType] = useState("");
-  const [group, setGroup] = useState("");
-  const [grade_id, setGradeId] = useState("");
-  const [year, setYear] = useState("2023");
-  const [semester, setSemester] = useState("");
+
+  // Selected schedule state for editing
+  const [schedule, setSchedule] = useState({});
+
+  const [programme, setProgramme] = useState("");
+
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogContent, setDialogContent] = useState("");
+
   const [open, setOpen] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+
   const [selected, setSelected] = useState([]);
-  const [tableTitle, setTableTitle] = useState("All Grades");
+
+  const [tableTitle, setTableTitle] = useState("All Schedules");
 
   useEffect(() => {
-    setRows(data);
-    setRowData(data);
-  }, [data]);
+    fetchRows();
+  }, []);
 
-  const fetchGrade = (id) => {
+  const fetchRows = () => {
+    let res = [];
+    schedules.forEach((schedule) => {
+      res.push(schedule);
+    });
+    setRows(res);
+    setRowData(res);
+  };
+
+  const fetchSchedule = (id) => {
     return rows.find((row) => row.id === id);
   };
 
   const handleEdit = (id) => {
-    let grade = fetchGrade(id);
-    setGrade({
-      id: grade.id,
-      campus: grade.campus,
-      building: grade.building,
-      number: grade.number,
-      capacity: grade.capacity,
+    let schedule = fetchSchedule(id);
+    setSchedule({
+      id: schedule.id,
+      campus: schedule.campus,
+      building: schedule.building,
+      number: schedule.number,
+      capacity: schedule.capacity,
     });
     setOpenModal(true);
   };
 
   const handleDelete = (index) => {
-    setDialogTitle("Delete Grade");
-    setDialogContent("This grade will be deleted, are you sure? This change cannot be undone");
+    setDialogTitle("Delete Schedule");
+    setDialogContent("This schedule will be deleted, are you sure? This change cannot be undone");
     setOpen(true);
     setSelected(index);
     console.log(index);
@@ -117,7 +124,7 @@ export default function GradeAdmin(props) {
     }
 
     console.log(query);
-    axios.delete(process.env.REACT_APP_HOST_URL + "/campus/grade?q=" + query).then((res) => {
+    axios.delete(process.env.REACT_APP_HOST_URL + "/campus/schedule?q=" + query).then((res) => {
       console.log(res);
       setOpen(false);
     });
@@ -131,7 +138,7 @@ export default function GradeAdmin(props) {
     query += campus;
 
     if (number !== "") {
-      query += " / Grade number: " + number;
+      query += " / Schedule number: " + number;
       searchResult = rowData.filter((r) => r.campus === campus && r.number === number);
     }
 
@@ -148,7 +155,7 @@ export default function GradeAdmin(props) {
     setRows(rowData);
     setCampus("HN");
     setNumber("");
-    setTableTitle("All Grades");
+    setTableTitle("All Schedules");
   };
 
   const handleClose = () => {
@@ -156,7 +163,7 @@ export default function GradeAdmin(props) {
   };
 
   const handleOpenModal = () => {
-    setGrade({});
+    setSchedule({});
     setOpenModal(true);
   };
 
@@ -169,12 +176,38 @@ export default function GradeAdmin(props) {
       <Grid container spacing={4}>
         <Grid item sm={12} md={8} xl={6}>
           <div className="big-widget" style={{ paddingBottom: "25px" }}>
-            <h2>Assignment Control</h2>
-            <p>Search for an assignment</p>
+            <h2>Schedule Control</h2>
+            <p>Search for a schedule</p>
             <br />
             <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
-                <TextField value={number} onChange={(e) => setNumber(e.target.value)} id="form-number" fullWidth label="Assignment Id" variant="outlined" />
+              <Grid item xs={12} md={3}>
+                <FormControl fullWidth>
+                  <InputLabel id="programme-select-label">Programme</InputLabel>
+                  <Select
+                    id="form-programme"
+                    labelId="programme-select-label"
+                    value={programme}
+                    label="Programme"
+                    onChange={(e) => {
+                      setProgramme(e.target.value);
+                    }}
+                  >
+                    {programmes.map((programme) =>
+                      programme.id === -1 ? (
+                        <MenuItem disabled={true} key={programme.id} value={programme.id}>
+                          {programme.name}
+                        </MenuItem>
+                      ) : (
+                        <MenuItem key={programme.id} value={programme.id}>
+                          {programme.name}
+                        </MenuItem>
+                      )
+                    )}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <TextField value={number} onChange={(e) => setNumber(e.target.value)} id="form-number" fullWidth label="Schedule Number" variant="outlined" />
               </Grid>
               <Grid item xs={12} md={3}>
                 <Button fullWidth variant="outlined" sx={{ padding: "15px 30px" }} onClick={(e) => handleSearch(e)}>
@@ -203,19 +236,17 @@ export default function GradeAdmin(props) {
         <Grid item xs={12}>
           <div className="big-widget">
             <div className="campus-list">
-              {data && (
-                <CustomTable
-                  handleAddEntry={() => {
-                    handleOpenModal();
-                  }}
-                  title={tableTitle}
-                  rows={data}
-                  headCells={headCells}
-                  colNames={["id", "campus", "number", "building", "capacity"]}
-                  handleEdit={handleEdit}
-                  handleDelete={handleDelete}
-                />
-              )}
+              <CustomTable
+                handleAddEntry={() => {
+                  handleOpenModal();
+                }}
+                title={tableTitle}
+                rows={rows}
+                headCells={headCells}
+                colNames={["id", "campus", "number", "building", "capacity"]}
+                handleEdit={handleEdit}
+                handleDelete={handleDelete}
+              />
             </div>
           </div>
         </Grid>
@@ -248,11 +279,9 @@ export default function GradeAdmin(props) {
             boxShadow: 12,
           }}
         >
-          <GradeForm closeHandler={handleCloseModal} grade={grade} />
+          <ScheduleForm closeHandler={handleCloseModal} schedule={schedule} />
         </DialogContent>
       </Dialog>
-
-      <ToastContainer />
     </>
   );
 }

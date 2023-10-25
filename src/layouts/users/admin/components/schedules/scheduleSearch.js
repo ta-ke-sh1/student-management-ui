@@ -1,24 +1,17 @@
 import { Grid, FormControl, Box, InputLabel, Select, MenuItem, Button, TextField } from "@mui/material";
 import { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
-import Constants from "../../../../../utils/constants";
-import dayjs from "dayjs";
 
-export default function UserSearch(props) {
-  const [id, setId] = useState("");
+export default function ScheduleSearch(props) {
+  const [group, setGroup] = useState("");
   const [name, setName] = useState("");
-  const [dob, setDob] = useState(dayjs(new Date()));
-  const [phone, setPhone] = useState("+84");
-  const [address, setAddress] = useState("");
-  const [department, setDepartment] = useState("");
-  const [email, setEmail] = useState("");
-
+  const [campus, setCampus] = useState("default");
   const [searchType, setSearchType] = useState(0);
 
   const searchTypes = [
     {
       index: 0,
-      id: "Id",
+      id: "Campus",
     },
     {
       index: 1,
@@ -26,76 +19,42 @@ export default function UserSearch(props) {
     },
     {
       index: 2,
-      id: "Date of Birth",
-    },
-    {
-      index: 3,
-      id: "Phone",
-    },
-    {
-      index: 4,
-      id: "Address",
-    },
-    {
-      index: 5,
-      id: "Department",
+      id: "Group",
     },
   ];
 
   const handleChangeParams = (e) => {
+    setCampus("default");
+    setGroup("");
+    setName("");
     setSearchType(e.target.value);
   };
 
-  const handleIdChange = (e) => {
-    setId(e.target.value);
+  const handleCampusChange = (e) => {
+    setCampus(e.target.value);
   };
 
-  const handlePhoneChange = (e) => {
-    setPhone(e.target.value);
+  const handleGroupChange = (e) => {
+    setGroup(e.target.value);
   };
-
-  const handleAddressChange = (e) => {
-    setAddress(e.target.value);
-  };
-
-  const handleDepartmentChange = (e) => {
-    setDepartment(e.target.value);
-  };
-
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
-
-  const handleCampusChange = (e) => {};
 
   const handleNameChange = (e) => {
     setName(e.target.value);
   };
 
-  const handleGroupChange = (e) => {};
-
-  const searchComponents = [<SearchDropdownDepartment department={department} handleChange={handleDepartmentChange} />, <SearchFieldName name={name} handleChange={handleNameChange} />];
+  const searchComponents = [<SearchDropdownCampus campus={campus} handleChange={handleCampusChange} />, <SearchFieldName name={name} handleChange={handleNameChange} />, <SearchFieldGroup group={group} handleChange={handleGroupChange} />];
 
   const handleSearch = () => {
     let query;
     switch (searchType) {
       case 0:
+        query = campus;
         break;
       case 1:
-        query = dob;
+        query = name;
         break;
-
-      case 3:
-        query = phone;
-        break;
-      case 4:
-        query = address;
-        break;
-      case 5:
-        query = department;
-        break;
-      case 6:
-        query = email;
+      case 2:
+        query = group;
         break;
       default:
         break;
@@ -113,6 +72,9 @@ export default function UserSearch(props) {
           margin: "0 auto",
         }}
       >
+        <br />
+        <br />
+        <br />
         <Grid container spacing={2}>
           <Grid item xs={12} md={12}>
             <Grid container spacing={1}>
@@ -172,42 +134,72 @@ export default function UserSearch(props) {
   );
 }
 
-function SearchDropdownDepartment(props) {
-  const constants = new Constants();
+function SearchDropdownCampus(props) {
+  const [campus, setCampus] = useState("");
+
+  let campuses = [
+    {
+      id: "HN",
+      name: "Ha Noi",
+    },
+    {
+      id: "HCM",
+      name: "Ho Chi Minh",
+    },
+    {
+      id: "DN",
+      name: "Da Nang",
+    },
+    {
+      id: "CT",
+      name: "Can Tho",
+    },
+  ];
+
   return (
     <>
-      <FormControl variant="standard" fullWidth>
-        <InputLabel id="campus-select-label-form">Campus</InputLabel>
-        <Select
-          defaultValue={props.campus ?? "HN"}
-          value={props.campus ?? "default"}
-          label="Campus"
-          MenuProps={{
-            disablePortal: true, // <--- HERE
-            onClick: (e) => {
-              e.preventDefault();
-            },
-          }}
-          onChange={props.handleChange}
-        >
-          <MenuItem value={"default"} disabled>
-            Please select a Campus
-          </MenuItem>
-          {constants.campuses.map((campus) => (
-            <MenuItem key={campus.id} value={campus.id}>
-              {campus.name}
+      <Grid item xs={12} md={12}>
+        <FormControl variant="standard" fullWidth>
+          <InputLabel id="campus-select-label-form">Campus</InputLabel>
+          <Select
+            defaultValue={props.campus ?? "HN"}
+            value={props.campus ?? "default"}
+            label="Campus"
+            MenuProps={{
+              disablePortal: true, // <--- HERE
+              onClick: (e) => {
+                e.preventDefault();
+              },
+            }}
+            onChange={props.handleChange}
+          >
+            <MenuItem value={"default"} disabled>
+              Please select a Campus
             </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+            {campuses.map((campus) => (
+              <MenuItem key={campus.id} value={campus.id}>
+                {campus.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Grid>
     </>
   );
 }
 
 function SearchFieldName(props) {
-  return <TextField onChange={props.handleChange} value={props.name ?? ""} id="form-name" fullWidth label="Name" variant="standard" />;
+  return (
+    <Grid item xs={12} md={12}>
+      <TextField onChange={props.handleChange} value={props.name ?? ""} id="form-name" fullWidth label="Name" variant="standard" />
+    </Grid>
+  );
 }
 
 function SearchFieldGroup(props) {
-  return <TextField onChange={props.handleChange} value={props.group ?? ""} id="form-name" fullWidth label="Group" variant="standard" />;
+  return (
+    <Grid item xs={12} md={12}>
+      <TextField onChange={props.handleChange} value={props.group ?? ""} id="form-name" fullWidth label="Group" variant="standard" />
+    </Grid>
+  );
 }

@@ -2,9 +2,8 @@ import { Grid, FormControl, Box, InputLabel, Select, MenuItem, Button, TextField
 import { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import Constants from "../../../../../utils/constants";
-import dayjs from "dayjs";
 
-export default function UserSearch(props) {
+export default function CampusSearch(props) {
   const [id, setId] = useState("");
   const [name, setName] = useState("");
   const [dob, setDob] = useState(dayjs(new Date()));
@@ -43,6 +42,9 @@ export default function UserSearch(props) {
   ];
 
   const handleChangeParams = (e) => {
+    setCampus("default");
+    setGroup("");
+    setName("");
     setSearchType(e.target.value);
   };
 
@@ -51,40 +53,34 @@ export default function UserSearch(props) {
   };
 
   const handlePhoneChange = (e) => {
-    setPhone(e.target.value);
+    setCampus(e.target.value);
   };
 
   const handleAddressChange = (e) => {
-    setAddress(e.target.value);
+    setGroup(e.target.value);
   };
 
   const handleDepartmentChange = (e) => {
-    setDepartment(e.target.value);
-  };
-
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
-
-  const handleCampusChange = (e) => {};
-
-  const handleNameChange = (e) => {
     setName(e.target.value);
   };
 
-  const handleGroupChange = (e) => {};
+  const handleEmailChange = (e) => {
+    setName(e.target.value);
+  };
 
-  const searchComponents = [<SearchDropdownDepartment department={department} handleChange={handleDepartmentChange} />, <SearchFieldName name={name} handleChange={handleNameChange} />];
+  const searchComponents = [<SearchDropdownDepartment campus={campus} handleChange={handleCampusChange} />, <SearchFieldName name={name} handleChange={handleNameChange} />, <SearchFieldGroup group={group} handleChange={handleGroupChange} />];
 
   const handleSearch = () => {
     let query;
     switch (searchType) {
       case 0:
+        query = campus;
         break;
       case 1:
         query = dob;
         break;
-
+      case 2:
+        query = group;
       case 3:
         query = phone;
         break;
@@ -210,4 +206,10 @@ function SearchFieldName(props) {
 
 function SearchFieldGroup(props) {
   return <TextField onChange={props.handleChange} value={props.group ?? ""} id="form-name" fullWidth label="Group" variant="standard" />;
+}
+
+function SearchField(props) {}
+
+function SearchFieldName(props) {
+  return <TextField onChange={props.handleChange} value={props.name ?? ""} id="form-name" fullWidth label="Name" variant="standard" />;
 }

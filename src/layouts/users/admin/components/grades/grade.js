@@ -12,53 +12,57 @@ import axios from "axios";
 import GradeForm from "./gradeForm";
 import { programmes } from "../../mockData/mock";
 import { ToastContainer, toast } from "react-toastify";
-import APIRequests, { useFetchRequests } from "../../../../../api/apiFunctions";
-
-const grades = [
-  { id: "Grade-HN-100", campus: "HN", grade: "100", building: "Pham Van Bach", capacity: 100 },
-  { id: "Grade-HN-101", campus: "HN", grade: "101", building: "Pham Van Bach", capacity: 100 },
-  { id: "Grade-HN-102", campus: "HN", grade: "102", building: "Pham Van Bach", capacity: 100 },
-  { id: "Grade-HN-103", campus: "HCM", grade: "103", building: "Pham Van Bach", capacity: 100 },
-  { id: "Grade-HN-419", campus: "HN", grade: "419", building: "Pham Van Bach", capacity: 100 },
-];
+import { useFetchRequests } from "../../../../../api/apiFunctions";
+import { getAllHeaderColumns } from "../../../../../utils/utils";
 
 const headCells = [
   {
-    id: "name",
+    id: "id",
     numeric: false,
     disablePadding: true,
     label: "Grade Id",
   },
   {
-    id: "campus",
+    id: "student_id",
     numeric: true,
     disablePadding: false,
-    label: "Campus",
+    label: "StudentId",
   },
   {
-    id: "number",
+    id: "group",
     numeric: true,
     disablePadding: false,
-    label: "Grade Number",
+    label: "Group",
   },
   {
-    id: "building",
+    id: "department",
     numeric: true,
     disablePadding: false,
-    label: "Building",
+    label: "Department",
   },
   {
-    id: "capacity",
+    id: "programme",
     numeric: true,
     disablePadding: false,
-    label: "Capacity",
+    label: "Programme",
+  }, {
+    id: "term",
+    numeric: true,
+    disablePadding: false,
+    label: "Term",
   },
+  {
+    id: "grade",
+    numeric: true,
+    disablePadding: false,
+    label: "Grade",
+  }
 ];
 
 const searchType = [];
 
 export default function GradeAdmin(props) {
-  const { data } = useFetchRequests("https://jsonplaceholder.typicode.com/todos/");
+  const { data } = useFetchRequests(process.env.REACT_APP_HOST_URL + "/user/grade");
 
   const [campus, setCampus] = useState("HN");
   // Campus grade data
@@ -169,8 +173,8 @@ export default function GradeAdmin(props) {
       <Grid container spacing={4}>
         <Grid item sm={12} md={8} xl={6}>
           <div className="big-widget" style={{ paddingBottom: "25px" }}>
-            <h2>Assignment Control</h2>
-            <p>Search for an assignment</p>
+            <h2>Grade Control</h2>
+            <p>Search for grade by id</p>
             <br />
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
@@ -211,7 +215,7 @@ export default function GradeAdmin(props) {
                   title={tableTitle}
                   rows={data}
                   headCells={headCells}
-                  colNames={["id", "campus", "number", "building", "capacity"]}
+                  colNames={getAllHeaderColumns(headCells)}
                   handleEdit={handleEdit}
                   handleDelete={handleDelete}
                 />

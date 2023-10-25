@@ -7,7 +7,8 @@ export const useFetchRequests = (url) => {
   const fetchRequest = async () => {
     const response = await axios.get(url);
     if (response && response.data) {
-      setData(response.data);
+      setData(response.data.data);
+      console.log(response)
     }
   };
 
@@ -18,8 +19,8 @@ export const useFetchRequests = (url) => {
   return { data };
 };
 
-export const usePostRequest = (url, object) => {};
+export const usePostRequest = (url, object) => { };
 
-export const useUpdateRequest = (url, object) => {};
+export const useUpdateRequest = (url, object) => { };
 
-export const useDeleteRequest = (url, query) => {};
+export const useDeleteRequest = (url, query) => { };

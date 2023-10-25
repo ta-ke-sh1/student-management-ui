@@ -31,9 +31,6 @@ export default function NavBar() {
       <div
         className="navbar"
         id="nav-bar"
-        style={{
-          borderBottom: "1px solid black",
-        }}
       >
         <div className="nav-container">
           <div className="nav-content">

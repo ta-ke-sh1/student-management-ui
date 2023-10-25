@@ -3,33 +3,35 @@ import CustomTable from "../../../../../../components/table/table"
 
 const headCells = [
     {
-        id: "name",
+        id: "id",
         numeric: false,
         disablePadding: true,
-        label: "Group Id",
+        label: "Id",
     },
     {
-        id: "programme",
+        id: "slot",
         numeric: true,
         disablePadding: false,
-        label: "Campus",
+        label: "Slot",
     },
     {
-        id: "building",
+        id: "room",
         numeric: true,
         disablePadding: false,
-        label: "Building",
+        label: "Room",
     },
     {
-        id: "number",
+        id: "lecturer",
         numeric: true,
         disablePadding: false,
-        label: "Group Number",
+        label: "Lecturer",
     },
 ];
 
 
 export default function ScheduleWidget(props) {
+    console.log(props)
+
     return (
         <Grid
             container>

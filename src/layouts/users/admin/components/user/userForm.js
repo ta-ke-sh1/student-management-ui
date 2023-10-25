@@ -295,18 +295,29 @@ export default function UserForm(props) {
                 </Grid>
 
                 {id && (
-                    <Grid item xs={4} md={4}>
-                        <Button
-                            fullWidth
-                            variant="contained"
-                            sx={{ padding: "15px 30px" }}
-                            color="error"
-                            onClick={(e) => handleDeactivate(e)}>
-                            Deactivate
-                        </Button>
-                    </Grid>
+                    <>
+                        <Grid item xs={6} md={3}>
+                            <Button
+                                fullWidth
+                                variant="contained"
+                                sx={{ padding: "15px 30px" }}
+                                color="error"
+                                onClick={(e) => handleDeactivate(e)}>
+                                Reset Password
+                            </Button>
+                        </Grid>
+                        <Grid item xs={6} md={3}>
+                            <Button
+                                fullWidth
+                                variant="contained"
+                                sx={{ padding: "15px 30px" }}
+                                color="error"
+                                onClick={(e) => handleDeactivate(e)}>
+                                Deactivate
+                            </Button>
+                        </Grid></>
                 )}
-                <Grid item xs={id ? 4 : 6}>
+                <Grid item xs={id ? 3 : 6}>
                     <Button
                         fullWidth
                         variant="contained"
@@ -315,7 +326,7 @@ export default function UserForm(props) {
                         Save
                     </Button>
                 </Grid>
-                <Grid item xs={id ? 4 : 6}>
+                <Grid item xs={id ? 3 : 6}>
                     <Button
                         fullWidth
                         color="error"

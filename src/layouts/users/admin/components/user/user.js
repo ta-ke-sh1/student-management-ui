@@ -254,6 +254,10 @@ export default function UsersAdmin() {
     setOpenModal(false);
   };
 
+  const handleConfirm = () => {
+
+  }
+
   return (
     <>
       <Grid container spacing={4}>
@@ -261,8 +265,7 @@ export default function UsersAdmin() {
           <div className="big-widget" style={{ paddingBottom: "15px" }}>
             <h2>Users Control</h2>
             <p>Search for an user using the following fields</p>
-            <UserSearch />
-            {/* <Grid container spacing={3}>
+            <Grid container spacing={3}>
               <Grid item xs={12} md={3}>
                 <FormControl fullWidth>
                   <InputLabel id="auth-select-label">Auth Level</InputLabel>
@@ -348,7 +351,7 @@ export default function UsersAdmin() {
                   Clear
                 </Button>
               </Grid>
-            </Grid> */}
+            </Grid>
           </div>
         </Grid>
         <Grid item sm={12} md={4}>
@@ -438,7 +441,7 @@ export default function UsersAdmin() {
         </DialogActions>
       </Dialog>
 
-      <Dialog maxWidth="md" className="modal" fullWidth={true} open={openModal} onClose={() => setOpenModal(false)}>
+      <Dialog maxWidth="lg" className="modal" fullWidth={true} open={openModal} onClose={() => setOpenModal(false)}>
         <DialogContent
           sx={{
             bgcolor: "background.paper",

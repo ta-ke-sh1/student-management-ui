@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { TextField, Button, Grid } from "@mui/material";
+import { TextField, Button, Grid, Select, FormControl, InputLabel, MenuItem } from "@mui/material";
 import CustomTable from "../../../../../components/table/table";
 
 import Dialog from "@mui/material/Dialog";
@@ -9,6 +9,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import SubjectForm from "./subjectForm";
 import { ToastContainer, toast } from "react-toastify";
+import Constants from "../../../../../utils/constants";
 
 function createData(id, name, description, prerequisites, degree, slots) {
   return {
@@ -142,6 +143,8 @@ const headCells = [
 ];
 
 export default function SubjectsAdmin() {
+  const constants = new Constants();
+
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogContent, setDialogContent] = useState("");
   const [rows, setRows] = useState([]);
@@ -149,6 +152,17 @@ export default function SubjectsAdmin() {
 
   const [subject, setSubject] = useState({});
   const [openSubjectModal, setOpenSubjectModal] = useState(false);
+
+  const [programme, setProgramme] = useState("")
+  const [id, setId] = useState("")
+  const [department, setDepartment] = useState("")
+  const handleSearch = () => {
+
+  }
+
+  const handleClearSearch = () => {
+
+  }
 
   useEffect(() => {
     fetchRows();
@@ -203,15 +217,73 @@ export default function SubjectsAdmin() {
     <>
       <Grid container spacing={4}>
         <Grid item sm={12} md={12}>
-          <div
-            style={{
-              backgroundImage: `url(${process.env.PUBLIC_URL}/banner/banner` + 2 + ".jpg)",
-              width: "100%",
-              height: "175px",
-              borderRadius: "10px",
-              backgroundSize: "contain",
-            }}
-          ></div>
+          <div className="big-widget" style={{ paddingBottom: "25px" }}>
+            <h2>Subject Control</h2>
+            <p>Search for a subject</p>
+            <br />
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={3}>
+                <TextField value={id} onChange={(e) => setId(e.target.value)} fullWidth label="Subject Id" variant="outlined" />
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <FormControl fullWidth>
+                  <InputLabel id="programme-select-label">Programme</InputLabel>
+                  <Select
+                    id="form-programme"
+                    labelId="programme-select-label"
+                    value={programme}
+                    label="Programme"
+                    onChange={(e) => {
+                      setProgramme(e.target.value);
+                    }}
+                  >
+                    {constants.programmes.map((programme) =>
+                      programme.id === -1 ? (
+                        <MenuItem disabled={true} key={programme.id} value={programme.id}>
+                          {programme.name}
+                        </MenuItem>
+                      ) : (
+                        <MenuItem key={programme.id} value={programme.id}>
+                          {programme.name}
+                        </MenuItem>
+                      )
+                    )}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <FormControl fullWidth>
+                  <InputLabel id="department-select-label">Department</InputLabel>
+                  <Select
+                    id="form-department"
+                    labelId="department-select-label"
+                    value={department}
+                    label="Department"
+                    onChange={(e) => {
+                      setDepartment(e.target.value);
+                    }}
+                  >
+                    {constants.departments.map((term) =>
+                      term.id === -1 ? (
+                        <MenuItem disabled={true} key={term.id} value={term.id}>
+                          {term.name}
+                        </MenuItem>
+                      ) : (
+                        <MenuItem key={term.id} value={term.id}>
+                          {term.name}
+                        </MenuItem>
+                      )
+                    )}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <Button color="error" fullWidth variant="outlined" sx={{ padding: "15px 30px" }} onClick={(e) => handleClearSearch(e)}>
+                  Clear
+                </Button>
+              </Grid>
+            </Grid>
+          </div>
         </Grid>
 
         <Grid item xs={12} md={12}>

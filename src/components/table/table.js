@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -44,7 +44,10 @@ export default function CustomTable(props) {
     } else if (selectedIndex === selected.length - 1) {
       newSelected = newSelected.concat(selected.slice(0, -1));
     } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1)
+      );
     }
 
     setSelected(newSelected);
@@ -63,7 +66,14 @@ export default function CustomTable(props) {
 
   // Avoid a layout jump when reaching the last page with empty rows.
 
-  const visibleRows = useMemo(() => stableSort(props.rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage), [props.rows, order, orderBy, page, rowsPerPage]);
+  const visibleRows = useMemo(
+    () =>
+      stableSort(props.rows, getComparator(order, orderBy)).slice(
+        page * rowsPerPage,
+        page * rowsPerPage + rowsPerPage
+      ),
+    [props.rows, order, orderBy, page, rowsPerPage]
+  );
 
   return (
     <Box sx={{ width: "100%", paddingTop: "20px", overflow: "auto" }}>
@@ -73,13 +83,12 @@ export default function CustomTable(props) {
           mb: 2,
           display: "table",
           tableLayout: "fixed",
-        }}
-      >
+        }}>
+
         <EnhancedTableToolbar
           isDownloadable={props.isDownloadable}
           isCampusControl={props.isCampusControl}
-          handleSearchSchedules={props.handleSearchSchedules}
-          handleSearchStudents={props.handleSearchStudents}
+          handleSearchInfo={props.handleSearchInfo}
           handleGetSelected={props.handleGetSelected}
           additionalTools={props.additionalTools}
           handleAddEntry={props.handleAddEntry}
@@ -90,17 +99,28 @@ export default function CustomTable(props) {
           numSelected={selected.length}
           selected={selected}
         />
-        {visibleRows.length > -1 ? (
-          <>
-            <TableContainer>
+        {
+          visibleRows.length > -1 ? <>
+            <TableContainer sx={{
+              maxHeight: props.tableHeight ?? '300px',
+              minHeight: props.tableHeight ?? '300px'
+            }}>
               <Table
+                stickyHeader
                 wrapperStyle={{
                   maxHeight: "30vh",
                 }}
                 aria-labelledby="tableTitle"
-                size={"medium"}
-              >
-                <EnhancedTableHead headCells={props.headCells} numSelected={selected.length} order={order} orderBy={orderBy} onSelectAllClick={handleSelectAllClick} onRequestSort={handleRequestSort} rowCount={props.rows.length} />
+                size={"medium"}>
+                <EnhancedTableHead
+                  headCells={props.headCells}
+                  numSelected={selected.length}
+                  order={order}
+                  orderBy={orderBy}
+                  onSelectAllClick={handleSelectAllClick}
+                  onRequestSort={handleRequestSort}
+                  rowCount={props.rows.length}
+                />
                 <TableBody>
                   {visibleRows.map((row, index) => {
                     const isItemSelected = isSelected(row.id);
@@ -108,7 +128,9 @@ export default function CustomTable(props) {
                     return (
                       <TableRow
                         hover
-                        onClick={(event) => handleClick(event, row.id)}
+                        onClick={(event) =>
+                          handleClick(event, row.id)
+                        }
                         role="checkbox"
                         aria-checked={isItemSelected}
                         tabIndex={-1}
@@ -118,8 +140,7 @@ export default function CustomTable(props) {
                           cursor: "pointer",
                           maxHeight: "20px",
                           overflowY: "auto",
-                        }}
-                      >
+                        }}>
                         <TableCell padding="checkbox">
                           <Checkbox
                             color="primary"
@@ -130,18 +151,29 @@ export default function CustomTable(props) {
                           />
                         </TableCell>
                         {props.colNames.map((col, index) => {
-                          return props.colNames[index].status ? (
-                            index === 0 ? (
-                              <TableCell key={"row-" + props.colNames[index]} component="th" id={labelId} scope="row" padding="none">
-                                {row[props.colNames[index]]}
-                              </TableCell>
-                            ) : (
-                              <TableCell key={"row-" + props.colNames[index]} align="right">
-                                {row[props.colNames[index]] ?? "N/A"}
-                              </TableCell>
-                            )
+                          return index === 0 ? (
+                            <TableCell
+                              key={
+                                "row-" +
+                                props.colNames[index]
+                              }
+                              component="th"
+                              id={labelId}
+                              scope="row"
+                              padding="none">
+                              {row[props.colNames[index]]}
+                            </TableCell>
                           ) : (
-                            <></>
+                            <TableCell
+                              key={
+                                "row-" +
+                                props.colNames[index]
+                              }
+                              align="right">
+                              {row[
+                                props.colNames[index]
+                              ] ?? "N/A"}
+                            </TableCell>
                           );
                         })}
                       </TableRow>
@@ -150,17 +182,22 @@ export default function CustomTable(props) {
                 </TableBody>
               </Table>
             </TableContainer>
-            <TablePagination rowsPerPageOptions={[4, 8, 12]} component="div" count={props.rows.length} rowsPerPage={rowsPerPage} page={page} onPageChange={handleChangePage} onRowsPerPageChange={handleChangeRowsPerPage} />
-          </>
-        ) : (
-          <div
-            style={{
-              marginLeft: "15px",
-            }}
-          >
-            <h3>Empty data, please add some!</h3>
-          </div>
-        )}
+            <TablePagination
+              rowsPerPageOptions={[4, 8, 12]}
+              component="div"
+              count={props.rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            /></> :
+            <div style={{
+              marginLeft: '15px'
+            }}>
+              <h3>Empty data, please add some!</h3>
+            </div>
+        }
+
       </Box>
     </Box>
   );

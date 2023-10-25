@@ -12,6 +12,7 @@ import axios from "axios";
 import RequestsForm from "./requestForm";
 import { programmes } from "../../mockData/mock";
 import { ToastContainer, toast } from "react-toastify";
+import { getAllHeaderColumns } from "../../../../../utils/utils";
 
 function createData(id, campus, building, number, capacity) {
   return {
@@ -253,7 +254,7 @@ export default function RequestsAdmin(props) {
                 title={tableTitle}
                 rows={rows}
                 headCells={headCells}
-                colNames={["id", "campus", "number", "building", "capacity"]}
+                colNames={getAllHeaderColumns(headCells)}
                 handleEdit={handleEdit}
                 handleDelete={handleDelete}
               />

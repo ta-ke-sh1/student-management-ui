@@ -25,7 +25,7 @@ function createData(id, campus, building, number, capacity) {
 
 const headCells = [
   {
-    id: "name",
+    id: "id",
     numeric: false,
     disablePadding: true,
     label: "Room Id",

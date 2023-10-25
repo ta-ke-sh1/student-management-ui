@@ -22,14 +22,12 @@ import { AuthProvider } from "./hooks/auth/useAuth";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
-  <React.StrictMode>
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <BrowserRouter>
-        <AuthProvider>
-          {/* <NavBar /> */}
-          <App />
-        </AuthProvider>
-      </BrowserRouter>
-    </LocalizationProvider>
-  </React.StrictMode>
+  <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <BrowserRouter>
+      <AuthProvider>
+        <NavBar />
+        <App />
+      </AuthProvider>
+    </BrowserRouter>
+  </LocalizationProvider>
 );

@@ -421,7 +421,7 @@ export default function Attendance() {
             boxShadow: 12,
           }}
         >
-          <AttendanceForm closeHandler={handleCloseModal} attendance={attendance} />
+          <AttendanceForm closeHandler={handleCloseModal} attendance={attendance} refresh={fetchRows} />
         </DialogContent>
       </Dialog>
     </>

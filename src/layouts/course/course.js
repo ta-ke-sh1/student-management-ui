@@ -1,5 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, Divider, Paper, Typography, TableContainer, TableRow, TableCell, Table, Button, Modal, Dialog, DialogContent, Snackbar } from "@mui/material"
-import { useFetchCourses } from "../users/student/hooks/useFetchCourse"
+import { Dialog, DialogContent, Snackbar } from "@mui/material"
 import { useState, useMemo, useEffect } from "react";
 import { Drawer, Box, Fab } from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";

@@ -25,12 +25,14 @@ export default function CampusForm(props) {
         axios.put(process.env.REACT_APP_HOST_URL + "/campus/room?id=" + roomId, room).then((res) => {
           if (res.status === 200) {
             props.closeHandler();
+            props.refresh();
           }
         });
       } else {
         axios.post(process.env.REACT_APP_HOST_URL + "/campus/room", room).then((res) => {
           if (res.status === 200) {
             props.closeHandler();
+            props.refresh();
           }
         });
       }

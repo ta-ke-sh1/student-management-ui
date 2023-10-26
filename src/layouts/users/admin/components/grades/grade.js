@@ -45,7 +45,8 @@ const headCells = [
     numeric: true,
     disablePadding: false,
     label: "Programme",
-  }, {
+  },
+  {
     id: "term",
     numeric: true,
     disablePadding: false,
@@ -56,7 +57,7 @@ const headCells = [
     numeric: true,
     disablePadding: false,
     label: "Grade",
-  }
+  },
 ];
 
 const searchType = [];
@@ -87,6 +88,15 @@ export default function GradeAdmin(props) {
     setRows(data);
     setRowData(data);
   }, [data]);
+
+  const fetchRows = () => {
+    axios.get(process.env.REACT_APP_HOST_URL + "/user/grade").then((res) => {
+      if (res.data.status) {
+        setRows(res.data.data);
+        setRowData(res.data.data);
+      }
+    });
+  };
 
   const fetchGrade = (id) => {
     return rows.find((row) => row.id === id);
@@ -252,7 +262,7 @@ export default function GradeAdmin(props) {
             boxShadow: 12,
           }}
         >
-          <GradeForm closeHandler={handleCloseModal} grade={grade} />
+          <GradeForm closeHandler={handleCloseModal} grade={grade} refresh={fetchRows} />
         </DialogContent>
       </Dialog>
 

@@ -153,16 +153,12 @@ export default function SubjectsAdmin() {
   const [subject, setSubject] = useState({});
   const [openSubjectModal, setOpenSubjectModal] = useState(false);
 
-  const [programme, setProgramme] = useState("")
-  const [id, setId] = useState("")
-  const [department, setDepartment] = useState("")
-  const handleSearch = () => {
+  const [programme, setProgramme] = useState("");
+  const [id, setId] = useState("");
+  const [department, setDepartment] = useState("");
+  const handleSearch = () => {};
 
-  }
-
-  const handleClearSearch = () => {
-
-  }
+  const handleClearSearch = () => {};
 
   useEffect(() => {
     fetchRows();
@@ -333,7 +329,7 @@ export default function SubjectsAdmin() {
             boxShadow: 12,
           }}
         >
-          <SubjectForm closeHandler={handleCloseSubjectModal} subject={subject} />
+          <SubjectForm closeHandler={handleCloseSubjectModal} subject={subject} refresh={fetchRows} />
         </DialogContent>
       </Dialog>
     </>

@@ -158,6 +158,22 @@ export default function UsersAdmin() {
     fetchLecturerRows();
   }, []);
 
+  const fetchRows = (type) => {
+    switch (type) {
+      case "student":
+        fetchStudentRows();
+        break;
+      case "lecturer":
+        fetchLecturerRows();
+        break;
+      case "admin":
+        fetchAdminRows();
+        break;
+      default:
+        break;
+    }
+  };
+
   const fetchStudentRows = () => {
     axios.get(process.env.REACT_APP_HOST_URL + "/user/students").then((res) => {
       let result = [];
@@ -254,9 +270,7 @@ export default function UsersAdmin() {
     setOpenModal(false);
   };
 
-  const handleConfirm = () => {
-
-  }
+  const handleConfirm = () => {};
 
   return (
     <>
@@ -448,7 +462,7 @@ export default function UsersAdmin() {
             boxShadow: 12,
           }}
         >
-          <UserForm closeHandler={handleCloseModal} user={user} />
+          <UserForm closeHandler={handleCloseModal} user={user} refresh={fetchRows} />
         </DialogContent>
       </Dialog>
     </>

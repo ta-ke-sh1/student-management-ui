@@ -14,7 +14,7 @@ import ScheduleListForm from "./forms/scheduleForm";
 import ParticipantsForm from "./forms/participantsForm";
 import Constants from "../../../../../utils/constants";
 import { ToastContainer, toast } from "react-toastify";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 export default function FGWClass() {
   const constants = new Constants();
@@ -47,14 +47,14 @@ export default function FGWClass() {
 
   const handleSearchGroup = async () => {
     if (programme && term && year && department) {
-      console.log(process.env.REACT_APP_HOST_URL + "/schedule?programme=" + programme + "&term=" + (term + "-" + year.toString().substr(2, 2)) + "&department=" + department)
+      console.log(process.env.REACT_APP_HOST_URL + "/schedule?programme=" + programme + "&term=" + (term + "-" + year.toString().substr(2, 2)) + "&department=" + department);
       await axios.get(process.env.REACT_APP_HOST_URL + "/schedule?programme=" + programme + "&term=" + (term + "-" + year.toString().substr(2, 2)) + "&department=" + department).then((res) => {
         if (res.data.status) {
           setGroups(res.data.data);
         } else {
           toast.error(res.data.data, {
-            position: 'bottom-left'
-          })
+            position: "bottom-left",
+          });
         }
       });
     }
@@ -89,27 +89,34 @@ export default function FGWClass() {
     return data.find((row) => row.id === id);
   };
 
-  const handleEditGroup = (id) => { };
+  const handleEditGroup = (id) => {};
 
-  const handleAddParticipants = async (id) => { };
+  const handleAddParticipants = async (id) => {};
 
-  const handleSearchInfo = async (id) => {
-    console.log("Search")
+  const fetchParticipants = async (id) => {
     let data = fetchDataFromArrayUsingId(groups, id);
-    console.log(data)
+    console.log(data);
     await axios.get(process.env.REACT_APP_HOST_URL + "/semester/participants?id=" + id + "&programme=" + data.programme + "&term=" + data.term + "&department=" + data.department).then((res) => {
       console.log(res.data);
       if (res.data.status) {
         setParticipants(res.data.data ?? []);
       }
     });
+  };
 
+  const fetchSchedules = async (id) => {
+    let data = fetchDataFromArrayUsingId(groups, id);
     await axios.get(process.env.REACT_APP_HOST_URL + "/semester/schedules?id=" + id + "&programme=" + data.programme + "&term=" + data.term + "&department=" + data.department).then((res) => {
       console.log(res.data);
       if (res.data.status) {
         setSchedules(res.data.data ?? []);
       }
     });
+  };
+
+  const handleSearchInfo = async (id) => {
+    fetchParticipants(id);
+    fetchSchedules(id);
     setFirstClick(true);
   };
 
@@ -236,50 +243,55 @@ export default function FGWClass() {
             department={department}
             term={term + "-" + year.toString().substr(2, 2)}
           />
-
         </Grid>
-        {
-          firstClick ? <>
+        {firstClick ? (
+          <>
             <Grid item sm={12} md={6}>
               <Accordion defaultExpanded={true}>
                 <AccordionSummary
                   sx={{
-                    borderBottom: '3px solid #F11A7B'
+                    borderBottom: "3px solid #F11A7B",
                   }}
-                  expandIcon={<ExpandMoreIcon />}>
+                  expandIcon={<ExpandMoreIcon />}
+                >
                   List of Schedules
                 </AccordionSummary>
-                <AccordionDetails sx={{ paddingTop: '20px' }}>
+                <AccordionDetails sx={{ paddingTop: "20px" }}>
                   <ScheduleWidget
                     handleAddEntry={() => {
                       setOpenScheduleModal(true);
                     }}
                     firstClick={firstClick}
                     schedules={schedules}
-                  /></AccordionDetails>
+                  />
+                </AccordionDetails>
               </Accordion>
             </Grid>
             <Grid item sm={12} md={6}>
               <Accordion defaultExpanded={true}>
                 <AccordionSummary
                   sx={{
-                    borderBottom: '3px solid #F11A7B'
+                    borderBottom: "3px solid #F11A7B",
                   }}
-                  expandIcon={<ExpandMoreIcon />}>
+                  expandIcon={<ExpandMoreIcon />}
+                >
                   List of Participants
                 </AccordionSummary>
-                <AccordionDetails sx={{ paddingTop: '20px' }}>
+                <AccordionDetails sx={{ paddingTop: "20px" }}>
                   <ParticipantsWidget
                     firstClick={firstClick}
                     handleAddEntry={() => {
                       setOpenParticipantsModal(true);
                     }}
                     participants={participants}
-                  /></AccordionDetails>
+                  />
+                </AccordionDetails>
               </Accordion>
             </Grid>
-          </> : <></>
-        }
+          </>
+        ) : (
+          <></>
+        )}
       </Grid>
       <Dialog
         open={open}

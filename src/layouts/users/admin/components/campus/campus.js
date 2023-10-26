@@ -306,7 +306,7 @@ export default function CampusAdmin() {
             boxShadow: 12,
           }}
         >
-          <CampusForm closeHandler={handleCloseModal} room={room} />
+          <CampusForm closeHandler={handleCloseModal} room={room} refresh={fetchRows} />
         </DialogContent>
       </Dialog>
 

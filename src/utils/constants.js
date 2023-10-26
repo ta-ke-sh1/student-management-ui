@@ -111,4 +111,36 @@ export default class Constants {
       },
     ];
   }
+
+  get daysOfTheWeek() {
+    return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  }
+  get slot() {
+    return [
+      {
+        time: "7:30 - 9:00",
+      },
+      {
+        time: "9:10 - 10:40",
+      },
+      {
+        time: "10:50 - 12:20",
+      },
+      {
+        time: "12:50 - 14:20",
+      },
+      {
+        time: "14:30 - 16:00",
+      },
+      {
+        time: "16:10 - 17:40",
+      },
+      {
+        time: "17:50 - 19:20",
+      },
+      {
+        time: "19:30 - 21:00",
+      },
+    ];
+  }
 }

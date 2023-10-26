@@ -213,7 +213,7 @@ export default function DocumentsAdmin(props) {
             boxShadow: 12,
           }}
         >
-          <DocumentsForm closeHandler={handleCloseModal} document={documents} />
+          <DocumentsForm closeHandler={handleCloseModal} document={documents} refresh={fetchRows} />
         </DialogContent>
       </Dialog>
     </>

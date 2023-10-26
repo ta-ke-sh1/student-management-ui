@@ -290,7 +290,7 @@ export default function RequestsAdmin(props) {
             boxShadow: 12,
           }}
         >
-          <RequestsForm closeHandler={handleCloseModal} requests={requests} />
+          <RequestsForm closeHandler={handleCloseModal} requests={requests} refresh={fetchRows} />
         </DialogContent>
       </Dialog>
     </>

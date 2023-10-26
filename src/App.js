@@ -80,7 +80,7 @@ function App() {
       />
       <Route element={<RequireAuth props={{ clearance: 0 }} />}>
         <Route
-          path="/grade"
+          path="/grade/:id"
           element={
             <>
               <GradeUser />
@@ -88,7 +88,7 @@ function App() {
           }
         />
         <Route
-          path="/course"
+          path="/course/:id"
           element={
             <>
               <CourseUser />
@@ -96,7 +96,7 @@ function App() {
           }
         />
         <Route
-          path="/home"
+          path="/home/:id"
           element={
             <>
               <UserHome />

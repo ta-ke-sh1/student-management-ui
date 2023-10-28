@@ -52,7 +52,7 @@ export default class Constants {
         name: "F2G",
       },
       {
-        id: "SUP",
+        id: "SC",
         name: "Supplementary Courses",
       },
       {

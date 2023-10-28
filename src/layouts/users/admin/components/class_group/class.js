@@ -100,7 +100,23 @@ export default function FGWClass() {
     return data.find((row) => row.id === id);
   };
 
-  const handleEditGroup = (id) => { };
+  const handleEditGroup = (id) => {
+    let data = fetchDataFromArrayUsingId(groups, id);
+    setGroup(data)
+    setOpenGroupModal(true)
+  };
+
+  const handleEditParticipant = (id) => {
+    let data = fetchDataFromArrayUsingId(participants, id);
+    setParticipant(data)
+    setOpenParticipantsModal(true)
+  }
+
+  const handleEditSchedule = (id) => {
+    let data = fetchDataFromArrayUsingId(schedules, id);
+    setSchedule(data)
+    setOpenScheduleModal(true)
+  }
 
   const handleAddParticipants = async (id) => { };
 
@@ -124,9 +140,8 @@ export default function FGWClass() {
 
   const fetchParticipants = async (id) => {
     try {
-      let data = fetchDataFromArrayUsingId(groups, id);
-      console.log(data);
-      await axios.get(process.env.REACT_APP_HOST_URL + "/semester/participants?id=" + id + "&programme=" + data.programme + "&term=" + data.term + "&department=" + data.department).then((res) => {
+
+      await axios.get(process.env.REACT_APP_HOST_URL + "/semester/participants?id=" + id).then((res) => {
         console.log(res.data);
         if (res.data.status) {
           setParticipants(res.data.data ?? []);
@@ -146,7 +161,7 @@ export default function FGWClass() {
   const fetchSchedules = async (id) => {
     try {
       let data = fetchDataFromArrayUsingId(groups, id);
-      await axios.get(process.env.REACT_APP_HOST_URL + "/semester/schedules?id=" + id + "&programme=" + data.programme + "&term=" + data.term + "&department=" + data.department).then((res) => {
+      await axios.get(process.env.REACT_APP_HOST_URL + "/semester/schedules?id=" + id + "&slots=" + data.slots).then((res) => {
         console.log(res.data);
         if (res.data.status) {
           setSchedules(res.data.data ?? []);
@@ -166,6 +181,8 @@ export default function FGWClass() {
   const handleSearchInfo = async (id) => {
     fetchParticipants(id);
     fetchSchedules(id);
+    let data = fetchDataFromArrayUsingId(groups, id);
+    setGroup(data)
     setFirstClick(true);
   };
 
@@ -292,11 +309,12 @@ export default function FGWClass() {
             programme={programme}
             department={department}
             term={term + "-" + year.toString().substr(2, 2)}
+            handleEdit={handleEditGroup}
           />
         </Grid>
         {firstClick ? (
           <>
-            <Grid item sm={12} md={6}>
+            <Grid item sm={12} md={12}>
               <Accordion defaultExpanded={true}>
                 <AccordionSummary
                   sx={{
@@ -304,37 +322,32 @@ export default function FGWClass() {
                   }}
                   expandIcon={<ExpandMoreIcon />}
                 >
-                  List of Schedules
+                  <strong>Selected group details: </strong><span style={{ marginLeft: "10px" }}>{group.id}</span>
                 </AccordionSummary>
                 <AccordionDetails sx={{ paddingTop: "20px" }}>
-                  <ScheduleWidget
-                    handleAddEntry={() => {
-                      setOpenScheduleModal(true);
-                    }}
-                    firstClick={firstClick}
-                    schedules={schedules}
-                  />
-                </AccordionDetails>
-              </Accordion>
-            </Grid>
-            <Grid item sm={12} md={6}>
-              <Accordion defaultExpanded={true}>
-                <AccordionSummary
-                  sx={{
-                    borderBottom: "3px solid #F11A7B",
-                  }}
-                  expandIcon={<ExpandMoreIcon />}
-                >
-                  List of Participants
-                </AccordionSummary>
-                <AccordionDetails sx={{ paddingTop: "20px" }}>
-                  <ParticipantsWidget
-                    firstClick={firstClick}
-                    handleAddEntry={() => {
-                      setOpenParticipantsModal(true);
-                    }}
-                    participants={participants}
-                  />
+                  <Grid container spacing={4}>
+                    <Grid item xs={12} sm={6}>
+                      <ScheduleWidget
+                        handleAddEntry={() => {
+                          setOpenScheduleModal(true);
+                        }}
+                        handleEdit={handleEditSchedule}
+                        firstClick={firstClick}
+                        schedules={schedules}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <ParticipantsWidget
+                        firstClick={firstClick}
+                        handleAddEntry={() => {
+                          setOpenParticipantsModal(true);
+                        }}
+                        handleEdit={handleEditParticipant}
+                        participants={participants}
+                      />
+                    </Grid>
+                  </Grid>
+
                 </AccordionDetails>
               </Accordion>
             </Grid>
@@ -382,7 +395,7 @@ export default function FGWClass() {
             boxShadow: 12,
           }}
         >
-          <ScheduleListForm closeHandler={handleCloseScheduleFormModal} schedule={schedule} />
+          <ScheduleListForm closeHandler={handleCloseScheduleFormModal} schedule={schedule} group={group} />
         </DialogContent>
       </Dialog>
 
@@ -393,7 +406,7 @@ export default function FGWClass() {
             boxShadow: 12,
           }}
         >
-          <ParticipantsForm closeHandler={handleCloseParticipantFormModal} participant={participant} />
+          <ParticipantsForm closeHandler={handleCloseParticipantFormModal} participant={participant} group={group} />
         </DialogContent>
       </Dialog>
 

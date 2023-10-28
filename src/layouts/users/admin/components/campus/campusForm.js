@@ -13,6 +13,7 @@ export default function CampusForm(props) {
   const constants = new Constants();
 
   const handleConfirm = () => {
+
     const room = {
       campus: campus,
       building: building,

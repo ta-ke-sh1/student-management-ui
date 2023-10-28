@@ -48,35 +48,12 @@ const headCells = [
 
 export default function GroupWidget(props) {
 
-    function createData(programme, department, term, id, slots, subject, lecturer) {
-        return {
-            programme, department, term, id, slots, subject, lecturer
-        };
-    }
-
     let data = [];
     props.groups.forEach((row) => {
         data.push(
-            createData(row.programme, row.department, row.term, row.id, row.slots, row.subject, row.lecturer)
+            row
         )
     })
-
-    useEffect(() => {
-
-    })
-
-    const fetchData = (id) => {
-        return data.find((row) => row.id === id)
-    }
-
-    const handleEdit = (id) => {
-        let data = fetchData(id)
-        console.log(data)
-    }
-
-    const handleDelete = (id) => {
-        console.log(id)
-    }
 
     return (
         <Grid
@@ -98,8 +75,8 @@ export default function GroupWidget(props) {
                         colNames={[
                             "id", "programme", "department", "term", "slots", "subject", "lecturer"
                         ]}
-                        handleEdit={handleEdit}
-                        handleDelete={handleDelete}
+                        handleEdit={props.handleEdit}
+                        handleDelete={props.handleDelete}
                     />
                 </div>
             </Grid>

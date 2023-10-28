@@ -1,24 +1,32 @@
 import { Grid, Button, FormControl, Select, MenuItem, InputLabel, TextField, Alert, AlertTitle, Divider } from "@mui/material";
 import { DesktopDatePicker } from "@mui/x-date-pickers";
 import axios from "axios";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import Constants from "../../../../../../utils/constants";
 
 export default function GroupForm(props) {
   const constants = new Constants();
 
-  const [term, setTerm] = useState("");
-  const [programme, setProgramme] = useState("");
-  const [year, setYear] = useState(2023);
-  const [name, setName] = useState("");
+  const [term, setTerm] = useState(props.group.term.split("-")[0] ?? "");
+  const [programme, setProgramme] = useState(props.group.programme ?? "");
+  const [year, setYear] = useState((2000 + parseInt(props.group.term.split("-")[1])) ?? 2023);
+  const [name, setName] = useState(props.group.name ?? "");
+  const [lecturer, setLecturer] = useState(props.group.lecturer ?? "");
+  const [subject, setSubject] = useState(props.group.subject ?? "");
+  const [slots, setSlots] = useState(props.group.slots ?? 0);
+  const [department, setDepartment] = useState(props.group.department ?? "");
 
-  const [lecturer, setLecturer] = useState("");
-  const [subject, setSubject] = useState("");
-  const [slots, setSlots] = useState(0);
-
-  const [department, setDepartment] = useState("");
+  const [lecturers, setLecturers] = useState([])
+  const [subjects, setSubjects] = useState([])
 
   const [error, setError] = useState("");
+
+  useLayoutEffect(() => {
+    if (props.group.department) {
+      handleFetchLecturers(props.group.department)
+      handleFetchSubjects(props.group.department)
+    }
+  }, [])
 
   const handleConfirm = () => {
     console.log();
@@ -44,9 +52,32 @@ export default function GroupForm(props) {
     }
   };
 
-  const handleFetchLecturer = () => {};
+  const handleFetchLecturers = (department) => {
+    axios.get(process.env.REACT_APP_HOST_URL + "/user/lecturers?department=" + department).then((res) => {
+      if (res.data.status) {
+        let data = [];
+        for (let i = 0; i < res.data.data.length; i++) {
+          data.push(res.data.data[i]);
+        }
+        setLecturers(data);
+      }
+    });
+  };
 
-  const handleFetchSubjects = () => {};
+  const handleFetchSubjects = (department) => {
+    console.log("Fetch lecturers")
+    axios.get(process.env.REACT_APP_HOST_URL + "/subject?department=" + department).then((res) => {
+      if (res.data.status) {
+        let data = [];
+        for (let i = 0; i < res.data.data.length; i++) {
+          data.push(res.data.data[i]);
+        }
+        setSubjects(data);
+      }
+    });
+  };
+
+
 
   return (
     <>
@@ -90,6 +121,8 @@ export default function GroupForm(props) {
               value={department}
               label="Department"
               onChange={(e) => {
+                handleFetchSubjects(e.target.value)
+                handleFetchLecturers(e.target.value)
                 setDepartment(e.target.value);
               }}
             >
@@ -127,26 +160,69 @@ export default function GroupForm(props) {
           </FormControl>
         </Grid>
         <Grid item xs={12} md={6}>
-          <DesktopDatePicker
-            sx={{
-              width: "100%",
-            }}
+          <TextField
+            onChange={(e) => setYear(e.target.value)}
+            value={year}
+            id="form-year"
+            fullWidth
             label="Year"
             variant="outlined"
-            onChange={(e) => {
-              setYear(e.$y);
-            }}
-            views={["year"]}
           />
         </Grid>
         <Grid item xs={12} md={12}>
           <TextField onChange={(e) => setName(e.target.value)} value={name} id="form-name" fullWidth label="Group Name" variant="outlined" />
         </Grid>
         <Grid item xs={12} md={4}>
-          <TextField onChange={(e) => setLecturer(e.target.value)} value={lecturer} id="form-lecturer" fullWidth label="Lecturer" variant="outlined" />
+          <Grid item xs={12} md={12}>
+            <FormControl fullWidth>
+              <InputLabel id="lecturer-select-label-form">Lecturer</InputLabel>
+              <Select
+                defaultValue={lecturer}
+                value={lecturer}
+                label="Lecturer"
+                MenuProps={{
+                  disablePortal: true, // <--- HERE
+                  onClick: (e) => {
+                    e.preventDefault();
+                  },
+                }}
+                onChange={(e) => {
+                  setLecturer(e.target.value);
+                }}
+              >
+                {lecturers.map((lecturer, index) => (
+                  <MenuItem key={"Lecturer-number-" + (index + 1)} value={lecturer.id}>
+                    {lecturer.id}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
         </Grid>
         <Grid item xs={12} md={4}>
-          <TextField onChange={(e) => setSubject(e.target.value)} value={subject} id="form-subject" fullWidth label="Subject" variant="outlined" />
+          <FormControl fullWidth>
+            <InputLabel id="lecturer-select-label-form">Subject</InputLabel>
+            <Select
+              defaultValue={subject}
+              value={subject}
+              label="Subject"
+              MenuProps={{
+                disablePortal: true, // <--- HERE
+                onClick: (e) => {
+                  e.preventDefault();
+                },
+              }}
+              onChange={(e) => {
+                setSubject(e.target.value)
+              }}
+            >
+              {subjects.map((subject, index) => (
+                <MenuItem key={"Lecturer-number-" + (index + 1)} value={subject.id}>
+                  {subject.id}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Grid>
         <Grid item xs={12} md={4}>
           <TextField type="number" onChange={(e) => setSlots(e.target.value)} value={slots} id="form-slots" fullWidth label="Slots" variant="outlined" />

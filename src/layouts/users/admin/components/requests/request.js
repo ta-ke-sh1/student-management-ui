@@ -16,7 +16,7 @@ import { getAllHeaderColumns } from "../../../../../utils/utils";
 
 const headCells = [
   {
-    id: "name",
+    id: "id",
     numeric: false,
     disablePadding: true,
     label: "Requests Id",
@@ -77,7 +77,7 @@ export default function RequestsAdmin(props) {
 
   const fetchRows = () => {
     try {
-      axios.get(process.env.REACT_APP_HOST_URL + "/requests").then((res) => {
+      axios.get(process.env.REACT_APP_HOST_URL + "/request").then((res) => {
         if (!res.data.status) {
           toast.error(res.data.data, {
             position: "bottom-left"

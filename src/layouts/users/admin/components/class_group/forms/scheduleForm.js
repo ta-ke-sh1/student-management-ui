@@ -14,14 +14,19 @@ export default function ScheduleListForm(props) {
   const [rooms, setRooms] = useState([]);
   const [lecturers, setLecturers] = useState([]);
 
-  const handleConfirm = () => {};
+  const handleConfirm = () => { };
 
   useEffect(() => {
     fetchLecturers();
+    fetchRooms();
   });
 
+  const fetchRooms = () => {
+    axios.get(process.env.REACT_APP_HOST_URL + "/campus/rooms")
+  }
+
   const fetchLecturers = () => {
-    axios.get(process.env.REACT_APP_HOST_URL + "/user/lecturer").then((res) => {
+    axios.get(process.env.REACT_APP_HOST_URL + "/user/lecturers").then((res) => {
       if (res.data.status) {
         let data = [];
         for (let i = 0; i < res.data.data.length; i++) {
@@ -118,7 +123,7 @@ export default function ScheduleListForm(props) {
                 },
               }}
               onChange={(e) => {
-                setSlot(e.target.value);
+                setLecturer(e.target.value);
               }}
             >
               {lecturers.map((lecturer, index) => (

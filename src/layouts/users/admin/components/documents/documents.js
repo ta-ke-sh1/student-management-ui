@@ -64,18 +64,25 @@ export default function DocumentsAdmin(props) {
   }, []);
 
   const fetchRows = () => {
-    axios.get(process.env.REACT_APP_HOST_URL + "/document").then((res) => {
-      if (res.data.status) {
-        let data = res.data.data;
-        setRowData(data);
-        setRows(data);
-      } else {
-        console.log("Error!");
-        toast.error(res.data.data, {
-          position: "bottom-left"
-        })
-      }
-    });
+    try {
+      axios.get(process.env.REACT_APP_HOST_URL + "/document").then((res) => {
+        if (res.data.status) {
+          let data = res.data.data;
+          setRowData(data);
+          setRows(data);
+        } else {
+          console.log("Error!");
+          toast.error(res.data.data, {
+            position: "bottom-left"
+          })
+        }
+      });
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
+    }
+
   };
 
   const fetchDocuments = (id) => {
@@ -83,32 +90,53 @@ export default function DocumentsAdmin(props) {
   };
 
   const handleEdit = (id) => {
-    let document = fetchDocuments(id);
-    setDocuments(document);
-    setOpenModal(true);
+    try {
+      let document = fetchDocuments(id);
+      setDocuments(document);
+      setOpenModal(true);
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
+    }
+
   };
 
   const handleDelete = (index) => {
-    setDialogTitle("Delete Documents");
-    setDialogContent("This documents will be deleted, are you sure? This change cannot be undone");
-    setOpen(true);
-    setSelected(index);
-    console.log(index);
+    try {
+      setDialogTitle("Delete Documents");
+      setDialogContent("This documents will be deleted, are you sure? This change cannot be undone");
+      setOpen(true);
+      setSelected(index);
+      console.log(index);
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
+    }
+
   };
 
   const handleDeleteRequest = () => {
-    let query = [];
-    if (Array.isArray(selected)) {
-      query = selected.join("@");
-    } else {
-      query = selected;
+    try {
+      let query = [];
+      if (Array.isArray(selected)) {
+        query = selected.join("@");
+      } else {
+        query = selected;
+      }
+
+      console.log(query);
+      axios.delete(process.env.REACT_APP_HOST_URL + "/documents?id=" + id).then((res) => {
+        console.log(res);
+        setOpen(false);
+      });
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
     }
 
-    console.log(query);
-    axios.delete(process.env.REACT_APP_HOST_URL + "/documents?id=" + id).then((res) => {
-      console.log(res);
-      setOpen(false);
-    });
   };
 
   const handleClose = () => {
@@ -128,7 +156,7 @@ export default function DocumentsAdmin(props) {
     console.log(e);
   };
 
-  const handleDownloadAll = () => {};
+  const handleDownloadAll = () => { };
 
   return (
     <>

@@ -8,6 +8,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import InfoIcon from '@mui/icons-material/Info';
 import DownloadIcon from "@mui/icons-material/Download"
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 export default function EnhancedTableToolbar(props) {
     const { numSelected, selected, title } = props;
@@ -25,6 +26,7 @@ export default function EnhancedTableToolbar(props) {
                         ),
                 }),
             }}>
+
             {numSelected > 0 ? (
                 <Typography
                     sx={{ flex: "1 1 100%" }}
@@ -43,8 +45,11 @@ export default function EnhancedTableToolbar(props) {
                 </Typography>
             )}
 
+
+
             {numSelected === 0 ? (
                 <>
+
                     <Tooltip title="Add New Entry">
                         <IconButton
                             onClick={() => {
@@ -93,12 +98,27 @@ export default function EnhancedTableToolbar(props) {
                     }
                 </>
             ) : (
-                <Tooltip title="Delete">
-                    <IconButton onClick={() => props.handleDelete(selected)}>
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
+                <>
+                    <Tooltip title="Delete">
+                        <IconButton onClick={() => props.handleDelete(selected)}>
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip>
+                </>
             )}
+
+            <Tooltip title="Refresh">
+                <IconButton
+                    onClick={() => {
+                        if (props.handleRefreshEntry) {
+                            props.handleRefreshEntry();
+                        } else {
+                            console.log("Refersh event not binded");
+                        }
+                    }}>
+                    <RefreshIcon />
+                </IconButton>
+            </Tooltip>
         </Toolbar>
     );
 }

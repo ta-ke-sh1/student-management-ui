@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TextField, Select, MenuItem, InputLabel, FormControl, Button, Grid, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -45,18 +45,29 @@ export default function FGWClass() {
 
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    fetchGroups()
+  }, [])
+
   const handleSearchGroup = async () => {
-    if (programme && term && year && department) {
-      console.log(process.env.REACT_APP_HOST_URL + "/schedule?programme=" + programme + "&term=" + (term + "-" + year.toString().substr(2, 2)) + "&department=" + department);
-      await axios.get(process.env.REACT_APP_HOST_URL + "/schedule?programme=" + programme + "&term=" + (term + "-" + year.toString().substr(2, 2)) + "&department=" + department).then((res) => {
-        if (res.data.status) {
-          setGroups(res.data.data);
-        } else {
-          toast.error(res.data.data, {
-            position: "bottom-left",
-          });
-        }
-      });
+    try {
+      if (programme && term && year && department) {
+        console.log(process.env.REACT_APP_HOST_URL + "/schedule?programme=" + programme + "&term=" + (term + "-" + year.toString().substr(2, 2)) + "&department=" + department);
+        await axios.get(process.env.REACT_APP_HOST_URL + "/schedule?programme=" + programme + "&term=" + (term + "-" + year.toString().substr(2, 2)) + "&department=" + department).then((res) => {
+          if (res.data.status) {
+            setGroups(res.data.data);
+          } else {
+            toast.error(res.data.data, {
+              position: "bottom-left",
+            });
+          }
+        });
+      }
+    }
+    catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
     }
   };
 
@@ -89,29 +100,67 @@ export default function FGWClass() {
     return data.find((row) => row.id === id);
   };
 
-  const handleEditGroup = (id) => {};
+  const handleEditGroup = (id) => { };
 
-  const handleAddParticipants = async (id) => {};
+  const handleAddParticipants = async (id) => { };
+
+  const fetchGroups = async () => {
+    try {
+      await axios.get(process.env.REACT_APP_HOST_URL + "/semester/groups").then((res) => {
+        if (res.data.status) {
+          setGroups(res.data.data)
+        } else {
+          toast.error(res.data.data, {
+            position: "bottom-left"
+          })
+        }
+      })
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
+    }
+  }
 
   const fetchParticipants = async (id) => {
-    let data = fetchDataFromArrayUsingId(groups, id);
-    console.log(data);
-    await axios.get(process.env.REACT_APP_HOST_URL + "/semester/participants?id=" + id + "&programme=" + data.programme + "&term=" + data.term + "&department=" + data.department).then((res) => {
-      console.log(res.data);
-      if (res.data.status) {
-        setParticipants(res.data.data ?? []);
-      }
-    });
+    try {
+      let data = fetchDataFromArrayUsingId(groups, id);
+      console.log(data);
+      await axios.get(process.env.REACT_APP_HOST_URL + "/semester/participants?id=" + id + "&programme=" + data.programme + "&term=" + data.term + "&department=" + data.department).then((res) => {
+        console.log(res.data);
+        if (res.data.status) {
+          setParticipants(res.data.data ?? []);
+        } else {
+          toast.error(res.data.data, {
+            position: "bottom-left"
+          })
+        }
+      });
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
+    }
   };
 
   const fetchSchedules = async (id) => {
-    let data = fetchDataFromArrayUsingId(groups, id);
-    await axios.get(process.env.REACT_APP_HOST_URL + "/semester/schedules?id=" + id + "&programme=" + data.programme + "&term=" + data.term + "&department=" + data.department).then((res) => {
-      console.log(res.data);
-      if (res.data.status) {
-        setSchedules(res.data.data ?? []);
-      }
-    });
+    try {
+      let data = fetchDataFromArrayUsingId(groups, id);
+      await axios.get(process.env.REACT_APP_HOST_URL + "/semester/schedules?id=" + id + "&programme=" + data.programme + "&term=" + data.term + "&department=" + data.department).then((res) => {
+        console.log(res.data);
+        if (res.data.status) {
+          setSchedules(res.data.data ?? []);
+        } else {
+          toast.error(res.data.data, {
+            position: "bottom-left"
+          })
+        }
+      });
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
+    }
   };
 
   const handleSearchInfo = async (id) => {
@@ -234,6 +283,7 @@ export default function FGWClass() {
         </Grid>
         <Grid item sm={12} md={12}>
           <GroupWidget
+            handleRefreshEntry={fetchGroups}
             handleSearchInfo={handleSearchInfo}
             handleAddEntry={() => {
               handleOpenGroupModal();

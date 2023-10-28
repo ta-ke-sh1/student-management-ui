@@ -13,7 +13,6 @@ import RequestsForm from "./requestForm";
 import { programmes } from "../../mockData/mock";
 import { ToastContainer, toast } from "react-toastify";
 import { getAllHeaderColumns } from "../../../../../utils/utils";
-import axios from "axios";
 
 const headCells = [
   {
@@ -79,7 +78,7 @@ export default function RequestsAdmin(props) {
   const fetchRows = () => {
     try {
       axios.get(process.env.REACT_APP_HOST_URL + "/requests").then((res) => {
-        if(!res.data.status){
+        if (!res.data.status) {
           toast.error(res.data.data, {
             position: "bottom-left"
           })
@@ -92,7 +91,7 @@ export default function RequestsAdmin(props) {
           setRowData(data);
         }
       })
-    } catch (e){
+    } catch (e) {
       toast.error(e.toString(), {
         position: "bottom-left"
       })
@@ -104,38 +103,58 @@ export default function RequestsAdmin(props) {
   };
 
   const handleEdit = (id) => {
-    let requests = fetchRequests(id);
-    setRequests({
-      id: requests.id,
-      campus: requests.campus,
-      building: requests.building,
-      number: requests.number,
-      capacity: requests.capacity,
-    });
-    setOpenModal(true);
+    try {
+      let requests = fetchRequests(id);
+      setRequests({
+        id: requests.id,
+        campus: requests.campus,
+        building: requests.building,
+        number: requests.number,
+        capacity: requests.capacity,
+      });
+      setOpenModal(true);
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
+    }
   };
 
   const handleDelete = (index) => {
-    setDialogTitle("Delete Requests");
-    setDialogContent("This requests will be deleted, are you sure? This change cannot be undone");
-    setOpen(true);
-    setSelected(index);
-    console.log(index);
+    try {
+      setDialogTitle("Delete Requests");
+      setDialogContent("This requests will be deleted, are you sure? This change cannot be undone");
+      setOpen(true);
+      setSelected(index);
+      console.log(index);
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
+    }
+
   };
 
   const handleDeleteRequest = () => {
-    let query = [];
-    if (Array.isArray(selected)) {
-      query = selected.join("@");
-    } else {
-      query = selected;
+    try {
+      let query = [];
+      if (Array.isArray(selected)) {
+        query = selected.join("@");
+      } else {
+        query = selected;
+      }
+
+      console.log(query);
+      axios.delete(process.env.REACT_APP_HOST_URL + "/campus/requests?q=" + query).then((res) => {
+        console.log(res);
+        setOpen(false);
+      });
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
     }
 
-    console.log(query);
-    axios.delete(process.env.REACT_APP_HOST_URL + "/campus/requests?q=" + query).then((res) => {
-      console.log(res);
-      setOpen(false);
-    });
   };
 
   const handleSearch = (e) => {

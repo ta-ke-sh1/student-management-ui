@@ -84,49 +84,23 @@ export default function GroupWidget(props) {
             spacing={4}>
             <Grid item xs={12}>
                 <div className="big-widget">
-                    {props.groups.length == 0 ? (
-                        <>
-                            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', marginTop: '30px', marginBottom: '10px' }}>
-                                <Typography sx={{ flex: "1 1 100%" }}
-                                    variant="h6"
-                                    id="tableTitle"
-                                    component="div">
-                                    Group List
-                                </Typography>
-                                <Tooltip title="Add New Entry">
-                                    <IconButton
-                                        onClick={() => {
-                                            if (props.handleAddEntry) {
-                                                props.handleAddEntry();
-                                            } else {
-                                                console.log("Add event not binded");
-                                            }
-                                        }}>
-                                        <AddIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </div>
-                            <p>Please select programme & term</p>
-                            <br />
-                        </>
-                    ) : (
-                        <CustomTable
-                            isCampusControl={true}
-                            handleSearchInfo={props.handleSearchInfo}
-                            handleGetSelected={props.handleGetSelected}
-                            getSelectedId={props.getSelectedId}
-                            additionalTools={props.additionalTools}
-                            handleAddEntry={props.handleAddEntry}
-                            title={"Campus"}
-                            rows={data}
-                            headCells={headCells}
-                            colNames={[
-                                "id", "programme", "department", "term", "slots", "subject", "lecturer"
-                            ]}
-                            handleEdit={handleEdit}
-                            handleDelete={handleDelete}
-                        />
-                    )}
+                    <CustomTable
+                        handleRefreshEntry={props.handleRefreshEntry}
+                        isCampusControl={true}
+                        handleSearchInfo={props.handleSearchInfo}
+                        handleGetSelected={props.handleGetSelected}
+                        getSelectedId={props.getSelectedId}
+                        additionalTools={props.additionalTools}
+                        handleAddEntry={props.handleAddEntry}
+                        title={"Campus"}
+                        rows={data}
+                        headCells={headCells}
+                        colNames={[
+                            "id", "programme", "department", "term", "slots", "subject", "lecturer"
+                        ]}
+                        handleEdit={handleEdit}
+                        handleDelete={handleDelete}
+                    />
                 </div>
             </Grid>
         </Grid>

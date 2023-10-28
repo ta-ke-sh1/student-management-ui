@@ -13,7 +13,6 @@ import GradeForm from "./gradeForm";
 import { ToastContainer, toast } from "react-toastify";
 import { useFetchRequests } from "../../../../../api/apiFunctions";
 import { getAllHeaderColumns } from "../../../../../utils/utils";
-import { ToastContainer, toast } from "react-toastify";
 
 const headCells = [
   {
@@ -72,11 +71,6 @@ export default function GradeAdmin(props) {
   const [number, setNumber] = useState("");
   // Selected grade state for editing
   const [grade, setGrade] = useState({});
-  const [searchType, setSearchType] = useState("");
-  const [group, setGroup] = useState("");
-  const [grade_id, setGradeId] = useState("");
-  const [year, setYear] = useState("2023");
-  const [semester, setSemester] = useState("");
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogContent, setDialogContent] = useState("");
   const [open, setOpen] = useState(false);
@@ -90,16 +84,23 @@ export default function GradeAdmin(props) {
   }, [data]);
 
   const fetchRows = () => {
-    axios.get(process.env.REACT_APP_HOST_URL + "/user/grade").then((res) => {
-      if (res.data.status) {
-        setRows(res.data.data);
-        setRowData(res.data.data);
-      } else {
-        toast.error(res.data.data, {
-          position: "bottom-left"
-        })
-      }
-    });
+    try {
+      axios.get(process.env.REACT_APP_HOST_URL + "/user/grade").then((res) => {
+        if (res.data.status) {
+          setRows(res.data.data);
+          setRowData(res.data.data);
+        } else {
+          toast.error(res.data.data, {
+            position: "bottom-left"
+          })
+        }
+      });
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
+    }
+
   };
 
   const fetchGrade = (id) => {
@@ -107,58 +108,86 @@ export default function GradeAdmin(props) {
   };
 
   const handleEdit = (id) => {
-    let grade = fetchGrade(id);
-    setGrade({
-      id: grade.id,
-      campus: grade.campus,
-      building: grade.building,
-      number: grade.number,
-      capacity: grade.capacity,
-    });
-    setOpenModal(true);
+    try {
+      let grade = fetchGrade(id);
+      setGrade({
+        id: grade.id,
+        campus: grade.campus,
+        building: grade.building,
+        number: grade.number,
+        capacity: grade.capacity,
+      });
+      setOpenModal(true);
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
+    }
+
   };
 
   const handleDelete = (index) => {
-    setDialogTitle("Delete Grade");
-    setDialogContent("This grade will be deleted, are you sure? This change cannot be undone");
-    setOpen(true);
-    setSelected(index);
-    console.log(index);
+    try {
+      setDialogTitle("Delete Grade");
+      setDialogContent("This grade will be deleted, are you sure? This change cannot be undone");
+      setOpen(true);
+      setSelected(index);
+      console.log(index);
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
+    }
+
   };
 
   const handleDeleteRequest = () => {
-    let query = [];
-    if (Array.isArray(selected)) {
-      query = selected.join("@");
-    } else {
-      query = selected;
+    try {
+      let query = [];
+      if (Array.isArray(selected)) {
+        query = selected.join("@");
+      } else {
+        query = selected;
+      }
+
+      console.log(query);
+      axios.delete(process.env.REACT_APP_HOST_URL + "/campus/grade?q=" + query).then((res) => {
+        console.log(res);
+        setOpen(false);
+      });
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
     }
 
-    console.log(query);
-    axios.delete(process.env.REACT_APP_HOST_URL + "/campus/grade?q=" + query).then((res) => {
-      console.log(res);
-      setOpen(false);
-    });
   };
 
   const handleSearch = (e) => {
-    e.preventDefault();
+    try {
+      e.preventDefault();
 
-    let query = "Campus: ";
-    let searchResult = rowData.filter((r) => r.campus === campus);
-    query += campus;
+      let query = "Campus: ";
+      let searchResult = rowData.filter((r) => r.campus === campus);
+      query += campus;
 
-    if (number !== "") {
-      query += " / Grade number: " + number;
-      searchResult = rowData.filter((r) => r.campus === campus && r.number === number);
+      if (number !== "") {
+        query += " / Grade number: " + number;
+        searchResult = rowData.filter((r) => r.campus === campus && r.number === number);
+      }
+
+      if (!Array.isArray(searchResult)) {
+        searchResult = [];
+      }
+
+      setRows(searchResult);
+      setTableTitle(query);
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
     }
 
-    if (!Array.isArray(searchResult)) {
-      searchResult = [];
-    }
-
-    setRows(searchResult);
-    setTableTitle(query);
   };
 
   const handleClearSearch = (e) => {

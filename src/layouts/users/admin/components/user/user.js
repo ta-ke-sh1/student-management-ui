@@ -14,23 +14,6 @@ import Constants from "../../../../../utils/constants";
 import { ToastContainer, toast } from "react-toastify";
 import { getAllHeaderColumns } from "../../../../../utils/utils";
 
-function createData(id, role, firstName, lastName, dob, phone, department_id, email, password, city, district, ward, address) {
-  return {
-    id,
-    role,
-    firstName,
-    lastName,
-    dob,
-    phone,
-    department_id,
-    email,
-    password,
-    city,
-    district,
-    ward,
-    address,
-  };
-}
 
 const headCells = [
   {
@@ -147,9 +130,7 @@ export default function UsersAdmin() {
   const [rowsAdmin, setRowsAdmins] = useState([]);
 
   useEffect(() => {
-    fetchStudentRows();
-    fetchAdminRows();
-    fetchLecturerRows();
+    fetchRows("all")
   }, []);
 
   const fetchRows = (type) => {
@@ -162,6 +143,10 @@ export default function UsersAdmin() {
         break;
       case "admin":
         fetchAdminRows();
+      case "all":
+        fetchStudentRows();
+        fetchLecturerRows();
+        fetchAdminRows();
         break;
       default:
         break;
@@ -169,54 +154,74 @@ export default function UsersAdmin() {
   };
 
   const fetchStudentRows = () => {
-    axios.get(process.env.REACT_APP_HOST_URL + "/user/students").then((res) => {
-      if(!res.data.status){
-        toast.error(res.data.data, {
-          position: "bottom-left"
-        })
-      } else {
-        let result = [];
-        res.data.data.forEach((user) => {
-          result.push(createData(user.id, user.role, user.firstName, user.lastName, user.dob, user.phone, user.department_id, user.email, user.password));
-        });
-        setStudents(result);
-        setRowsStudents(result);
-      }
-    });
+    try {
+      axios.get(process.env.REACT_APP_HOST_URL + "/user/students").then((res) => {
+        if (!res.data.status) {
+          toast.error(res.data.data, {
+            position: "bottom-left"
+          })
+        } else {
+          let result = [];
+          res.data.data.forEach((user) => {
+            result.push(user);
+          });
+          setStudents(result);
+          setRowsStudents(result);
+        }
+      });
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
+    }
+
   };
 
   const fetchLecturerRows = () => {
-    axios.get(process.env.REACT_APP_HOST_URL + "/user/lecturers").then((res) => {
-      if(!res.data.status){
-        toast.error(res.data.data, {
-          position: "bottom-left"
-        })
-      } else {
-        let result = [];
-        res.data.data.forEach((user) => {
-          result.push(createData(user.id, user.role, user.firstName, user.lastName, user.dob, user.phone, user.department_id, user.email, user.password));
-        });
-        setLecturers(result);
-        setRowsLecturers(result);
-      }
-    });
+    try {
+      axios.get(process.env.REACT_APP_HOST_URL + "/user/lecturers").then((res) => {
+        if (!res.data.status) {
+          toast.error(res.data.data, {
+            position: "bottom-left"
+          })
+        } else {
+          let result = [];
+          res.data.data.forEach((user) => {
+            result.push(user);
+          });
+          setLecturers(result);
+          setRowsLecturers(result);
+        }
+      });
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
+    }
   };
 
   const fetchAdminRows = () => {
-    axios.get(process.env.REACT_APP_HOST_URL + "/user/admins").then((res) => {
-      if(!res.data.status){
-        toast.error(res.data.data, {
-          position: "bottom-left"
-        })
-      } else {
-        let result = [];
-        res.data.data.forEach((user) => {
-          result.push(createData(user.id, user.role, user.firstName, user.lastName, user.dob, user.phone, user.department_id, user.email, user.password));
-        });
-        setAdmins(result);
-        setRowsAdmins(result);
-      }
-    });
+    try {
+      axios.get(process.env.REACT_APP_HOST_URL + "/user/admins").then((res) => {
+        if (!res.data.status) {
+          toast.error(res.data.data, {
+            position: "bottom-left"
+          })
+        } else {
+          let result = [];
+          res.data.data.forEach((user) => {
+            result.push(user);
+          });
+          setAdmins(result);
+          setRowsAdmins(result);
+          console.log(result)
+        }
+      });
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
+    }
   };
 
   const findDataById = (data, id) => {
@@ -282,7 +287,7 @@ export default function UsersAdmin() {
     setOpenModal(false);
   };
 
-  const handleConfirm = () => {};
+  const handleConfirm = () => { };
 
   return (
     <>

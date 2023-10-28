@@ -158,41 +158,54 @@ export default function SubjectsAdmin() {
   const [programme, setProgramme] = useState("");
   const [id, setId] = useState("");
   const [department, setDepartment] = useState("");
-  const handleSearch = () => {};
+  const handleSearch = () => { };
 
-  const handleClearSearch = () => {};
+  const handleClearSearch = () => { };
 
   useEffect(() => {
     fetchRows();
   }, []);
 
   const fetchRows = () => {
-    axios.get(process.env.REACT_APP_HOST_URL + "/subjects").then((res) => {
-      if(!res.data.status){
-        toast.error(res.data.data, {
-          position: "bottom-left"
-        })
-      } else {
-        let data = [];
-        res.data.data.forEach((subject) => {
-          data.push(subject);
-        });
-        setRows(data);
-        setRowData(data);
-      }
-    })
-    let res = [];
-    subjects.forEach((subject) => {
-      res.push(createData(subject.id, subject.name, subject.description, subject.prerequisites, subject.degree, subject.slots));
-    });
-    setRows(res);
+    try {
+      axios.get(process.env.REACT_APP_HOST_URL + "/subjects").then((res) => {
+        if (!res.data.status) {
+          toast.error(res.data.data, {
+            position: "bottom-left"
+          })
+        } else {
+          let data = [];
+          res.data.data.forEach((subject) => {
+            data.push(subject);
+          });
+          setRows(data);
+          setRowData(data);
+        }
+      })
+      let res = [];
+      subjects.forEach((subject) => {
+        res.push(createData(subject.id, subject.name, subject.description, subject.prerequisites, subject.degree, subject.slots));
+      });
+      setRows(res);
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
+    }
+
   };
 
   const handleDelete = (index) => {
-    setDialogTitle("Delete Room");
-    setDialogContent("This room will be deleted, are you sure? This change cannot be undone");
-    setOpen(true);
-    console.log(index);
+    try {
+      setDialogTitle("Delete Room");
+      setDialogContent("This room will be deleted, are you sure? This change cannot be undone");
+      setOpen(true);
+      console.log(index);
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
+    }
   };
 
   const handleClose = () => {

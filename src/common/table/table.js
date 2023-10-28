@@ -88,6 +88,7 @@ export default function CustomTable(props) {
         <EnhancedTableToolbar
           isDownloadable={props.isDownloadable}
           isCampusControl={props.isCampusControl}
+          handleRefreshEntry={props.handleRefreshEntry}
           handleSearchInfo={props.handleSearchInfo}
           handleGetSelected={props.handleGetSelected}
           additionalTools={props.additionalTools}

@@ -116,18 +116,25 @@ export default function ScheduleAdmin(props) {
   };
 
   const handleDeleteRequest = () => {
-    let query = [];
-    if (Array.isArray(selected)) {
-      query = selected.join("@");
-    } else {
-      query = selected;
+    try {
+      let query = [];
+      if (Array.isArray(selected)) {
+        query = selected.join("@");
+      } else {
+        query = selected;
+      }
+
+      console.log(query);
+      axios.delete(process.env.REACT_APP_HOST_URL + "/campus/schedule?q=" + query).then((res) => {
+        console.log(res);
+        setOpen(false);
+      });
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
     }
 
-    console.log(query);
-    axios.delete(process.env.REACT_APP_HOST_URL + "/campus/schedule?q=" + query).then((res) => {
-      console.log(res);
-      setOpen(false);
-    });
   };
 
   const handleSearch = (e) => {

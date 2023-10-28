@@ -103,83 +103,130 @@ export default function CampusAdmin() {
 
   const fetchRows = () => {
     let result = [];
-    axios.get(process.env.REACT_APP_HOST_URL + "/campus/rooms").then((res) => {
-      if (!res.data.status) {
-        toast.error(res.data.data);
-      }
+    try {
+      axios.get(process.env.REACT_APP_HOST_URL + "/campus/rooms").then((res) => {
+        if (!res.data.status) {
+          toast.error(res.data.data);
+        }
 
-      res.data.data.forEach((room) => {
-        result.push(createData(room.id, room.campus, room.building, room.room, room.capacity));
+        res.data.data.forEach((room) => {
+          result.push(createData(room.id, room.campus, room.building, room.room, room.capacity));
+        });
+        console.log(res.data);
+        setRows(result);
+        setRowData(result);
       });
-      console.log(res.data);
-      setRows(result);
-      setRowData(result);
-    });
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
+    }
+
   };
 
   const fetchRoom = (id) => {
-    return rows.find((row) => row.id === id);
+    try {
+      return rows.find((row) => row.id === id);
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
+    }
+
   };
 
+  const handleRefreshEntry = () => {
+    console.log("Fetch rows!")
+    fetchRows();
+  }
+
   const handleEdit = (id) => {
-    let room = fetchRoom(id);
-    setRoom({
-      id: room.id,
-      campus: room.campus,
-      building: room.building,
-      number: room.number,
-      capacity: room.capacity,
-    });
-    setOpenModal(true);
+    try {
+      let room = fetchRoom(id);
+      setRoom({
+        id: room.id,
+        campus: room.campus,
+        building: room.building,
+        number: room.number,
+        capacity: room.capacity,
+      });
+      setOpenModal(true);
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
+    }
+
   };
 
   const handleDelete = (index) => {
-    setDialogTitle("Delete Room");
-    setDialogContent("This room will be deleted, are you sure? This change cannot be undone");
-    setOpen(true);
-    setSelected(index);
-    console.log(index);
+    try {
+      setDialogTitle("Delete Room");
+      setDialogContent("This room will be deleted, are you sure? This change cannot be undone");
+      setOpen(true);
+      setSelected(index);
+      console.log(index);
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
+    }
+
   };
 
   const handleDeleteRequest = () => {
-    let query = [];
-    if (Array.isArray(selected)) {
-      query = selected.join("@");
-    } else {
-      query = selected;
+    try {
+      let query = [];
+      if (Array.isArray(selected)) {
+        query = selected.join("@");
+      } else {
+        query = selected;
+      }
+
+      console.log(query);
+      axios.delete(process.env.REACT_APP_HOST_URL + "/campus/room?q=" + query).then((res) => {
+        console.log(res);
+        if (res.data.status) {
+          toast("Selected rooms deleted successfully");
+          fetchRows();
+        } else {
+          toast("Failed to delete selected rooms");
+        }
+        setOpen(false);
+      });
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
     }
 
-    console.log(query);
-    axios.delete(process.env.REACT_APP_HOST_URL + "/campus/room?q=" + query).then((res) => {
-      console.log(res);
-      if (res.data.status) {
-        toast("Selected rooms deleted successfully");
-        fetchRows();
-      } else {
-        toast("Failed to delete selected rooms");
-      }
-      setOpen(false);
-    });
   };
 
   const handleSearch = (e) => {
-    e.preventDefault();
+    try {
+      e.preventDefault();
 
-    let query = "Campus: ";
-    let searchResult = rowData.filter((r) => r.campus === campus);
-    query += campus;
+      let query = "Campus: ";
+      let searchResult = rowData.filter((r) => r.campus === campus);
+      query += campus;
 
-    if (number !== "") {
-      query += " / Room number: " + number;
-      searchResult = rowData.filter((r) => r.campus === campus && r.number === number);
+      if (number !== "") {
+        query += " / Room number: " + number;
+        searchResult = rowData.filter((r) => r.campus === campus && r.number === number);
+      }
+
+      if (!Array.isArray(searchResult)) {
+        searchResult = [];
+      }
+
+      setRows(searchResult);
+      setTableTitle(query);
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
     }
 
-    if (!Array.isArray(searchResult)) {
-      searchResult = [];
-    }
-
-    setRows(searchResult);
-    setTableTitle(query);
   };
 
   const handleClearSearch = (e) => {
@@ -272,6 +319,7 @@ export default function CampusAdmin() {
                 colNames={getAllHeaderColumns(headCells)}
                 handleEdit={handleEdit}
                 handleDelete={handleDelete}
+                handleRefreshEntry={handleRefreshEntry}
               />
             </div>
           </div>

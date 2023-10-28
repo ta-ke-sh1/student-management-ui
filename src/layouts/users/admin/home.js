@@ -18,7 +18,7 @@ import GradeAdmin from "./components/grades/grade";
 import DocumentsAdmin from "./components/documents/documents";
 import RequestAdmin from "./components/requests/request";
 import Attendance from "./components/attendance/attendance";
-import {Main, drawerWidth} from "../../../common/drawer/drawer";
+import { Main, drawerWidth } from "../../../common/drawer/drawer";
 
 export default function AdminHome() {
   const _container = window !== undefined ? () => window.document.body : undefined;

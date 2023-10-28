@@ -3,9 +3,8 @@ import { useFetchHomeData } from "./hooks/useFetchHomeData";
 import CoursesCards from "./coursesCards";
 import Footer from "../../footer";
 import { Link } from "react-router-dom";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../hooks/auth/useAuth";
-import { decodeToken } from "../../utils/utils";
 import CourseForm from "./courseForm";
 
 export default function CommonHome() {

@@ -1,25 +1,20 @@
 import { useState, useEffect } from "react";
 import { TextField, Select, MenuItem, InputLabel, FormControl, Button, Grid, Modal, Box } from "@mui/material";
-import CustomTable from "../../../../../components/table/table";
+import CustomTable from "../../../../../common/table/table";
 
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { users } from "../../mockData/mock";
-
-import { MuiTelInput } from "mui-tel-input";
-import { DatePicker, DesktopDatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import UserForm from "./userForm";
 import axios from "axios";
 import Constants from "../../../../../utils/constants";
-import UserSearch from "./userSearch";
 import { ToastContainer, toast } from "react-toastify";
 import { getAllHeaderColumns } from "../../../../../utils/utils";
 
-function createData(id, role, firstName, lastName, dob, phone, status, department_id, email, password, city, district, ward, address) {
+function createData(id, role, firstName, lastName, dob, phone, department_id, email, password, city, district, ward, address) {
   return {
     id,
     role,
@@ -27,7 +22,6 @@ function createData(id, role, firstName, lastName, dob, phone, status, departmen
     lastName,
     dob,
     phone,
-    status,
     department_id,
     email,
     password,
@@ -176,34 +170,52 @@ export default function UsersAdmin() {
 
   const fetchStudentRows = () => {
     axios.get(process.env.REACT_APP_HOST_URL + "/user/students").then((res) => {
-      let result = [];
-      res.data.data.forEach((user) => {
-        result.push(createData(user.id, user.role, user.firstName, user.lastName, user.dob, user.phone, user.status, user.department_id, user.email, user.password));
-      });
-      setStudents(result);
-      setRowsStudents(result);
+      if(!res.data.status){
+        toast.error(res.data.data, {
+          position: "bottom-left"
+        })
+      } else {
+        let result = [];
+        res.data.data.forEach((user) => {
+          result.push(createData(user.id, user.role, user.firstName, user.lastName, user.dob, user.phone, user.department_id, user.email, user.password));
+        });
+        setStudents(result);
+        setRowsStudents(result);
+      }
     });
   };
 
   const fetchLecturerRows = () => {
     axios.get(process.env.REACT_APP_HOST_URL + "/user/lecturers").then((res) => {
-      let result = [];
-      res.data.data.forEach((user) => {
-        result.push(createData(user.id, user.role, user.firstName, user.lastName, user.dob, user.phone, user.status, user.department_id, user.email, user.password));
-      });
-      setLecturers(result);
-      setRowsLecturers(result);
+      if(!res.data.status){
+        toast.error(res.data.data, {
+          position: "bottom-left"
+        })
+      } else {
+        let result = [];
+        res.data.data.forEach((user) => {
+          result.push(createData(user.id, user.role, user.firstName, user.lastName, user.dob, user.phone, user.department_id, user.email, user.password));
+        });
+        setLecturers(result);
+        setRowsLecturers(result);
+      }
     });
   };
 
   const fetchAdminRows = () => {
     axios.get(process.env.REACT_APP_HOST_URL + "/user/admins").then((res) => {
-      let result = [];
-      res.data.data.forEach((user) => {
-        result.push(createData(user.id, user.role, user.firstName, user.lastName, user.dob, user.phone, user.status, user.department_id, user.email, user.password));
-      });
-      setAdmins(result);
-      setRowsAdmins(result);
+      if(!res.data.status){
+        toast.error(res.data.data, {
+          position: "bottom-left"
+        })
+      } else {
+        let result = [];
+        res.data.data.forEach((user) => {
+          result.push(createData(user.id, user.role, user.firstName, user.lastName, user.dob, user.phone, user.department_id, user.email, user.password));
+        });
+        setAdmins(result);
+        setRowsAdmins(result);
+      }
     });
   };
 
@@ -465,6 +477,8 @@ export default function UsersAdmin() {
           <UserForm closeHandler={handleCloseModal} user={user} refresh={fetchRows} />
         </DialogContent>
       </Dialog>
+
+      <ToastContainer />
     </>
   );
 }

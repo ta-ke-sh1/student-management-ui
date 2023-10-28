@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
-import { TextField, Select, MenuItem, InputLabel, FormControl, Button, Grid } from "@mui/material";
-import CustomTable from "../../../../../components/table/table";
+import { useState, useEffect } from "react";
+import { TextField, Button, Grid } from "@mui/material";
+import CustomTable from "../../../../../common/table/table";
 
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -10,10 +10,10 @@ import DialogTitle from "@mui/material/DialogTitle";
 
 import axios from "axios";
 import GradeForm from "./gradeForm";
-import { programmes } from "../../mockData/mock";
 import { ToastContainer, toast } from "react-toastify";
 import { useFetchRequests } from "../../../../../api/apiFunctions";
 import { getAllHeaderColumns } from "../../../../../utils/utils";
+import { ToastContainer, toast } from "react-toastify";
 
 const headCells = [
   {
@@ -94,6 +94,10 @@ export default function GradeAdmin(props) {
       if (res.data.status) {
         setRows(res.data.data);
         setRowData(res.data.data);
+      } else {
+        toast.error(res.data.data, {
+          position: "bottom-left"
+        })
       }
     });
   };

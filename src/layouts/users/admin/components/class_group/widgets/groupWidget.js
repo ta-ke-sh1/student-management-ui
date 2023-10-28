@@ -1,6 +1,6 @@
-import { Grid, IconButton, Tooltip, Toolbar, Typography } from "@mui/material";
+import { Grid, IconButton, Tooltip, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import CustomTable from "../../../../../../components/table/table";
+import CustomTable from "../../../../../../common/table/table";
 import { useEffect } from "react";
 
 const headCells = [

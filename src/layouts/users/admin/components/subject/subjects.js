@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { TextField, Button, Grid, Select, FormControl, InputLabel, MenuItem } from "@mui/material";
-import CustomTable from "../../../../../components/table/table";
+import CustomTable from "../../../../../common/table/table";
 
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -10,6 +10,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import SubjectForm from "./subjectForm";
 import { ToastContainer, toast } from "react-toastify";
 import Constants from "../../../../../utils/constants";
+import axios from "axios";
 
 function createData(id, name, description, prerequisites, degree, slots) {
   return {
@@ -148,6 +149,7 @@ export default function SubjectsAdmin() {
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogContent, setDialogContent] = useState("");
   const [rows, setRows] = useState([]);
+  const [rowData, setRowData] = useState([]);
   const [open, setOpen] = useState(false);
 
   const [subject, setSubject] = useState({});
@@ -165,6 +167,20 @@ export default function SubjectsAdmin() {
   }, []);
 
   const fetchRows = () => {
+    axios.get(process.env.REACT_APP_HOST_URL + "/subjects").then((res) => {
+      if(!res.data.status){
+        toast.error(res.data.data, {
+          position: "bottom-left"
+        })
+      } else {
+        let data = [];
+        res.data.data.forEach((subject) => {
+          data.push(subject);
+        });
+        setRows(data);
+        setRowData(data);
+      }
+    })
     let res = [];
     subjects.forEach((subject) => {
       res.push(createData(subject.id, subject.name, subject.description, subject.prerequisites, subject.degree, subject.slots));
@@ -332,6 +348,8 @@ export default function SubjectsAdmin() {
           <SubjectForm closeHandler={handleCloseSubjectModal} subject={subject} refresh={fetchRows} />
         </DialogContent>
       </Dialog>
+
+      <ToastContainer />
     </>
   );
 }

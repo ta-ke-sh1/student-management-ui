@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { TextField, Select, MenuItem, InputLabel, FormControl, Button, Grid } from "@mui/material";
-import CustomTable from "../../../../../components/table/table";
+import { Button, Grid } from "@mui/material";
+import CustomTable from "../../../../../common/table/table";
 
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -10,17 +10,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 
 import axios from "axios";
 import DocumentsForm from "./documentsForm";
-import { programmes } from "../../mockData/mock";
 import { ToastContainer, toast } from "react-toastify";
-
-function createData(id, name, path, status) {
-  return {
-    id,
-    name,
-    path,
-    status,
-  };
-}
 
 const headCells = [
   {
@@ -81,6 +71,9 @@ export default function DocumentsAdmin(props) {
         setRows(data);
       } else {
         console.log("Error!");
+        toast.error(res.data.data, {
+          position: "bottom-left"
+        })
       }
     });
   };
@@ -216,6 +209,8 @@ export default function DocumentsAdmin(props) {
           <DocumentsForm closeHandler={handleCloseModal} document={documents} refresh={fetchRows} />
         </DialogContent>
       </Dialog>
+
+      <ToastContainer />
     </>
   );
 }

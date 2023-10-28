@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { TextField, Select, MenuItem, InputLabel, FormControl, Button, Grid } from "@mui/material";
-import CustomTable from "../../../../../components/table/table";
+import CustomTable from "../../../../../common/table/table";
 
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";

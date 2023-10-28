@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, Divider, Paper, Typography, TableContainer, TableRow, TableCell, Table, Button, Grid, Grow } from "@mui/material"
+import { Accordion, AccordionDetails, AccordionSummary, Paper, TableContainer, TableRow, TableCell, Table, Button, Grid } from "@mui/material"
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useEffect, useState } from "react";
 import { fromMilisecondsToDateString, subtractTime } from "../../../utils/utils";

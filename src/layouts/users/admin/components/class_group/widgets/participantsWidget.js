@@ -1,4 +1,4 @@
-import CustomTable from "../../../../../../components/table/table";
+import CustomTable from "../../../../../../common/table/table";
 import { Grid } from "@mui/material";
 
 const headCells = [

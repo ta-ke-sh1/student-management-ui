@@ -6,8 +6,8 @@ import CommonHome from "./layouts/home/home";
 import LoginScreen from "./layouts/login";
 import NavBar from "./navBar";
 import CourseUser from "./layouts/course/course";
-import GradeUser from "./layouts/users/student/views/grade";
-import UserHome from "./layouts/users/student/home";
+import GradeUser from "./layouts/users/user/views/grade/grade";
+import UserHome from "./layouts/users/user/home";
 import Test from "./test";
 
 function App() {

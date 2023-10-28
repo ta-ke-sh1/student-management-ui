@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { TextField, Select, MenuItem, InputLabel, FormControl, Button, Grid } from "@mui/material";
-import CustomTable from "../../../../../components/table/table";
+import CustomTable from "../../../../../common/table/table";
 
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -13,24 +13,7 @@ import RequestsForm from "./requestForm";
 import { programmes } from "../../mockData/mock";
 import { ToastContainer, toast } from "react-toastify";
 import { getAllHeaderColumns } from "../../../../../utils/utils";
-
-function createData(id, campus, building, number, capacity) {
-  return {
-    id,
-    campus,
-    building,
-    number,
-    capacity,
-  };
-}
-
-const requestss = [
-  { id: "Requests-HN-100", campus: "HN", requests: "100", building: "Pham Van Bach", capacity: 100 },
-  { id: "Requests-HN-101", campus: "HN", requests: "101", building: "Pham Van Bach", capacity: 100 },
-  { id: "Requests-HN-102", campus: "HN", requests: "102", building: "Pham Van Bach", capacity: 100 },
-  { id: "Requests-HN-103", campus: "HCM", requests: "103", building: "Pham Van Bach", capacity: 100 },
-  { id: "Requests-HN-419", campus: "HN", requests: "419", building: "Pham Van Bach", capacity: 100 },
-];
+import axios from "axios";
 
 const headCells = [
   {
@@ -94,12 +77,26 @@ export default function RequestsAdmin(props) {
   }, []);
 
   const fetchRows = () => {
-    let res = [];
-    requestss.forEach((requests) => {
-      res.push({ ...requests });
-    });
-    setRows(res);
-    setRowData(res);
+    try {
+      axios.get(process.env.REACT_APP_HOST_URL + "/requests").then((res) => {
+        if(!res.data.status){
+          toast.error(res.data.data, {
+            position: "bottom-left"
+          })
+        } else {
+          let data = [];
+          res.data.data.forEach((request) => {
+            data.push(request);
+          });
+          setRows(data);
+          setRowData(data);
+        }
+      })
+    } catch (e){
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
+    }
   };
 
   const fetchRequests = (id) => {
@@ -293,6 +290,8 @@ export default function RequestsAdmin(props) {
           <RequestsForm closeHandler={handleCloseModal} requests={requests} refresh={fetchRows} />
         </DialogContent>
       </Dialog>
+
+      <ToastContainer />
     </>
   );
 }

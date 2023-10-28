@@ -1,99 +1,65 @@
+import { useEffect, useState } from "react";
 import { Drawer, Box, Fab } from "@mui/material";
-import React, { useState } from "react";
 import Toolbar from "@mui/material/Toolbar";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import CampusAdmin from "./components/campus/campus";
-import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
+import PersonalInfo from "./views/personalInfo/personalInfo";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import UsersAdmin from "./components/user/user";
-import SubjectsAdmin from "./components/subject/subjects";
-import BookmarksIcon from "@mui/icons-material/Bookmarks";
-import FGWClass from "./components/class_group/class";
-import GradeAdmin from "./components/grades/grade";
-import DocumentsAdmin from "./components/documents/documents";
-import RequestAdmin from "./components/requests/request";
-import Attendance from "./components/attendance/attendance";
+import ScheduleHome from "./views/schedule/schedule";
+import EventNoteIcon from "@mui/icons-material/EventNote";
+import ViewListIcon from "@mui/icons-material/ViewList";
+import CurriculumTab from "./views/curriculum/curriculum";
+import ClassIcon from "@mui/icons-material/Class";
+import { decodeToken } from "../../../utils/utils";
 import {Main, drawerWidth} from "../../../common/drawer/drawer";
-
-export default function AdminHome() {
+export default function UserHome(props) {
   const _container = window !== undefined ? () => window.document.body : undefined;
-
+  const [current, setCurrent] = useState(props.index ?? 0);
   const [mobileOpen, setMobileOpen] = useState(true);
-  const [current, setCurrent] = useState(2);
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
+  const [user, setUser] = useState();
+
+  const components = [<PersonalInfo user={user} />, <ScheduleHome user={user} />, <CurriculumTab user={user} />];
 
   const nav_tabs = [
     {
-      title: "Facilities",
+      title: "Navigation",
       tabs: [
         {
-          name: "Rooms",
+          name: "Personal Info",
           id: 0,
-          icon: <TableRestaurantIcon />,
-        },
-        {
-          name: "Users",
-          id: 1,
           icon: <AccountCircleIcon />,
         },
-      ],
-    },
-    {
-      title: "Scheduling",
-      tabs: [
         {
-          name: "Groups",
+          name: "Schedule",
+          id: 1,
+          icon: <EventNoteIcon />,
+        },
+        {
+          name: "Curriculum",
           id: 2,
-          icon: <CalendarMonthIcon />,
+          icon: <ViewListIcon />,
         },
         {
-          name: "Attendance",
+          name: "Courses",
           id: 3,
-          icon: <CalendarMonthIcon />,
-        },
-      ],
-    },
-    {
-      title: "Courses",
-      tabs: [
-        {
-          name: "Subjects",
-          id: 4,
-          icon: <BookmarksIcon />,
-        },
-        {
-          name: "Grades",
-          id: 5,
-          icon: <CalendarMonthIcon />,
-        },
-      ],
-    },
-    {
-      title: "Others",
-      tabs: [
-        {
-          name: "Documents",
-          id: 6,
-          icon: <BookmarksIcon />,
-        },
-        {
-          name: "Requests",
-          id: 7,
-          icon: <InboxIcon />,
+          icon: <ClassIcon />,
         },
       ],
     },
   ];
 
-  const components = [<CampusAdmin />, <UsersAdmin />, <FGWClass />, <Attendance />, <SubjectsAdmin />, <GradeAdmin />, <DocumentsAdmin />, <RequestAdmin />];
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    const decoded = decodeToken(token);
+    setUser(decoded);
+  });
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
 
   const drawer = (
     <div className="drawer">
@@ -101,12 +67,12 @@ export default function AdminHome() {
       {nav_tabs.map((tab) => {
         return (
           <>
-            <h3 style={{ marginBottom: "10px" }}>{tab.title}</h3>
+            <h3>{tab.title}</h3>
             {tab.tabs.map((tab) => (
               <>
                 <ListItem
                   sx={{
-                    padding: "0px 10px",
+                    padding: "5px 10px",
                   }}
                   key={tab.name}
                   onClick={() => {
@@ -119,20 +85,8 @@ export default function AdminHome() {
                       borderRadius: "5px",
                     }}
                   >
-                    <ListItemIcon
-                      sx={{
-                        color: tab.id === current ? "#1976d2" : "#757575",
-                        padding: 0,
-                      }}
-                    >
-                      {tab.icon}
-                    </ListItemIcon>
-                    <ListItemText
-                      sx={{
-                        color: tab.id === current ? "#1976d2" : "#757575",
-                      }}
-                      primary={tab.name}
-                    />
+                    <ListItemIcon sx={{ color: tab.id === current ? "#1976d2" : "#757575", padding: 0 }}>{tab.icon}</ListItemIcon>
+                    <ListItemText sx={{ color: tab.id === current ? "#1976d2" : "#757575" }} primary={tab.name} />
                   </ListItemButton>
                 </ListItem>
               </>
@@ -149,9 +103,9 @@ export default function AdminHome() {
         <Box
           component="nav"
           sx={{
+            zIndex: 10,
             width: { sm: drawerWidth },
             flexShrink: { sm: 0 },
-            zIndex: 10,
           }}
           aria-label="mailbox folders"
         >
@@ -162,12 +116,11 @@ export default function AdminHome() {
             sx={{
               width: drawerWidth,
               flexShrink: 0,
-
               "& .MuiDrawer-paper": {
                 width: drawerWidth,
                 boxSizing: "border-box",
                 borderWidth: 0,
-                marginTop: "60px",
+                marginTop: "20px",
               },
               border: "none",
             }}
@@ -179,15 +132,26 @@ export default function AdminHome() {
         </Box>
         <Main open={mobileOpen}>
           <div
-            className="admin-container"
+            className="course-head-banner"
             style={{
-              marginTop: "120px",
+              backgroundImage: `url(${process.env.PUBLIC_URL}/banner/banner` + 5 + ".jpg)",
             }}
-          >
-            {components[current]}
+          ></div>
+          <div className="admin-container">
+            <div
+              className="big-widget"
+              style={{
+                width: "97.5%",
+                overflowY: "auto",
+                padding: "20px",
+              }}
+            >
+              {components[current]}
+            </div>
           </div>
         </Main>
       </Box>
+
       <div className={"fab"}>
         <Fab onClick={handleDrawerToggle}>
           <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none">

@@ -1,6 +1,5 @@
-import { Grid, FormControl, Box, InputLabel, Select, MenuItem, Button, TextField } from "@mui/material";
-import { useState } from "react";
-import SearchIcon from "@mui/icons-material/Search";
+import { Grid} from "@mui/material";
+
 import { useFetchRequests } from "./api/apiFunctions";
 
 export default function CompoundSearch() {

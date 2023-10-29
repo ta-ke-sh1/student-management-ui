@@ -17,14 +17,13 @@ import FGWClass from "./components/class_group/class";
 import GradeAdmin from "./components/grades/grade";
 import DocumentsAdmin from "./components/documents/documents";
 import RequestAdmin from "./components/requests/request";
-import Attendance from "./components/attendance/attendance";
 import { Main, drawerWidth } from "../../../common/drawer/drawer";
 
 export default function AdminHome() {
   const _container = window !== undefined ? () => window.document.body : undefined;
 
   const [mobileOpen, setMobileOpen] = useState(true);
-  const [current, setCurrent] = useState(4);
+  const [current, setCurrent] = useState(2);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -54,11 +53,6 @@ export default function AdminHome() {
           id: 2,
           icon: <CalendarMonthIcon />,
         },
-        {
-          name: "Attendance",
-          id: 3,
-          icon: <CalendarMonthIcon />,
-        },
       ],
     },
     {
@@ -66,12 +60,12 @@ export default function AdminHome() {
       tabs: [
         {
           name: "Subjects",
-          id: 4,
+          id: 3,
           icon: <BookmarksIcon />,
         },
         {
-          name: "Grades",
-          id: 5,
+          name: "Submissions",
+          id: 4,
           icon: <CalendarMonthIcon />,
         },
       ],
@@ -81,19 +75,19 @@ export default function AdminHome() {
       tabs: [
         {
           name: "Documents",
-          id: 6,
+          id: 5,
           icon: <BookmarksIcon />,
         },
         {
           name: "Requests",
-          id: 7,
+          id: 6,
           icon: <InboxIcon />,
         },
       ],
     },
   ];
 
-  const components = [<CampusAdmin />, <UsersAdmin />, <FGWClass />, <Attendance />, <SubjectsAdmin />, <GradeAdmin />, <DocumentsAdmin />, <RequestAdmin />];
+  const components = [<CampusAdmin />, <UsersAdmin />, <FGWClass />, <SubjectsAdmin />, <GradeAdmin />, <DocumentsAdmin />, <RequestAdmin />];
 
   const drawer = (
     <div className="drawer">

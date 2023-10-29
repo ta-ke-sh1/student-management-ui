@@ -15,6 +15,8 @@ import ParticipantsForm from "./forms/participantsForm";
 import Constants from "../../../../../utils/constants";
 import { ToastContainer, toast } from "react-toastify";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import AttendanceWidget from "./widgets/attendanceWidget";
+import AttendanceForm from "./forms/attendanceForm";
 
 export default function FGWClass() {
   const constants = new Constants();
@@ -24,15 +26,28 @@ export default function FGWClass() {
 
   const [participants, setParticipants] = useState([]);
   const [schedules, setSchedules] = useState([]);
+  const [attendances, setAttendances] = useState([]);
 
   const [participant, setParticipant] = useState({});
   const [schedule, setSchedule] = useState({});
+  const [attendance, setAttendance] = useState({})
 
   const [openGroupModal, setOpenGroupModal] = useState(false);
   const [openParticipantsModal, setOpenParticipantsModal] = useState(false);
   const [openScheduleModal, setOpenScheduleModal] = useState(false);
+  const [openAttendanceModal, setOpenAttendanceModal] = useState(false)
 
-  const [group, setGroup] = useState(null);
+  const [group, setGroup] = useState({
+    id: '0iIGIK0HoMcFgnWMRUI3',
+    programme: "ENG",
+    subject: "BUSI1334",
+    term: "SU-23",
+    name: "GBH2049",
+    slots: 24
+  });
+
+  const [selectedSession, setSelectedSession] = useState({})
+
   const [groups, setGroups] = useState([]);
 
   const [year, setYear] = useState(2023);
@@ -41,12 +56,13 @@ export default function FGWClass() {
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogContent, setDialogContent] = useState("");
 
-  const [firstClick, setFirstClick] = useState(false);
+  const [firstClick, setFirstClick] = useState(true);
+  const [firstClickAttendance, setFirstClickAttendance] = useState(true)
 
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    fetchGroups()
+    // fetchGroups()
   }, [])
 
   const handleSearchGroup = async () => {
@@ -94,6 +110,10 @@ export default function FGWClass() {
 
   const handleCloseParticipantFormModal = () => {
     setOpenParticipantsModal(false);
+  };
+
+  const handleCloseAttendanceFormModal = () => {
+    setOpenAttendanceModal(false);
   };
 
   const fetchDataFromArrayUsingId = (data, id) => {
@@ -178,13 +198,36 @@ export default function FGWClass() {
     }
   };
 
+  const fetchAttendances = async (id) => {
+    try {
+      await axios.get(process.env.REACT_APP_HOST_URL + "").then((res) => {
+        if (res.data.status) {
+          setAttendances(res.data.data)
+        } else {
+          toast.error(res.data.data, {
+            position: "bottom-left"
+          })
+        }
+      })
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left"
+      })
+    }
+  }
+
   const handleSearchInfo = async (id) => {
     fetchParticipants(id);
     fetchSchedules(id);
     let data = fetchDataFromArrayUsingId(groups, id);
+    console.log(data)
     setGroup(data)
     setFirstClick(true);
   };
+
+  const handleSearchAttendance = async (id) => {
+    console.log(id)
+  }
 
   return (
     <>
@@ -331,6 +374,7 @@ export default function FGWClass() {
                         handleAddEntry={() => {
                           setOpenScheduleModal(true);
                         }}
+                        handleSearchAttendance={handleSearchAttendance}
                         handleEdit={handleEditSchedule}
                         firstClick={firstClick}
                         schedules={schedules}
@@ -355,7 +399,31 @@ export default function FGWClass() {
         ) : (
           <></>
         )}
+        {
+          firstClickAttendance ?
+            <Grid item sm={12} md={12}>
+              <Accordion defaultExpanded={true}>
+                <AccordionSummary
+                  sx={{
+                    borderBottom: "3px solid #F11A7B",
+                  }}
+                  expandIcon={<ExpandMoreIcon />}
+                >
+                  <strong>Attendance Report: </strong><span style={{ marginLeft: "10px" }}>{selectedSession.id}</span>
+                </AccordionSummary>
+                <AccordionDetails sx={{ paddingTop: "20px" }}>
+                  <AttendanceWidget handleAddEntry={() => {
+                    setOpenAttendanceModal(true);
+                  }}
+                    handleEdit={handleEditParticipant}
+                    attendances={attendances} />
+                </AccordionDetails>
+              </Accordion>
+            </Grid>
+            : <></>
+        }
       </Grid>
+
       <Dialog
         open={open}
         onClose={handleClose}
@@ -388,14 +456,14 @@ export default function FGWClass() {
         </DialogContent>
       </Dialog>
 
-      <Dialog className="modal" fullWidth={true} open={openScheduleModal} onClose={() => setOpenScheduleModal(false)}>
+      <Dialog maxWidth="lg" className="modal" fullWidth={true} open={openScheduleModal} onClose={() => setOpenScheduleModal(false)}>
         <DialogContent
           sx={{
             bgcolor: "background.paper",
             boxShadow: 12,
           }}
         >
-          <ScheduleListForm closeHandler={handleCloseScheduleFormModal} schedule={schedule} group={group} />
+          <ScheduleListForm closeHandler={handleCloseScheduleFormModal} schedule={schedule} group={group} participants={participants} />
         </DialogContent>
       </Dialog>
 
@@ -407,6 +475,17 @@ export default function FGWClass() {
           }}
         >
           <ParticipantsForm closeHandler={handleCloseParticipantFormModal} participant={participant} group={group} />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog maxWidth="md" className="modal" fullWidth={true} open={openAttendanceModal} onClose={() => setOpenAttendanceModal(false)}>
+        <DialogContent
+          sx={{
+            bgcolor: "background.paper",
+            boxShadow: 12,
+          }}
+        >
+          <AttendanceForm closeHandler={handleCloseAttendanceFormModal} attendance={attendance} group={group} participants={participants} />
         </DialogContent>
       </Dialog>
 

@@ -7,35 +7,35 @@ const headCells = [
         id: "id",
         numeric: false,
         disablePadding: true,
-        label: "Id",
+        label: "Attendance Id",
     },
     {
-        id: "username",
+        id: "slotId",
         numeric: true,
         disablePadding: false,
-        label: "Student Code",
+        label: "Slot Id"
     },
     {
-        id: "lastName",
+        id: "student_id",
         numeric: true,
         disablePadding: false,
-        label: "Last Name",
+        label: "Student Id",
     },
     {
-        id: "firstName",
+        id: "student_name",
         numeric: true,
         disablePadding: false,
-        label: "First Name",
+        label: "Student Name",
     },
     {
-        id: "dob",
+        id: "isAttended",
         numeric: true,
         disablePadding: false,
-        label: "Date of Birth",
+        label: "Is Attended",
     },
 ];
 
-export default function ParticipantsWidget(props) {
+export default function AttendanceWidget(props) {
     return (
         <Grid
             container>
@@ -43,17 +43,16 @@ export default function ParticipantsWidget(props) {
                 <div className="big-widget">
                     <div className="programme-list">
                         {
-                            props.firstClick ? <CustomTable
+                            <CustomTable
                                 handleAddEntry={props.handleAddEntry}
-                                title={"Participants List"}
-                                rows={props.participants}
+                                title={"Attendance List"}
+                                rows={props.attendances}
                                 headCells={headCells}
                                 colNames={getAllHeaderColumns(headCells)}
                                 handleEdit={props.handleEdit}
                                 handleDelete={props.handleDelete}
-                            /> : <><h3>Please select a group to see its participants</h3></>
+                            />
                         }
-
                     </div>
                 </div>
             </Grid>

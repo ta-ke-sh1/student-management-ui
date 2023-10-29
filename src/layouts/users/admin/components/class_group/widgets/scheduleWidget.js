@@ -1,5 +1,6 @@
 import { Grid } from "@mui/material"
 import CustomTable from "../../../../../../common/table/table"
+import { getAllHeaderColumns } from "../../../../../../utils/utils";
 
 const headCells = [
     {
@@ -9,11 +10,18 @@ const headCells = [
         label: "Id",
     },
     {
+        id: "date",
+        numeric: true,
+        disablePadding: false,
+        label: "Date",
+    },
+    {
         id: "slot",
         numeric: true,
         disablePadding: false,
         label: "Slot",
     },
+
     {
         id: "room",
         numeric: true,
@@ -39,16 +47,13 @@ export default function ScheduleWidget(props) {
                 <div className="big-widget">
                     <div className="programme-list">
                         <CustomTable
+                            isCampusControl={true}
+                            handleSearchInfo={props.handleSearchAttendance}
                             handleAddEntry={props.handleAddEntry}
                             title={"Schedules"}
                             rows={props.schedules}
                             headCells={headCells}
-                            colNames={[
-                                "id",
-                                "programme",
-                                "building",
-                                "number",
-                            ]}
+                            colNames={getAllHeaderColumns(headCells)}
                             handleEdit={props.handleEdit}
                             handleDelete={props.handleDelete}
                         />

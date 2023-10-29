@@ -1,36 +1,18 @@
-import { Grid, Button, TextField, Divider, Autocomplete, CircularProgress } from "@mui/material";
+import { Grid, List, Button, TextField, ListItem, Autocomplete, CircularProgress, ListItemText, Divider, Typography } from "@mui/material";
+import { useState } from "react";
 import axios from "axios";
-import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 
-
-export default function ParticipantsForm(props) {
-    const [student, setStudent] = useState()
+export default function AttendanceForm(props) {
+    const [students, setStudents] = useState([]);
+    const [student, setStudent] = useState();
     const [open, setOpen] = useState(false);
-    const [students, setStudents] = useState([])
     const loading = open && students.length === 0;
-
-    console.log(props)
-
-    useEffect(() => {
-        fetchStudents();
-    }, [])
+    const handleConfirm = () => { };
 
     const fetchStudents = () => {
         try {
-            axios.get(process.env.REACT_APP_HOST_URL + "/user/students").then((res) => {
-                if (res.data.status) {
-                    let data = [];
-                    for (let i = 0; i < res.data.data.length; i++) {
-                        data.push(res.data.data[i]);
-                    }
-                    setStudents(data);
-                } else {
-                    toast.error(res.data.data, {
-                        position: "bottom-left"
-                    })
-                }
-            });
+            setStudents(props.participants)
         }
         catch (e) {
             toast.error(e.toString(), {
@@ -39,41 +21,26 @@ export default function ParticipantsForm(props) {
         }
     }
 
-
-    const handleConfirm = (e) => {
-        e.preventDefault();
-        try {
-            axios.post(process.env.REACT_APP_HOST_URL + "/schedule/participant", student).then((res) => {
-                console.log(res)
-            })
-        } catch (e) {
-            toast.error(e.toString(), {
-                position: "bottom-left"
-            })
-        }
-
-
-    };
-
-    const handleRemove = (e) => {
-        e.preventDefault();
+    const handleAddToList = (e) => {
+        setStudents([...students, student])
     }
-
 
     return (
         <>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={12}>
-                    <h2 style={{ margin: 0 }}>Manage Participant</h2>
+                    <h2 style={{ margin: 0 }}>Manage Attendance</h2>
                 </Grid>
                 <Divider />
                 <Grid item xs={12} md={12}>
                     <Autocomplete
+                        multiple={true}
                         value={student}
                         id="asynchronous-tags-outlined"
                         options={students}
                         open={open}
-                        onChange={(e, value) => {
+                        onInputChange={(e, value) => {
+                            fetchStudents();
                             setStudent(value)
                         }}
                         onOpen={() => {
@@ -90,7 +57,7 @@ export default function ParticipantsForm(props) {
                             <TextField
                                 {...params}
                                 label="Students"
-                                placeholder="Add 1 or multiple students"
+                                placeholder="Search for a student"
                                 InputProps={{
                                     ...params.InputProps,
                                     endAdorment: (
@@ -101,22 +68,13 @@ export default function ParticipantsForm(props) {
                                     )
                                 }}
                             />
-                        )}
-                    />
+                        )} />
                 </Grid>
-                {
-                    props.participant.id ? <Grid item xs={12} md={6}>
-                        <Button fullWidth variant="contained" sx={{ padding: "15px 30px" }} onClick={(e) => handleRemove(e)}>
-                            Remove
-                        </Button>
-                    </Grid> : <Grid item xs={12} md={6}>
-                        <Button fullWidth variant="contained" sx={{ padding: "15px 30px" }} onClick={(e) => handleConfirm(e)}>
-                            Add
-                        </Button>
-                    </Grid>
-                }
-
-
+                <Grid item xs={12} md={6}>
+                    <Button fullWidth variant="contained" sx={{ padding: "15px 30px" }} onClick={(e) => handleConfirm(e)}>
+                        Save
+                    </Button>
+                </Grid>
                 <Grid item xs={12} md={6}>
                     <Button color="error" fullWidth variant="outlined" sx={{ padding: "15px 30px" }} onClick={props.closeHandler}>
                         Cancel
@@ -125,5 +83,5 @@ export default function ParticipantsForm(props) {
             </Grid>
             <ToastContainer />
         </>
-    )
+    );
 }

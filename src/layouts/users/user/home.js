@@ -13,15 +13,16 @@ import ViewListIcon from "@mui/icons-material/ViewList";
 import CurriculumTab from "./views/curriculum/curriculum";
 import ClassIcon from "@mui/icons-material/Class";
 import { decodeToken } from "../../../utils/utils";
-import {Main, drawerWidth} from "../../../common/drawer/drawer";
+import { Main, drawerWidth } from "../../../common/drawer/drawer";
+import CourseUser from "../../course/course";
+import CoursesUser from "./views/courses/courses";
+
 export default function UserHome(props) {
   const _container = window !== undefined ? () => window.document.body : undefined;
-  const [current, setCurrent] = useState(props.index ?? 0);
+  const [current, setCurrent] = useState(props.index ?? 3);
   const [mobileOpen, setMobileOpen] = useState(true);
 
   const [user, setUser] = useState();
-
-  const components = [<PersonalInfo user={user} />, <ScheduleHome user={user} />, <CurriculumTab user={user} />];
 
   const nav_tabs = [
     {
@@ -51,11 +52,8 @@ export default function UserHome(props) {
     },
   ];
 
-  useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    const decoded = decodeToken(token);
-    setUser(decoded);
-  });
+
+  const components = [<PersonalInfo />, <ScheduleHome />, <CurriculumTab />, <CoursesUser />];
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);

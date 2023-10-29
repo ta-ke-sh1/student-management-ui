@@ -2,8 +2,10 @@ import { Box, Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
+import { decodeToken } from "../../../../../utils/utils";
 
 export default function CurriculumTab(props) {
+  const token = decodeToken(localStorage.getItem("access_token"));
   const [subjects, setSubjects] = useState([]);
 
   useEffect(() => {
@@ -11,7 +13,7 @@ export default function CurriculumTab(props) {
   }, []);
 
   const fetchSubject = () => {
-    axios.get(process.env.REACT_APP_HOST_URL + "/user/curriculum?id=" + props.user.id).then((res) => {
+    axios.get(process.env.REACT_APP_HOST_URL + "/user/curriculum?id=" + token.id).then((res) => {
       if (!res.data.status) {
         toast.error(res.data.data, {
           position: "bottom-left",
@@ -44,10 +46,7 @@ export default function CurriculumTab(props) {
             <Grid item xs={6}>
               Name
             </Grid>
-            <Grid item xs={1}>
-              Term
-            </Grid>
-            <Grid item xs={1}>
+            <Grid item xs={2}>
               <Box display="flex" justifyContent="flex-end">
                 Grade
               </Box>
@@ -67,10 +66,7 @@ export default function CurriculumTab(props) {
                 <Grid item xs={6}>
                   {subject.name}
                 </Grid>
-                <Grid item xs={1}>
-                  {subject.term}
-                </Grid>
-                <Grid item justify="flex-end" xs={1}>
+                <Grid item justify="flex-end" xs={2}>
                   <Box display="flex" justifyContent="flex-end">
                     {subject.grade ? <>{subject.grade}</> : <>Not yet</>}
                   </Box>

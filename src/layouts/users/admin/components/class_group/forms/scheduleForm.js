@@ -128,7 +128,7 @@ export default function ScheduleListForm(props) {
             >
               {lecturers.map((lecturer, index) => (
                 <MenuItem key={"Lecturer-number-" + (index + 1)} value={lecturer.id}>
-                  {lecturer.id}
+                  {lecturer.username}
                 </MenuItem>
               ))}
             </Select>

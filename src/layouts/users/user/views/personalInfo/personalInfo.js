@@ -1,39 +1,47 @@
-import { useEffect, useState } from "react";
-import { Grid, IconButton, Tooltip } from "@mui/material";
+import { Suspense, useEffect, useState } from "react";
+import { Dialog, DialogContent, Grid, IconButton, Tooltip } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
+import { decodeToken } from "../../../../../utils/utils";
+import Loading from "../../../../../common/loading/loading";
+import AddressForm from "./form/addressForm";
+import InformationForm from "./form/informationForm";
 
-export default function PersonalInfo(props) {
-  const [user, setUser] = useState({
-    firstName: "Son",
-    lastName: "Nguyen Thai",
-    email: "sonnt198003@fpt.edu.vn",
-    phone: "0876 879 134",
-    address: "Toa nha FPT, So 2, Pham Van Bach, Ha Noi, Viet Nam",
-    faculty: "Ha Noi",
-    major: "Software Engineering",
-    dob: "2000/05/12",
-  });
+export default function PersonalInfo() {
+  const token = decodeToken(localStorage.getItem("access_token"));
+  const [user, setUser] = useState({});
+
+  const [openAddressModal, setOpenAddressModal] = useState(false)
+  const [openInformationModal, setOpenInformationModal] = useState(false)
 
   useEffect(() => {
     fetchUserData();
   }, []);
 
   const fetchUserData = () => {
-    axios.get(process.env.REACT_APP_HOST_URL + "/user?id=" + props.user.id).then((res) => {
-      if (!res.data.status) {
-        toast.error(res.data.data, {
-          position: "bottom-left",
-        });
-      } else {
-        setUser(res.data.data);
-      }
-    });
+    try {
+      console.log(token)
+      axios.get(process.env.REACT_APP_HOST_URL + "/user?id=" + token.id).then((res) => {
+        if (!res.data.status) {
+          toast.error(res.data.data, {
+            position: "bottom-left",
+          });
+        } else {
+          console.log(res.data)
+          setUser(res.data.data[0]);
+        }
+      });
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left",
+      });
+    }
+
   };
 
   return (
-    <>
+    <Suspense fallback={<Loading />}>
       <div
         className="basic-info"
         style={{
@@ -43,7 +51,7 @@ export default function PersonalInfo(props) {
         <div
           className="profile-pic-container"
           style={{
-            backgroundImage: `url(${process.env.REACT_APP_HOST_URL}/image/avatar/` + props.user.avatar + `)`,
+            backgroundImage: `url(${process.env.REACT_APP_HOST_URL}/avatar/` + token.avatar + `)`,
           }}
         ></div>
         <div className="user-contact">
@@ -67,7 +75,7 @@ export default function PersonalInfo(props) {
       >
         <div className="relative-container ">
           <Tooltip title={"Edit"}>
-            <IconButton className="icon-btn">
+            <IconButton className="icon-btn" onClick={() => { setOpenInformationModal(true) }}>
               <EditIcon />
             </IconButton>
           </Tooltip>
@@ -106,7 +114,7 @@ export default function PersonalInfo(props) {
       >
         <div className="relative-container ">
           <Tooltip title={"Edit"}>
-            <IconButton className="icon-btn">
+            <IconButton className="icon-btn" onClick={() => { setOpenAddressModal(true) }}>
               <EditIcon />
             </IconButton>
           </Tooltip>
@@ -118,7 +126,7 @@ export default function PersonalInfo(props) {
             </Grid>
             <Grid item xs={12} sm={6}>
               <p>City</p>
-              <h4>{user.faculty}</h4>
+              <h4>{user.city}</h4>
             </Grid>
             <Grid item xs={12} sm={6}>
               <p>Address</p>
@@ -127,7 +135,29 @@ export default function PersonalInfo(props) {
           </Grid>
         </div>
       </div>
+
+      <Dialog className="modal" fullWidth={true} open={openAddressModal} onClose={() => setOpenAddressModal(false)}>
+        <DialogContent
+          sx={{
+            bgcolor: "background.paper",
+            boxShadow: 12,
+          }}
+        >
+          <AddressForm user={user} refresh={fetchUserData} />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog className="modal" fullWidth={true} open={openInformationModal} onClose={() => setOpenInformationModal(false)}>
+        <DialogContent
+          sx={{
+            bgcolor: "background.paper",
+            boxShadow: 12,
+          }}
+        >
+          <InformationForm user={user} refresh={fetchUserData} />
+        </DialogContent>
+      </Dialog>
       <ToastContainer />
-    </>
+    </Suspense>
   );
 }

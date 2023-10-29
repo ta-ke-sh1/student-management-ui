@@ -51,7 +51,7 @@ export default function LoginScreen() {
       .then((response) => {
         console.log(response);
         if (response.data.status === false) {
-          setError("Cannot login");
+          setError("Error occured");
         } else {
           let t = response.data.data.accessToken;
           localStorage.setItem("access_token", t);

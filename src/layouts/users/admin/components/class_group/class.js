@@ -17,7 +17,6 @@ import { ToastContainer, toast } from "react-toastify";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AttendanceWidget from "./widgets/attendanceWidget";
 import AttendanceForm from "./forms/attendanceForm";
-import { fetchDataById } from "../../../../../../../server/repository/firebaseRepository";
 import { filterByAttribute } from "../../../../../utils/utils";
 
 export default function FGWClass() {
@@ -128,19 +127,19 @@ export default function FGWClass() {
   };
 
   const handleEditGroup = (id) => {
-    let data = fetchDataById(groups, id);
+    let data = filterByAttribute(groups, "id", id);
     setGroup(data);
     setOpenGroupModal(true);
   };
 
   const handleEditParticipant = (id) => {
-    let data = fetchDataById(participants, id);
+    let data = filterByAttribute(participants, "id", id);
     setParticipant(data);
     setOpenParticipantsModal(true);
   };
 
   const handleEditSchedule = (id) => {
-    let data = fetchDataById(schedules, id);
+    let data = filterByAttribute(schedules, "id", id);
     setSchedule(data);
     setOpenScheduleModal(true);
   };
@@ -189,7 +188,7 @@ export default function FGWClass() {
 
   const fetchSchedules = async (id) => {
     try {
-      let data = fetchDataById(groups, id);
+      let data = filterByAttribute(groups, "id", id);
       await axios.get(process.env.REACT_APP_HOST_URL + "/semester/schedules?id=" + id + "&slots=" + data.slots).then((res) => {
         console.log(res.data);
         if (res.data.status) {
@@ -228,7 +227,7 @@ export default function FGWClass() {
   const handleSearchInfo = async (id) => {
     fetchParticipants(id);
     fetchSchedules(id);
-    let data = fetchDataById(groups, id);
+    let data = filterByAttribute(groups, "id", id);
     console.log(data);
     setGroup(data);
     setFirstClick(true);
@@ -458,7 +457,7 @@ export default function FGWClass() {
         </DialogActions>
       </Dialog>
 
-      <Dialog maxWidth="md" className="modal" fullWidth={true} open={openGroupModal} onClose={() => setOpenGroupModal(false)}>
+      <Dialog maxWidth="lg" className="modal" fullWidth={true} open={openGroupModal} onClose={() => setOpenGroupModal(false)}>
         <DialogContent
           sx={{
             bgcolor: "background.paper",

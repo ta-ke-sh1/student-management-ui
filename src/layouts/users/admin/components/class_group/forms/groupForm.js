@@ -1,4 +1,4 @@
-import { Grid, Button, FormControl, Select, MenuItem, InputLabel, TextField, Alert, AlertTitle, Divider, Box, Chip, List, ListItem, ListItemText, IconButton } from "@mui/material";
+import { Grid, Button, FormControl, Select, MenuItem, InputLabel, TextField, Alert, AlertTitle, Divider, Typography, List, ListItem, ListItemText, IconButton } from "@mui/material";
 import { DesktopDatePicker } from "@mui/x-date-pickers";
 import axios from "axios";
 import { useLayoutEffect, useState } from "react";
@@ -6,14 +6,15 @@ import Constants from "../../../../../../utils/constants";
 import { ToastContainer, toast } from "react-toastify";
 import DeleteIcon from "@mui/icons-material/Delete";
 import dayjs from "dayjs";
+import { getDayByNumber } from "../../../../../../utils/utils";
 
 export default function GroupForm(props) {
   const constants = new Constants();
 
-  const isEdit = props.group !== undefined;
-  const [term, setTerm] = useState(props.group.term.split("-")[0] ?? "");
+  const isEdit = false;
+  const [term, setTerm] = useState("");
   const [programme, setProgramme] = useState(props.group.programme ?? "");
-  const [year, setYear] = useState(2000 + parseInt(props.group.term.split("-")[1]) ?? 2023);
+  const [year, setYear] = useState(2023);
   const [name, setName] = useState(props.group.name ?? "");
   const [lecturer, setLecturer] = useState(props.group.lecturer ?? "");
   const [subject, setSubject] = useState(props.group.subject ?? "");
@@ -28,8 +29,8 @@ export default function GroupForm(props) {
   const [slot, setSlot] = useState(1);
   const [selectedSlots, setSelectedSlots] = useState([]);
   const [dayOfTheWeek, setDayOfTheWeek] = useState(0);
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(dayjs(new Date()));
+  const [endDate, setEndDate] = useState(dayjs(new Date()));
 
   useLayoutEffect(() => {
     if (props.group.department) {
@@ -39,7 +40,6 @@ export default function GroupForm(props) {
   }, []);
 
   const handleConfirm = () => {
-    console.log();
     try {
       if (programme && term && name) {
         let data = {
@@ -53,13 +53,17 @@ export default function GroupForm(props) {
           isEdit: isEdit,
           dayOfTheWeek: dayOfTheWeek,
           slot: selectedSlots,
-          startDate: startDate,
-          endDate: endDate,
+          startDate: dayjs(startDate).valueOf(),
+          endDate: dayjs(endDate).valueOf(),
+          status: true,
         };
         if (isEdit) {
           axios.put(process.env.REACT_APP_HOST_URL + "/schedule/group", data).then((res) => {
             console.log(res);
             if (res.data.status) {
+              toast.success("Group edited!", {
+                position: "bottom-left",
+              });
               props.closeHandler();
             } else {
               toast.error(res.data.data, {
@@ -68,9 +72,13 @@ export default function GroupForm(props) {
             }
           });
         } else {
+
           axios.post(process.env.REACT_APP_HOST_URL + "/schedule/group", data).then((res) => {
             console.log(res);
             if (res.data.status) {
+              toast.success("New group added!", {
+                position: "bottom-left",
+              });
               props.closeHandler();
             } else {
               toast.error(res.data.data, {
@@ -284,9 +292,6 @@ export default function GroupForm(props) {
             ) : (
               <Grid item xs={12} md={6}>
                 <Grid container spacing={4}>
-                  <Grid item xs={12} sm={12}>
-                    <Typography variant="h5">Schedule Settings</Typography>
-                  </Grid>
                   <Grid item xs={4} md={4}>
                     <FormControl fullWidth>
                       <InputLabel id="day-of-the-week--select-label">Day of the Week</InputLabel>
@@ -300,7 +305,7 @@ export default function GroupForm(props) {
                         }}
                       >
                         {constants.daysOfTheWeekForm.map((s, index) => (
-                          <MenuItem disabled={true} key={"day-of-the-week-" + index} value={s.index}>
+                          <MenuItem key={"day-of-the-week-" + index} value={s.index}>
                             {s.name}
                           </MenuItem>
                         ))}
@@ -320,8 +325,8 @@ export default function GroupForm(props) {
                         }}
                       >
                         {constants.slot.map((s, index) => (
-                          <MenuItem disabled={true} key={"slot-" + index} value={index + 1}>
-                            Slot {s.index} - {s.time}
+                          <MenuItem key={"slot-" + index} value={index + 1}>
+                            Slot {index + 1} - {s.time}
                           </MenuItem>
                         ))}
                       </Select>
@@ -334,6 +339,7 @@ export default function GroupForm(props) {
                       sx={{ padding: "15px 30px" }}
                       onClick={(e) => {
                         let newSlot = {
+                          title: getDayByNumber(dayOfTheWeek),
                           number: dayOfTheWeek,
                           slot: slot,
                         };
@@ -346,11 +352,11 @@ export default function GroupForm(props) {
                         }
                       }}
                     >
-                      Add Slot
+                      Add
                     </Button>
                   </Grid>
                   <Grid item xs={12} md={12}>
-                    <List>
+                    <List sx={{ maxHeight: 127, height: 127, border: '1px solid #EEE2DE', borderRadius: '5px', overflow: 'scroll' }}>
                       {selectedSlots.map((selectedSlot, index) => {
                         return (
                           <ListItem
@@ -360,7 +366,7 @@ export default function GroupForm(props) {
                               <IconButton
                                 aria-label="selected"
                                 onClick={() => {
-                                  let newSelectedSlots = selectedSlots.splice(index, 1);
+                                  let newSelectedSlots = selectedSlots.filter(item => item !== selectedSlot)
                                   setSelectedSlots(newSelectedSlots);
                                 }}
                               >
@@ -369,14 +375,14 @@ export default function GroupForm(props) {
                             }
                           >
                             <ListItemText>
-                              Slot: {selectedSlot.number} - {selectedSlot.day}
+                              {selectedSlot.title} - Slot {selectedSlot.slot}
                             </ListItemText>
                           </ListItem>
                         );
                       })}
                     </List>
                   </Grid>
-                  <Grid item xs={12} md={12}>
+                  <Grid item xs={12} sm={6}>
                     <DesktopDatePicker
                       value={dayjs(startDate)}
                       label="Start Date"
@@ -388,7 +394,7 @@ export default function GroupForm(props) {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12} md={12}>
+                  <Grid item xs={12} sm={6}>
                     <DesktopDatePicker
                       value={dayjs(endDate)}
                       label="End Date"
@@ -404,7 +410,7 @@ export default function GroupForm(props) {
               </Grid>
             )}
           </Grid>
-        </Grid>
+        </Grid >
 
         {error && error !== "" ? (
           <Grid item xs={12} md={12}>
@@ -414,7 +420,8 @@ export default function GroupForm(props) {
           </Grid>
         ) : (
           <></>
-        )}
+        )
+        }
 
         <Divider />
         <Grid item xs={12} md={6}>
@@ -427,7 +434,7 @@ export default function GroupForm(props) {
             Cancel
           </Button>
         </Grid>
-      </Grid>
+      </Grid >
       <ToastContainer />
     </>
   );

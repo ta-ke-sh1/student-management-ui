@@ -9,7 +9,7 @@ export function getAllKeys(object) {
   return Object.keys(object);
 }
 
-export const fetchDocuments = (id) => {
+export const fetchDocuments = (rows, id) => {
   return rows.find((row) => row.id === id);
 };
 
@@ -150,4 +150,12 @@ export function stableSort(array, comparator) {
     return a[1] - b[1];
   });
   return stabilizedThis.map((el) => el[0]);
+}
+
+export function getDayByNumber(number) {
+  if (number > 6 || number < 0) {
+    return -1;
+  }
+  let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+  return days[number]
 }

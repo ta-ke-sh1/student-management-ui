@@ -64,7 +64,7 @@ export default function GroupWidget(props) {
             getSelectedId={props.getSelectedId}
             additionalTools={props.additionalTools}
             handleAddEntry={props.handleAddEntry}
-            title={"Campus"}
+            title={"Groups"}
             rows={data}
             headCells={headCells}
             colNames={["id", "programme", "department", "term", "slots", "subject", "lecturer"]}

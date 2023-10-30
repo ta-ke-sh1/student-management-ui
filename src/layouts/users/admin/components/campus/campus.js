@@ -13,16 +13,6 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { getAllHeaderColumns } from "../../../../../utils/utils";
 
-function createData(id, campus, building, number, capacity) {
-  return {
-    id,
-    campus,
-    building,
-    number,
-    capacity,
-  };
-}
-
 const headCells = [
   {
     id: "id",
@@ -110,18 +100,20 @@ export default function CampusAdmin() {
         }
 
         res.data.data.forEach((room) => {
-          result.push(createData(room.id, room.campus, room.building, room.room, room.capacity));
+          result.push(room);
         });
-        console.log(res.data);
+
         setRows(result);
         setRowData(result);
+        toast.success("Data fetched successfully!", {
+          position: "bottom-left",
+        });
       });
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
-
   };
 
   const fetchRoom = (id) => {
@@ -129,16 +121,15 @@ export default function CampusAdmin() {
       return rows.find((row) => row.id === id);
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
-
   };
 
   const handleRefreshEntry = () => {
-    console.log("Fetch rows!")
+    console.log("Fetch rows!");
     fetchRows();
-  }
+  };
 
   const handleEdit = (id) => {
     try {
@@ -153,10 +144,9 @@ export default function CampusAdmin() {
       setOpenModal(true);
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
-
   };
 
   const handleDelete = (index) => {
@@ -168,10 +158,9 @@ export default function CampusAdmin() {
       console.log(index);
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
-
   };
 
   const handleDeleteRequest = () => {
@@ -196,10 +185,9 @@ export default function CampusAdmin() {
       });
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
-
   };
 
   const handleSearch = (e) => {
@@ -223,10 +211,9 @@ export default function CampusAdmin() {
       setTableTitle(query);
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
-
   };
 
   const handleClearSearch = (e) => {

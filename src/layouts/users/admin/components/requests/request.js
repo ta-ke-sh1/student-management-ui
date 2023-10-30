@@ -80,8 +80,8 @@ export default function RequestsAdmin(props) {
       axios.get(process.env.REACT_APP_HOST_URL + "/request").then((res) => {
         if (!res.data.status) {
           toast.error(res.data.data, {
-            position: "bottom-left"
-          })
+            position: "bottom-left",
+          });
         } else {
           let data = [];
           res.data.data.forEach((request) => {
@@ -89,12 +89,15 @@ export default function RequestsAdmin(props) {
           });
           setRows(data);
           setRowData(data);
+          toast.success("Data Fetched Succesfully", {
+            position: "bottom-left",
+          });
         }
-      })
+      });
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
   };
 
@@ -115,8 +118,8 @@ export default function RequestsAdmin(props) {
       setOpenModal(true);
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
   };
 
@@ -129,10 +132,9 @@ export default function RequestsAdmin(props) {
       console.log(index);
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
-
   };
 
   const handleDeleteRequest = () => {
@@ -151,10 +153,9 @@ export default function RequestsAdmin(props) {
       });
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
-
   };
 
   const handleSearch = (e) => {
@@ -264,6 +265,7 @@ export default function RequestsAdmin(props) {
           <div className="big-widget">
             <div className="campus-list">
               <CustomTable
+                handleRefreshEntry={fetchRows}
                 handleAddEntry={() => {
                   handleOpenModal();
                 }}

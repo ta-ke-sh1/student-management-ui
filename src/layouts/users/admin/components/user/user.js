@@ -14,7 +14,6 @@ import Constants from "../../../../../utils/constants";
 import { ToastContainer, toast } from "react-toastify";
 import { getAllHeaderColumns } from "../../../../../utils/utils";
 
-
 const headCells = [
   {
     id: "id",
@@ -130,7 +129,7 @@ export default function UsersAdmin() {
   const [rowsAdmin, setRowsAdmins] = useState([]);
 
   useEffect(() => {
-    fetchRows("all")
+    fetchRows("all");
   }, []);
 
   const fetchRows = (type) => {
@@ -158,8 +157,8 @@ export default function UsersAdmin() {
       axios.get(process.env.REACT_APP_HOST_URL + "/user/students").then((res) => {
         if (!res.data.status) {
           toast.error(res.data.data, {
-            position: "bottom-left"
-          })
+            position: "bottom-left",
+          });
         } else {
           let result = [];
           res.data.data.forEach((user) => {
@@ -171,10 +170,9 @@ export default function UsersAdmin() {
       });
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
-
   };
 
   const fetchLecturerRows = () => {
@@ -182,8 +180,8 @@ export default function UsersAdmin() {
       axios.get(process.env.REACT_APP_HOST_URL + "/user/lecturers").then((res) => {
         if (!res.data.status) {
           toast.error(res.data.data, {
-            position: "bottom-left"
-          })
+            position: "bottom-left",
+          });
         } else {
           let result = [];
           res.data.data.forEach((user) => {
@@ -195,8 +193,8 @@ export default function UsersAdmin() {
       });
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
   };
 
@@ -205,8 +203,8 @@ export default function UsersAdmin() {
       axios.get(process.env.REACT_APP_HOST_URL + "/user/admins").then((res) => {
         if (!res.data.status) {
           toast.error(res.data.data, {
-            position: "bottom-left"
-          })
+            position: "bottom-left",
+          });
         } else {
           let result = [];
           res.data.data.forEach((user) => {
@@ -214,13 +212,13 @@ export default function UsersAdmin() {
           });
           setAdmins(result);
           setRowsAdmins(result);
-          console.log(result)
+          console.log(result);
         }
       });
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
   };
 
@@ -287,7 +285,7 @@ export default function UsersAdmin() {
     setOpenModal(false);
   };
 
-  const handleConfirm = () => { };
+  const handleConfirm = () => {};
 
   return (
     <>

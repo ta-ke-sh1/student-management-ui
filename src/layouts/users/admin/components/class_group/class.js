@@ -17,9 +17,12 @@ import { ToastContainer, toast } from "react-toastify";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AttendanceWidget from "./widgets/attendanceWidget";
 import AttendanceForm from "./forms/attendanceForm";
+import { fetchDataById } from "../../../../../../../server/repository/firebaseRepository";
+import { filterByAttribute } from "../../../../../utils/utils";
 
 export default function FGWClass() {
   const constants = new Constants();
+  const admin_local_group = "class_group";
 
   const [programme, setProgramme] = useState("");
   const [term, setTerm] = useState("");
@@ -30,23 +33,16 @@ export default function FGWClass() {
 
   const [participant, setParticipant] = useState({});
   const [schedule, setSchedule] = useState({});
-  const [attendance, setAttendance] = useState({})
+  const [attendance, setAttendance] = useState({});
 
   const [openGroupModal, setOpenGroupModal] = useState(false);
   const [openParticipantsModal, setOpenParticipantsModal] = useState(false);
   const [openScheduleModal, setOpenScheduleModal] = useState(false);
-  const [openAttendanceModal, setOpenAttendanceModal] = useState(false)
+  const [openAttendanceModal, setOpenAttendanceModal] = useState(false);
 
-  const [group, setGroup] = useState({
-    id: '0iIGIK0HoMcFgnWMRUI3',
-    programme: "ENG",
-    subject: "BUSI1334",
-    term: "SU-23",
-    name: "GBH2049",
-    slots: 24
-  });
+  const [group, setGroup] = useState({});
 
-  const [selectedSession, setSelectedSession] = useState({})
+  const [selectedSession, setSelectedSession] = useState({});
 
   const [groups, setGroups] = useState([]);
 
@@ -57,33 +53,48 @@ export default function FGWClass() {
   const [dialogContent, setDialogContent] = useState("");
 
   const [firstClick, setFirstClick] = useState(true);
-  const [firstClickAttendance, setFirstClickAttendance] = useState(true)
+  const [firstClickAttendance, setFirstClickAttendance] = useState(true);
 
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    // fetchGroups()
-  }, [])
+    fetchGroups();
+  }, []);
 
   const handleSearchGroup = async () => {
     try {
-      if (programme && term && year && department) {
-        console.log(process.env.REACT_APP_HOST_URL + "/schedule?programme=" + programme + "&term=" + (term + "-" + year.toString().substr(2, 2)) + "&department=" + department);
-        await axios.get(process.env.REACT_APP_HOST_URL + "/schedule?programme=" + programme + "&term=" + (term + "-" + year.toString().substr(2, 2)) + "&department=" + department).then((res) => {
-          if (res.data.status) {
-            setGroups(res.data.data);
-          } else {
-            toast.error(res.data.data, {
-              position: "bottom-left",
-            });
-          }
-        });
+      let group = localStorage.getItem(admin_local_group);
+      if (!group) {
+        if (programme && term && year && department) {
+          console.log(process.env.REACT_APP_HOST_URL + "/schedule?programme=" + programme + "&term=" + (term + "-" + year.toString().substr(2, 2)) + "&department=" + department);
+          await axios.get(process.env.REACT_APP_HOST_URL + "/schedule?programme=" + programme + "&term=" + (term + "-" + year.toString().substr(2, 2)) + "&department=" + department).then((res) => {
+            if (res.data.status) {
+              setGroups(res.data.data);
+              localStorage.setItem(admin_local_group, res.data.data);
+            } else {
+              toast.error(res.data.data, {
+                position: "bottom-left",
+              });
+            }
+          });
+        }
+      } else {
+        if (programme && programme !== "") {
+          group = filterByAttribute(group, "programme", programme);
+        }
+
+        if (term && term !== "" && year && year !== 0) {
+          group = filterByAttribute(group, "term", term + "-" + year.toString().substr(2, 2));
+        }
+
+        if (department && department !== "") {
+          group = filterByAttribute(group, "department", department);
+        }
       }
-    }
-    catch (e) {
+    } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
   };
 
@@ -116,118 +127,117 @@ export default function FGWClass() {
     setOpenAttendanceModal(false);
   };
 
-  const fetchDataFromArrayUsingId = (data, id) => {
-    return data.find((row) => row.id === id);
-  };
-
   const handleEditGroup = (id) => {
-    let data = fetchDataFromArrayUsingId(groups, id);
-    setGroup(data)
-    setOpenGroupModal(true)
+    let data = fetchDataById(groups, id);
+    setGroup(data);
+    setOpenGroupModal(true);
   };
 
   const handleEditParticipant = (id) => {
-    let data = fetchDataFromArrayUsingId(participants, id);
-    setParticipant(data)
-    setOpenParticipantsModal(true)
-  }
+    let data = fetchDataById(participants, id);
+    setParticipant(data);
+    setOpenParticipantsModal(true);
+  };
 
   const handleEditSchedule = (id) => {
-    let data = fetchDataFromArrayUsingId(schedules, id);
-    setSchedule(data)
-    setOpenScheduleModal(true)
-  }
-
-  const handleAddParticipants = async (id) => { };
+    let data = fetchDataById(schedules, id);
+    setSchedule(data);
+    setOpenScheduleModal(true);
+  };
 
   const fetchGroups = async () => {
     try {
-      await axios.get(process.env.REACT_APP_HOST_URL + "/semester/groups").then((res) => {
-        if (res.data.status) {
-          setGroups(res.data.data)
-        } else {
-          toast.error(res.data.data, {
-            position: "bottom-left"
-          })
-        }
-      })
+      let group = localStorage.getItem(admin_local_group);
+      if (!group) {
+        await axios.get(process.env.REACT_APP_HOST_URL + "/semester/groups").then((res) => {
+          if (res.data.status) {
+            setGroups(res.data.data);
+          } else {
+            toast.error(res.data.data, {
+              position: "bottom-left",
+            });
+          }
+        });
+      } else {
+        setGroups(group);
+      }
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
-  }
+  };
 
   const fetchParticipants = async (id) => {
     try {
-
       await axios.get(process.env.REACT_APP_HOST_URL + "/semester/participants?id=" + id).then((res) => {
         console.log(res.data);
         if (res.data.status) {
           setParticipants(res.data.data ?? []);
         } else {
           toast.error(res.data.data, {
-            position: "bottom-left"
-          })
+            position: "bottom-left",
+          });
         }
       });
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
   };
 
   const fetchSchedules = async (id) => {
     try {
-      let data = fetchDataFromArrayUsingId(groups, id);
+      let data = fetchDataById(groups, id);
       await axios.get(process.env.REACT_APP_HOST_URL + "/semester/schedules?id=" + id + "&slots=" + data.slots).then((res) => {
         console.log(res.data);
         if (res.data.status) {
           setSchedules(res.data.data ?? []);
         } else {
           toast.error(res.data.data, {
-            position: "bottom-left"
-          })
+            position: "bottom-left",
+          });
         }
       });
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
   };
 
   const fetchAttendances = async (id) => {
     try {
-      await axios.get(process.env.REACT_APP_HOST_URL + "").then((res) => {
+      await axios.get(process.env.REACT_APP_HOST_URL + "/schedules/attendances?id=" + id).then((res) => {
         if (res.data.status) {
-          setAttendances(res.data.data)
+          setAttendances(res.data.data);
         } else {
           toast.error(res.data.data, {
-            position: "bottom-left"
-          })
+            position: "bottom-left",
+          });
         }
-      })
+      });
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
-  }
+  };
 
   const handleSearchInfo = async (id) => {
     fetchParticipants(id);
     fetchSchedules(id);
-    let data = fetchDataFromArrayUsingId(groups, id);
-    console.log(data)
-    setGroup(data)
+    let data = fetchDataById(groups, id);
+    console.log(data);
+    setGroup(data);
     setFirstClick(true);
   };
 
   const handleSearchAttendance = async (id) => {
-    console.log(id)
-  }
+    setFirstClickAttendance(true);
+    fetchAttendances(id);
+  };
 
   return (
     <>
@@ -365,7 +375,8 @@ export default function FGWClass() {
                   }}
                   expandIcon={<ExpandMoreIcon />}
                 >
-                  <strong>Selected group details: </strong><span style={{ marginLeft: "10px" }}>{group.id}</span>
+                  <strong>Selected group details: </strong>
+                  <span style={{ marginLeft: "10px" }}>{group.id}</span>
                 </AccordionSummary>
                 <AccordionDetails sx={{ paddingTop: "20px" }}>
                   <Grid container spacing={4}>
@@ -391,7 +402,6 @@ export default function FGWClass() {
                       />
                     </Grid>
                   </Grid>
-
                 </AccordionDetails>
               </Accordion>
             </Grid>
@@ -399,29 +409,32 @@ export default function FGWClass() {
         ) : (
           <></>
         )}
-        {
-          firstClickAttendance ?
-            <Grid item sm={12} md={12}>
-              <Accordion defaultExpanded={true}>
-                <AccordionSummary
-                  sx={{
-                    borderBottom: "3px solid #F11A7B",
-                  }}
-                  expandIcon={<ExpandMoreIcon />}
-                >
-                  <strong>Attendance Report: </strong><span style={{ marginLeft: "10px" }}>{selectedSession.id}</span>
-                </AccordionSummary>
-                <AccordionDetails sx={{ paddingTop: "20px" }}>
-                  <AttendanceWidget handleAddEntry={() => {
+        {firstClickAttendance ? (
+          <Grid item sm={12} md={12}>
+            <Accordion defaultExpanded={true}>
+              <AccordionSummary
+                sx={{
+                  borderBottom: "3px solid #F11A7B",
+                }}
+                expandIcon={<ExpandMoreIcon />}
+              >
+                <strong>Attendance Report: </strong>
+                <span style={{ marginLeft: "10px" }}>{selectedSession.id}</span>
+              </AccordionSummary>
+              <AccordionDetails sx={{ paddingTop: "20px" }}>
+                <AttendanceWidget
+                  handleAddEntry={() => {
                     setOpenAttendanceModal(true);
                   }}
-                    handleEdit={handleEditParticipant}
-                    attendances={attendances} />
-                </AccordionDetails>
-              </Accordion>
-            </Grid>
-            : <></>
-        }
+                  handleEdit={handleEditParticipant}
+                  attendances={attendances}
+                />
+              </AccordionDetails>
+            </Accordion>
+          </Grid>
+        ) : (
+          <></>
+        )}
       </Grid>
 
       <Dialog

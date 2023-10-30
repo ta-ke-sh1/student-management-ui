@@ -1,83 +1,135 @@
-import { Grid, Button, FormControl, Select, MenuItem, InputLabel, TextField, Alert, AlertTitle, Divider } from "@mui/material";
+import { Grid, Button, FormControl, Select, MenuItem, InputLabel, TextField, Alert, AlertTitle, Divider, Box, Chip, List, ListItem, ListItemText, IconButton } from "@mui/material";
 import { DesktopDatePicker } from "@mui/x-date-pickers";
 import axios from "axios";
 import { useLayoutEffect, useState } from "react";
 import Constants from "../../../../../../utils/constants";
+import { ToastContainer, toast } from "react-toastify";
+import DeleteIcon from "@mui/icons-material/Delete";
+import dayjs from "dayjs";
 
 export default function GroupForm(props) {
   const constants = new Constants();
 
+  const isEdit = props.group !== undefined;
   const [term, setTerm] = useState(props.group.term.split("-")[0] ?? "");
   const [programme, setProgramme] = useState(props.group.programme ?? "");
-  const [year, setYear] = useState((2000 + parseInt(props.group.term.split("-")[1])) ?? 2023);
+  const [year, setYear] = useState(2000 + parseInt(props.group.term.split("-")[1]) ?? 2023);
   const [name, setName] = useState(props.group.name ?? "");
   const [lecturer, setLecturer] = useState(props.group.lecturer ?? "");
   const [subject, setSubject] = useState(props.group.subject ?? "");
   const [slots, setSlots] = useState(props.group.slots ?? 0);
   const [department, setDepartment] = useState(props.group.department ?? "");
 
-  const [lecturers, setLecturers] = useState([])
-  const [subjects, setSubjects] = useState([])
+  const [lecturers, setLecturers] = useState([]);
+  const [subjects, setSubjects] = useState([]);
 
   const [error, setError] = useState("");
 
+  const [slot, setSlot] = useState(1);
+  const [selectedSlots, setSelectedSlots] = useState([]);
+  const [dayOfTheWeek, setDayOfTheWeek] = useState(0);
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+
   useLayoutEffect(() => {
     if (props.group.department) {
-      handleFetchLecturers(props.group.department)
-      handleFetchSubjects(props.group.department)
+      handleFetchLecturers(props.group.department);
+      handleFetchSubjects(props.group.department);
     }
-  }, [])
+  }, []);
 
   const handleConfirm = () => {
     console.log();
-    if (programme && term && name) {
-      let data = {
-        programme: programme,
-        term: term + "-" + year.toString().substr(2, 2),
-        department: department,
-        name: name,
-        lecturer: lecturer,
-        subject: subject,
-        slots: slots,
-      };
-
-      axios.post(process.env.REACT_APP_HOST_URL + "/schedule", data).then((res) => {
-        console.log(res);
-        if (res.data.status) {
-          props.closeHandler();
+    try {
+      if (programme && term && name) {
+        let data = {
+          programme: programme,
+          term: term + "-" + year.toString().substr(2, 2),
+          department: department,
+          name: name,
+          lecturer: lecturer,
+          subject: subject,
+          slots: slots,
+          isEdit: isEdit,
+          dayOfTheWeek: dayOfTheWeek,
+          slot: selectedSlots,
+          startDate: startDate,
+          endDate: endDate,
+        };
+        if (isEdit) {
+          axios.put(process.env.REACT_APP_HOST_URL + "/schedule/group", data).then((res) => {
+            console.log(res);
+            if (res.data.status) {
+              props.closeHandler();
+            } else {
+              toast.error(res.data.data, {
+                position: "bottom-left",
+              });
+            }
+          });
         } else {
-          setError(res.data.msg);
+          axios.post(process.env.REACT_APP_HOST_URL + "/schedule/group", data).then((res) => {
+            console.log(res);
+            if (res.data.status) {
+              props.closeHandler();
+            } else {
+              toast.error(res.data.data, {
+                position: "bottom-left",
+              });
+            }
+          });
         }
+      }
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left",
       });
     }
   };
 
   const handleFetchLecturers = (department) => {
-    axios.get(process.env.REACT_APP_HOST_URL + "/user/lecturers?department=" + department).then((res) => {
-      if (res.data.status) {
-        let data = [];
-        for (let i = 0; i < res.data.data.length; i++) {
-          data.push(res.data.data[i]);
+    try {
+      axios.get(process.env.REACT_APP_HOST_URL + "/user/lecturers?department=" + department).then((res) => {
+        if (res.data.status) {
+          let data = [];
+          for (let i = 0; i < res.data.data.length; i++) {
+            data.push(res.data.data[i]);
+          }
+          setLecturers(data);
+        } else {
+          toast.error(res.data.data, {
+            position: "bottom-left",
+          });
         }
-        setLecturers(data);
-      }
-    });
+      });
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left",
+      });
+    }
   };
 
   const handleFetchSubjects = (department) => {
-    console.log("Fetch lecturers")
-    axios.get(process.env.REACT_APP_HOST_URL + "/subject?department=" + department).then((res) => {
-      if (res.data.status) {
-        let data = [];
-        for (let i = 0; i < res.data.data.length; i++) {
-          data.push(res.data.data[i]);
+    try {
+      axios.get(process.env.REACT_APP_HOST_URL + "/subject?department=" + department).then((res) => {
+        if (res.data.status) {
+          let data = [];
+          for (let i = 0; i < res.data.data.length; i++) {
+            data.push(res.data.data[i]);
+          }
+          setSubjects(data);
+        } else {
+          toast.error(res.data.data, {
+            position: "bottom-left",
+          });
         }
-        setSubjects(data);
-      }
-    });
+      });
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left",
+      });
+    }
   };
-
-
 
   return (
     <>
@@ -86,146 +138,272 @@ export default function GroupForm(props) {
           <h2 style={{ margin: 0 }}>Manage Group</h2>
           <p>You can manage the group using this form</p>
         </Grid>
-        <Grid item xs={12} md={6}>
-          <FormControl fullWidth>
-            <InputLabel id="programme-select-label">Programme</InputLabel>
-            <Select
-              id="form-programme"
-              labelId="programme-select-label"
-              value={programme}
-              label="Programme"
-              onChange={(e) => {
-                setProgramme(e.target.value);
-              }}
-            >
-              {constants.programmes.map((programme) =>
-                programme.id === -1 ? (
-                  <MenuItem disabled={true} key={programme.id} value={programme.id}>
-                    {programme.name}
-                  </MenuItem>
-                ) : (
-                  <MenuItem key={programme.id} value={programme.id}>
-                    {programme.name}
-                  </MenuItem>
-                )
-              )}
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <FormControl fullWidth>
-            <InputLabel id="department-select-label">Department</InputLabel>
-            <Select
-              id="form-department"
-              labelId="department-select-label"
-              value={department}
-              label="Department"
-              onChange={(e) => {
-                handleFetchSubjects(e.target.value)
-                handleFetchLecturers(e.target.value)
-                setDepartment(e.target.value);
-              }}
-            >
-              {constants.departments.map((term) =>
-                term.id === -1 ? (
-                  <MenuItem disabled={true} key={term.id} value={term.id}>
-                    {term.name}
-                  </MenuItem>
-                ) : (
-                  <MenuItem key={term.id} value={term.id}>
-                    {term.name}
-                  </MenuItem>
-                )
-              )}
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <FormControl fullWidth>
-            <InputLabel id="term-select-label">Select a Term</InputLabel>
-            <Select
-              labelId="term-select-label"
-              value={term}
-              label="Select a Term"
-              onChange={(e) => {
-                setTerm(e.target.value);
-              }}
-            >
-              {constants.terms.map((term) => (
-                <MenuItem key={"option-term-" + term.id} value={term.id}>
-                  {term.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <TextField
-            onChange={(e) => setYear(e.target.value)}
-            value={year}
-            id="form-year"
-            fullWidth
-            label="Year"
-            variant="outlined"
-          />
-        </Grid>
+
         <Grid item xs={12} md={12}>
-          <TextField onChange={(e) => setName(e.target.value)} value={name} id="form-name" fullWidth label="Group Name" variant="outlined" />
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <Grid item xs={12} md={12}>
-            <FormControl fullWidth>
-              <InputLabel id="lecturer-select-label-form">Lecturer</InputLabel>
-              <Select
-                defaultValue={lecturer}
-                value={lecturer}
-                label="Lecturer"
-                MenuProps={{
-                  disablePortal: true, // <--- HERE
-                  onClick: (e) => {
-                    e.preventDefault();
-                  },
-                }}
-                onChange={(e) => {
-                  setLecturer(e.target.value);
-                }}
-              >
-                {lecturers.map((lecturer, index) => (
-                  <MenuItem key={"Lecturer-number-" + (index + 1)} value={lecturer.id}>
-                    {lecturer.username}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+          <Grid container spacing={4}>
+            <Grid item xs={12} md={isEdit ? 12 : 6}>
+              <Grid container spacing={4}>
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth>
+                    <InputLabel id="programme-select-label">Programme</InputLabel>
+                    <Select
+                      id="form-programme"
+                      labelId="programme-select-label"
+                      value={programme}
+                      label="Programme"
+                      onChange={(e) => {
+                        setProgramme(e.target.value);
+                      }}
+                    >
+                      {constants.programmes.map((programme) =>
+                        programme.id === -1 ? (
+                          <MenuItem disabled={true} key={programme.id} value={programme.id}>
+                            {programme.name}
+                          </MenuItem>
+                        ) : (
+                          <MenuItem key={programme.id} value={programme.id}>
+                            {programme.name}
+                          </MenuItem>
+                        )
+                      )}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth>
+                    <InputLabel id="department-select-label">Department</InputLabel>
+                    <Select
+                      id="form-department"
+                      labelId="department-select-label"
+                      value={department}
+                      label="Department"
+                      onChange={(e) => {
+                        handleFetchSubjects(e.target.value);
+                        handleFetchLecturers(e.target.value);
+                        setDepartment(e.target.value);
+                      }}
+                    >
+                      {constants.departments.map((term) =>
+                        term.id === -1 ? (
+                          <MenuItem disabled={true} key={term.id} value={term.id}>
+                            {term.name}
+                          </MenuItem>
+                        ) : (
+                          <MenuItem key={term.id} value={term.id}>
+                            {term.name}
+                          </MenuItem>
+                        )
+                      )}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth>
+                    <InputLabel id="term-select-label">Select a Term</InputLabel>
+                    <Select
+                      labelId="term-select-label"
+                      value={term}
+                      label="Select a Term"
+                      onChange={(e) => {
+                        setTerm(e.target.value);
+                      }}
+                    >
+                      {constants.terms.map((term) => (
+                        <MenuItem key={"option-term-" + term.id} value={term.id}>
+                          {term.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <TextField onChange={(e) => setYear(e.target.value)} value={year} id="form-year" fullWidth label="Year" variant="outlined" />
+                </Grid>
+                <Grid item xs={12} md={12}>
+                  <TextField onChange={(e) => setName(e.target.value)} value={name} id="form-name" fullWidth label="Group Name" variant="outlined" />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <Grid item xs={12} md={12}>
+                    <FormControl fullWidth>
+                      <InputLabel id="lecturer-select-label-form">Lecturer</InputLabel>
+                      <Select
+                        defaultValue={lecturer}
+                        value={lecturer}
+                        label="Lecturer"
+                        MenuProps={{
+                          disablePortal: true, // <--- HERE
+                          onClick: (e) => {
+                            e.preventDefault();
+                          },
+                        }}
+                        onChange={(e) => {
+                          setLecturer(e.target.value);
+                        }}
+                      >
+                        {lecturers.map((lecturer, index) => (
+                          <MenuItem key={"Lecturer-number-" + (index + 1)} value={lecturer.id}>
+                            {lecturer.username}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <FormControl fullWidth>
+                    <InputLabel id="lecturer-select-label-form">Subject</InputLabel>
+                    <Select
+                      defaultValue={subject}
+                      value={subject}
+                      label="Subject"
+                      MenuProps={{
+                        disablePortal: true, // <--- HERE
+                        onClick: (e) => {
+                          e.preventDefault();
+                        },
+                      }}
+                      onChange={(e) => {
+                        setSubject(e.target.value);
+                      }}
+                    >
+                      {subjects.map((subject, index) => (
+                        <MenuItem key={"Lecturer-number-" + (index + 1)} value={subject.id}>
+                          {subject.id}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <TextField type="number" onChange={(e) => setSlots(e.target.value)} value={slots} id="form-slots" fullWidth label="Slots" variant="outlined" />
+                </Grid>
+              </Grid>
+            </Grid>
+            {isEdit ? (
+              <></>
+            ) : (
+              <Grid item xs={12} md={6}>
+                <Grid container spacing={4}>
+                  <Grid item xs={12} sm={12}>
+                    <Typography variant="h5">Schedule Settings</Typography>
+                  </Grid>
+                  <Grid item xs={4} md={4}>
+                    <FormControl fullWidth>
+                      <InputLabel id="day-of-the-week--select-label">Day of the Week</InputLabel>
+                      <Select
+                        id="form-day-of-the-week"
+                        labelId="day-of-the-week--select-label"
+                        value={dayOfTheWeek}
+                        label="Day of the Week"
+                        onChange={(e) => {
+                          setDayOfTheWeek(e.target.value);
+                        }}
+                      >
+                        {constants.daysOfTheWeekForm.map((s, index) => (
+                          <MenuItem disabled={true} key={"day-of-the-week-" + index} value={s.index}>
+                            {s.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={4} md={4}>
+                    <FormControl fullWidth>
+                      <InputLabel id="slot-select-label">Slot</InputLabel>
+                      <Select
+                        id="form-slot"
+                        labelId="slot-select-label"
+                        value={slot}
+                        label="Slot Number"
+                        onChange={(e) => {
+                          setSlot(e.target.value);
+                        }}
+                      >
+                        {constants.slot.map((s, index) => (
+                          <MenuItem disabled={true} key={"slot-" + index} value={index + 1}>
+                            Slot {s.index} - {s.time}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={4} md={4}>
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      sx={{ padding: "15px 30px" }}
+                      onClick={(e) => {
+                        let newSlot = {
+                          number: dayOfTheWeek,
+                          slot: slot,
+                        };
+                        if (!selectedSlots.some((obj) => obj.number == newSlot.number && obj.slot == newSlot.slot)) {
+                          setSelectedSlots([...selectedSlots, newSlot]);
+                        } else {
+                          toast.error("Already included this slot", {
+                            position: "bottom-left",
+                          });
+                        }
+                      }}
+                    >
+                      Add Slot
+                    </Button>
+                  </Grid>
+                  <Grid item xs={12} md={12}>
+                    <List>
+                      {selectedSlots.map((selectedSlot, index) => {
+                        return (
+                          <ListItem
+                            key={"selected-slot-" + index}
+                            disableGutters
+                            secondaryAction={
+                              <IconButton
+                                aria-label="selected"
+                                onClick={() => {
+                                  let newSelectedSlots = selectedSlots.splice(index, 1);
+                                  setSelectedSlots(newSelectedSlots);
+                                }}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            }
+                          >
+                            <ListItemText>
+                              Slot: {selectedSlot.number} - {selectedSlot.day}
+                            </ListItemText>
+                          </ListItem>
+                        );
+                      })}
+                    </List>
+                  </Grid>
+                  <Grid item xs={12} md={12}>
+                    <DesktopDatePicker
+                      value={dayjs(startDate)}
+                      label="Start Date"
+                      onChange={(e) => {
+                        setStartDate(e);
+                      }}
+                      sx={{
+                        width: "100%",
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={12}>
+                    <DesktopDatePicker
+                      value={dayjs(endDate)}
+                      label="End Date"
+                      onChange={(e) => {
+                        setEndDate(e);
+                      }}
+                      sx={{
+                        width: "100%",
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+            )}
           </Grid>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <FormControl fullWidth>
-            <InputLabel id="lecturer-select-label-form">Subject</InputLabel>
-            <Select
-              defaultValue={subject}
-              value={subject}
-              label="Subject"
-              MenuProps={{
-                disablePortal: true, // <--- HERE
-                onClick: (e) => {
-                  e.preventDefault();
-                },
-              }}
-              onChange={(e) => {
-                setSubject(e.target.value)
-              }}
-            >
-              {subjects.map((subject, index) => (
-                <MenuItem key={"Lecturer-number-" + (index + 1)} value={subject.id}>
-                  {subject.id}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <TextField type="number" onChange={(e) => setSlots(e.target.value)} value={slots} id="form-slots" fullWidth label="Slots" variant="outlined" />
         </Grid>
 
         {error && error !== "" ? (
@@ -250,6 +428,7 @@ export default function GroupForm(props) {
           </Button>
         </Grid>
       </Grid>
+      <ToastContainer />
     </>
   );
 }

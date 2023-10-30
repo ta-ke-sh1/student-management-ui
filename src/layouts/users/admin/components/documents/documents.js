@@ -11,6 +11,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import axios from "axios";
 import DocumentsForm from "./documentsForm";
 import { ToastContainer, toast } from "react-toastify";
+import { fetchDocuments } from "../../../../../utils/utils";
 
 const headCells = [
   {
@@ -70,23 +71,21 @@ export default function DocumentsAdmin(props) {
           let data = res.data.data;
           setRowData(data);
           setRows(data);
+          toast.success("Data Fetched Succesfully", {
+            position: "bottom-left",
+          });
         } else {
           console.log("Error!");
           toast.error(res.data.data, {
-            position: "bottom-left"
-          })
+            position: "bottom-left",
+          });
         }
       });
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
-
-  };
-
-  const fetchDocuments = (id) => {
-    return rows.find((row) => row.id === id);
   };
 
   const handleEdit = (id) => {
@@ -96,10 +95,9 @@ export default function DocumentsAdmin(props) {
       setOpenModal(true);
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
-
   };
 
   const handleDelete = (index) => {
@@ -111,10 +109,9 @@ export default function DocumentsAdmin(props) {
       console.log(index);
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
-
   };
 
   const handleDeleteRequest = () => {
@@ -133,10 +130,9 @@ export default function DocumentsAdmin(props) {
       });
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
-
   };
 
   const handleClose = () => {
@@ -156,7 +152,7 @@ export default function DocumentsAdmin(props) {
     console.log(e);
   };
 
-  const handleDownloadAll = () => { };
+  const handleDownloadAll = () => {};
 
   return (
     <>
@@ -190,6 +186,7 @@ export default function DocumentsAdmin(props) {
           <div className="big-widget">
             <div className="campus-list">
               <CustomTable
+                handleRefreshEntry={fetchRows}
                 handleAddEntry={() => {
                   handleOpenModal();
                 }}

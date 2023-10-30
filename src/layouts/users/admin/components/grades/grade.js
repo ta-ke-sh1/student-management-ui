@@ -89,18 +89,20 @@ export default function GradeAdmin(props) {
         if (res.data.status) {
           setRows(res.data.data);
           setRowData(res.data.data);
+          toast.success("Data Fetched Succesfully", {
+            position: "bottom-left",
+          });
         } else {
           toast.error(res.data.data, {
-            position: "bottom-left"
-          })
+            position: "bottom-left",
+          });
         }
       });
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
-
   };
 
   const fetchGrade = (id) => {
@@ -120,10 +122,9 @@ export default function GradeAdmin(props) {
       setOpenModal(true);
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
-
   };
 
   const handleDelete = (index) => {
@@ -135,10 +136,9 @@ export default function GradeAdmin(props) {
       console.log(index);
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
-
   };
 
   const handleDeleteRequest = () => {
@@ -157,10 +157,9 @@ export default function GradeAdmin(props) {
       });
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
-
   };
 
   const handleSearch = (e) => {
@@ -184,10 +183,9 @@ export default function GradeAdmin(props) {
       setTableTitle(query);
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
-
   };
 
   const handleClearSearch = (e) => {
@@ -252,6 +250,7 @@ export default function GradeAdmin(props) {
             <div className="campus-list">
               {data && (
                 <CustomTable
+                  handleRefreshEntry={fetchRows}
                   handleAddEntry={() => {
                     handleOpenModal();
                   }}

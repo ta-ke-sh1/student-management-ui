@@ -143,4 +143,44 @@ export default class Constants {
       },
     ];
   }
+
+  get daysOfTheWeekForm() {
+    return [
+      {
+        name: "Sunday",
+        short: "Sun",
+        index: 0,
+      },
+      {
+        name: "Monday",
+        short: "Mon",
+        index: 1,
+      },
+      {
+        name: "Tuesday",
+        short: "Tue",
+        index: 2,
+      },
+      {
+        name: "Wednesday",
+        short: "Wed",
+        index: 3,
+      },
+      {
+        name: "Thursday",
+        short: "Thu",
+        index: 4,
+      },
+      {
+        name: "Friday",
+        short: "Fri",
+        index: 5,
+      },
+      {
+        name: "Saturday",
+        short: "Sat",
+        index: 6,
+      },
+    ];
+  }
 }

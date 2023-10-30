@@ -13,7 +13,6 @@ import Constants from "../../../../../utils/constants";
 import axios from "axios";
 import { getAllHeaderColumns } from "../../../../../utils/utils";
 
-
 const headCells = [
   {
     id: "id",
@@ -75,7 +74,7 @@ export default function SubjectsAdmin() {
   const [id, setId] = useState("");
   const [department, setDepartment] = useState("");
 
-  const handleClearSearch = () => { };
+  const handleClearSearch = () => {};
 
   useEffect(() => {
     fetchRows();
@@ -86,8 +85,8 @@ export default function SubjectsAdmin() {
       axios.get(process.env.REACT_APP_HOST_URL + "/subject").then((res) => {
         if (!res.data.status) {
           toast.error(res.data.data, {
-            position: "bottom-left"
-          })
+            position: "bottom-left",
+          });
         } else {
           let data = [];
           res.data.data.forEach((subject) => {
@@ -95,14 +94,16 @@ export default function SubjectsAdmin() {
           });
           setRows(data);
           setRowData(data);
+          toast.success("Data Fetched Succesfully", {
+            position: "bottom-left",
+          });
         }
-      })
+      });
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
-
   };
 
   const handleDelete = (index) => {
@@ -110,31 +111,30 @@ export default function SubjectsAdmin() {
       setDialogTitle("Delete Room");
       setDialogContent("This room will be deleted, are you sure? This change cannot be undone");
       setOpen(true);
-      setId(index)
+      setId(index);
     } catch (e) {
       toast.error(e.toString(), {
-        position: "bottom-left"
-      })
+        position: "bottom-left",
+      });
     }
   };
 
   const handleDeleteRequest = (id) => {
-    let query = ""
+    let query = "";
     if (Array.isArray(id)) {
       id.forEach((i) => {
-        query += (i + "%")
-      })
+        query += i + "%";
+      });
     } else {
-      query = id
+      query = id;
     }
     axios.delete(process.env.REACT_APP_HOST_URL + "/subject?id=" + query).then((res) => {
       if (res.data.status) {
-        toast.success("Deleted")
+        toast.success("Deleted");
       } else {
-
       }
-    })
-  }
+    });
+  };
 
   const handleClose = () => {
     setOpen(false);
@@ -273,10 +273,14 @@ export default function SubjectsAdmin() {
           <DialogContentText id="alert-dialog-description">{dialogContent}</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => {
-            handleDeleteRequest(id);
-            handleClose()
-          }}>Accept</Button>
+          <Button
+            onClick={() => {
+              handleDeleteRequest(id);
+              handleClose();
+            }}
+          >
+            Accept
+          </Button>
           <Button onClick={handleClose} autoFocus>
             Cancel
           </Button>

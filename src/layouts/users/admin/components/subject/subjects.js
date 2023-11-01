@@ -58,7 +58,7 @@ const headCells = [
   },
 ];
 
-export default function SubjectsAdmin() {
+export default function SubjectsAdmin(props) {
   const constants = new Constants();
 
   const [dialogTitle, setDialogTitle] = useState("");
@@ -84,9 +84,7 @@ export default function SubjectsAdmin() {
     try {
       axios.get(process.env.REACT_APP_HOST_URL + "/subject").then((res) => {
         if (!res.data.status) {
-          toast.error(res.data.data, {
-            position: "bottom-left",
-          });
+          props.sendToast("error", res.data.data);
         } else {
           let data = [];
           res.data.data.forEach((subject) => {
@@ -100,9 +98,7 @@ export default function SubjectsAdmin() {
         }
       });
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 
@@ -113,9 +109,7 @@ export default function SubjectsAdmin() {
       setOpen(true);
       setId(index);
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 

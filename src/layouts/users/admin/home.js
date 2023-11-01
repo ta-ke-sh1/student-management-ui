@@ -18,6 +18,7 @@ import GradeAdmin from "./components/grades/grade";
 import DocumentsAdmin from "./components/documents/documents";
 import RequestAdmin from "./components/requests/request";
 import { Main, drawerWidth } from "../../../common/drawer/drawer";
+import { ToastContainer } from "react-toastify";
 
 export default function AdminHome() {
   const _container = window !== undefined ? () => window.document.body : undefined;
@@ -87,7 +88,15 @@ export default function AdminHome() {
     },
   ];
 
-  const components = [<CampusAdmin />, <UsersAdmin />, <FGWClass />, <SubjectsAdmin />, <GradeAdmin />, <DocumentsAdmin />, <RequestAdmin />];
+  const components = [
+    <CampusAdmin sendToast={sendToast} handleSelectTab={handleSelectTab} />,
+    <UsersAdmin sendToast={sendToast} handleSelectTab={handleSelectTab} />,
+    <FGWClass sendToast={sendToast} handleSelectTab={handleSelectTab} />,
+    <SubjectsAdmin sendToast={sendToast} handleSelectTab={handleSelectTab} />,
+    <GradeAdmin sendToast={sendToast} handleSelectTab={handleSelectTab} />,
+    <DocumentsAdmin sendToast={sendToast} handleSelectTab={handleSelectTab} />,
+    <RequestAdmin sendToast={sendToast} handleSelectTab={handleSelectTab} />,
+  ];
 
   const drawer = (
     <div className="drawer">
@@ -136,6 +145,27 @@ export default function AdminHome() {
       })}
     </div>
   );
+
+  const sendToast = (type, message) => {
+    const opt = {
+      position: "bottom-left",
+    };
+    switch (type) {
+      case "error":
+        toast.error(message, opt);
+        break;
+      case "success":
+        toast.success(message, opt);
+        break;
+      default:
+        toast(message, opt);
+        break;
+    }
+  };
+
+  const handleSelectTab = (index) => {
+    setCurrent(index);
+  };
 
   return (
     <>
@@ -191,6 +221,7 @@ export default function AdminHome() {
           </svg>
         </Fab>
       </div>
+      <ToastContainer />
     </>
   );
 }

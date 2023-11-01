@@ -99,7 +99,7 @@ const headCells = [
   },
 ];
 
-export default function UsersAdmin() {
+export default function UsersAdmin(props) {
   const constants = new Constants();
   const [user, setUser] = useState({});
 
@@ -156,9 +156,7 @@ export default function UsersAdmin() {
     try {
       axios.get(process.env.REACT_APP_HOST_URL + "/user/students").then((res) => {
         if (!res.data.status) {
-          toast.error(res.data.data, {
-            position: "bottom-left",
-          });
+          props.sendToast("error", res.data.data);
         } else {
           let result = [];
           res.data.data.forEach((user) => {
@@ -169,9 +167,7 @@ export default function UsersAdmin() {
         }
       });
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 
@@ -179,9 +175,7 @@ export default function UsersAdmin() {
     try {
       axios.get(process.env.REACT_APP_HOST_URL + "/user/lecturers").then((res) => {
         if (!res.data.status) {
-          toast.error(res.data.data, {
-            position: "bottom-left",
-          });
+          props.sendToast("error", res.data.data);
         } else {
           let result = [];
           res.data.data.forEach((user) => {
@@ -192,9 +186,7 @@ export default function UsersAdmin() {
         }
       });
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 
@@ -202,9 +194,7 @@ export default function UsersAdmin() {
     try {
       axios.get(process.env.REACT_APP_HOST_URL + "/user/admins").then((res) => {
         if (!res.data.status) {
-          toast.error(res.data.data, {
-            position: "bottom-left",
-          });
+          props.sendToast("error", res.data.data);
         } else {
           let result = [];
           res.data.data.forEach((user) => {
@@ -216,9 +206,7 @@ export default function UsersAdmin() {
         }
       });
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 

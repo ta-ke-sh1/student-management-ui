@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { TextField, Select, MenuItem, InputLabel, FormControl, Button, Grid } from "@mui/material";
+import { TextField, Select, MenuItem, InputLabel, FormControl, Button, Grid, useThemeProps } from "@mui/material";
 import CustomTable from "../../../../../common/table/table";
 
 import Dialog from "@mui/material/Dialog";
@@ -46,7 +46,7 @@ const headCells = [
   },
 ];
 
-export default function CampusAdmin() {
+export default function CampusAdmin(props) {
   let campuses = [
     {
       id: "HN",
@@ -96,7 +96,7 @@ export default function CampusAdmin() {
     try {
       axios.get(process.env.REACT_APP_HOST_URL + "/campus/rooms").then((res) => {
         if (!res.data.status) {
-          toast.error(res.data.data);
+          props.sendToast("error", res.data.data);
         }
 
         res.data.data.forEach((room) => {
@@ -105,14 +105,10 @@ export default function CampusAdmin() {
 
         setRows(result);
         setRowData(result);
-        toast.success("Data fetched successfully!", {
-          position: "bottom-left",
-        });
+        props.sendToast("success", "Data fetched successfully!");
       });
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 
@@ -120,9 +116,7 @@ export default function CampusAdmin() {
     try {
       return rows.find((row) => row.id === id);
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 
@@ -143,9 +137,7 @@ export default function CampusAdmin() {
       });
       setOpenModal(true);
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 
@@ -157,9 +149,7 @@ export default function CampusAdmin() {
       setSelected(index);
       console.log(index);
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 
@@ -184,9 +174,7 @@ export default function CampusAdmin() {
         setOpen(false);
       });
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 
@@ -210,9 +198,7 @@ export default function CampusAdmin() {
       setRows(searchResult);
       setTableTitle(query);
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 
@@ -344,8 +330,6 @@ export default function CampusAdmin() {
           <CampusForm closeHandler={handleCloseModal} room={room} refresh={fetchRows} />
         </DialogContent>
       </Dialog>
-
-      <ToastContainer />
     </>
   );
 }

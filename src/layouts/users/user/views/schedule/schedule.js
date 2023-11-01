@@ -1,21 +1,20 @@
 import React, { useLayoutEffect, useState } from "react";
-import { useFetchSchedules } from "../../hooks/useFetchSchedule";
-import {  Grid } from "@mui/material";
+import { Button, Grid, Tooltip } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
 import Constants from "../../../../../utils/constants";
-import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 
 export default function ScheduleHome(props) {
+  const token = decodeToken(localStorage.getItem("access_token"));
+  // token = {id, avatar, user, email, role}
+
   const constants = new Constants();
-  const [week, setWeek] = useState(moment().week());
-  const { schedules } = useFetchSchedules(week);
 
   const [dateMap, setDateMap] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(moment());
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const dateToFormattedDate = (date) => {
     return moment(date).format("MMM DD, YYYY");
   };
@@ -36,49 +35,50 @@ export default function ScheduleHome(props) {
   }
 
   useLayoutEffect(() => {
-    initDate();
-    initDateMap();
+    fetchSchedules();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleTakeAttendance = () => {};
+
   const fetchSchedules = () => {
-    axios.get(process.env.REACT_APP_HOST_URL + "/schedule/student" + props.user.id).then((res) => {
-      if (!res.data.status) {
-        toast.error(res.data.data, {
-          position: "bottom-left",
+    try {
+      axios
+        .get(process.env.REACT_APP_HOST_URL + "/schedule/" + role === 2 ? "lecturer" : "student", {
+          params: {
+            user_id: token.id,
+            startDate: getFirstDateOfWeek(selectedDate.getTime()),
+            endDate: getLastDateOfWeek(selectedDate.getTime()),
+          },
+        })
+        .then((res) => {
+          if (!res.data.status) {
+            props.sendToast("error", res.data.data);
+          } else {
+            const schedules = res.data.data;
+            props.sendToast("success", "Data fetched successfuly");
+
+            initDateMap();
+            let d_map = Array.from({ length: 8 }, () => Array.from({ length: 7 }, () => ({ isSlot: false })));
+            schedules.forEach((schedule) => {
+              let dayNumber = getDayOfWeek(schedule.date);
+              let slot = schedule.slot - 1;
+              d_map[slot][dayNumber] = {
+                room: schedule.room,
+                class: schedule.class,
+                subject: schedule.subject,
+                isSlot: true,
+                remark: schedule.remark,
+                lecturer: schedule.lecturer,
+              };
+            });
+
+            setDateMap(d_map);
+          }
         });
-      } else {
-      }
-    });
-  };
-
-  const initDate = () => {
-    let date = new Date();
-    setSelectedDate(date);
-  };
-
-  const handleChangeDate = (e) => {
-    setSelectedDate(e);
-  };
-
-  const initDateMap = () => {
-    let d_map = Array.from({ length: 8 }, () => Array.from({ length: 7 }, () => ({ isSlot: false })));
-
-    schedules.forEach((schedule) => {
-      let dayNumber = getDayOfWeek(schedule.date);
-      let slot = schedule.slot - 1;
-
-      d_map[slot][dayNumber] = {
-        room: schedule.room,
-        class: schedule.class,
-        subject: schedule.subject,
-        isSlot: true,
-        status: schedule.status,
-        lecturer: schedule.lecturer,
-      };
-    });
-
-    setDateMap(d_map);
+    } catch (e) {
+      props.sendToast("error", e.toString());
+    }
   };
 
   const renderSlot = (slot, dayNumber) => {
@@ -95,6 +95,8 @@ export default function ScheduleHome(props) {
               <br />
               {dateMap[slot][dayNumber].room} - {dateMap[slot][dayNumber].lecturer}
               <br />({schedule.status === 1 ? "Attended" : schedule.status === 0 ? "Absent" : "Not Yet"})
+              <br />
+              {token.role === 3 ? <Button onClick={handleTakeAttendance}>Take Attendance</Button> : <></>}
             </div>
           </div>
         );
@@ -120,13 +122,15 @@ export default function ScheduleHome(props) {
             {dateToFormattedDate(getFirstDateOfWeek(selectedDate))} to {dateToFormattedDate(getLastDateOfWeek(selectedDate))}
           </h3>
           <LocalizationProvider dateAdapter={AdapterMoment}>
-            <DatePicker
-              onChange={(e) => {
-                setSelectedDate(e);
-              }}
-              label="Select a Date"
-              slotProps={{ textField: { size: "small" } }}
-            />
+            <Tooltip title="Select a date to see weekly schedule">
+              <DatePicker
+                onChange={(e) => {
+                  setSelectedDate(e);
+                }}
+                label="Select a Date"
+                slotProps={{ textField: { size: "small" } }}
+              />
+            </Tooltip>
           </LocalizationProvider>
         </div>
         <Grid container columns={10}>
@@ -172,7 +176,6 @@ export default function ScheduleHome(props) {
           </p>
         </Grid>
       </div>
-      <ToastContainer />
     </div>
   );
 }

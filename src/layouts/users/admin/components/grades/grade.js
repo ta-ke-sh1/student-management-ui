@@ -59,8 +59,6 @@ const headCells = [
   },
 ];
 
-const searchType = [];
-
 export default function GradeAdmin(props) {
   const { data } = useFetchRequests(process.env.REACT_APP_HOST_URL + "/user/grade");
 
@@ -93,15 +91,11 @@ export default function GradeAdmin(props) {
             position: "bottom-left",
           });
         } else {
-          toast.error(res.data.data, {
-            position: "bottom-left",
-          });
+          props.sendToast("error", res.data.data);
         }
       });
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 
@@ -121,9 +115,7 @@ export default function GradeAdmin(props) {
       });
       setOpenModal(true);
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 
@@ -135,9 +127,7 @@ export default function GradeAdmin(props) {
       setSelected(index);
       console.log(index);
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 
@@ -156,9 +146,7 @@ export default function GradeAdmin(props) {
         setOpen(false);
       });
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 
@@ -182,9 +170,7 @@ export default function GradeAdmin(props) {
       setRows(searchResult);
       setTableTitle(query);
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 

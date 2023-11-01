@@ -76,15 +76,11 @@ export default function DocumentsAdmin(props) {
           });
         } else {
           console.log("Error!");
-          toast.error(res.data.data, {
-            position: "bottom-left",
-          });
+          props.sendToast("error", res.data.data);
         }
       });
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 
@@ -94,9 +90,7 @@ export default function DocumentsAdmin(props) {
       setDocuments(document);
       setOpenModal(true);
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 
@@ -108,9 +102,7 @@ export default function DocumentsAdmin(props) {
       setSelected(index);
       console.log(index);
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 
@@ -129,9 +121,7 @@ export default function DocumentsAdmin(props) {
         setOpen(false);
       });
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 

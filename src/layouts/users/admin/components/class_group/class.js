@@ -19,7 +19,7 @@ import AttendanceWidget from "./widgets/attendanceWidget";
 import AttendanceForm from "./forms/attendanceForm";
 import { filterByAttribute } from "../../../../../utils/utils";
 
-export default function FGWClass() {
+export default function FGWClass(props) {
   const constants = new Constants();
   const admin_local_group = "class_group";
 
@@ -91,9 +91,7 @@ export default function FGWClass() {
         }
       }
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 
@@ -161,9 +159,7 @@ export default function FGWClass() {
         setGroups(group);
       }
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 
@@ -174,15 +170,11 @@ export default function FGWClass() {
         if (res.data.status) {
           setParticipants(res.data.data ?? []);
         } else {
-          toast.error(res.data.data, {
-            position: "bottom-left",
-          });
+          props.sendToast("error", res.data.data);
         }
       });
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 
@@ -194,15 +186,11 @@ export default function FGWClass() {
         if (res.data.status) {
           setSchedules(res.data.data ?? []);
         } else {
-          toast.error(res.data.data, {
-            position: "bottom-left",
-          });
+          props.sendToast("error", res.data.data);
         }
       });
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 
@@ -212,15 +200,11 @@ export default function FGWClass() {
         if (res.data.status) {
           setAttendances(res.data.data);
         } else {
-          toast.error(res.data.data, {
-            position: "bottom-left",
-          });
+          props.sendToast("error", res.data.data);
         }
       });
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 

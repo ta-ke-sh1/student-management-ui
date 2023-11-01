@@ -16,13 +16,12 @@ import { decodeToken } from "../../../utils/utils";
 import { Main, drawerWidth } from "../../../common/drawer/drawer";
 import CourseUser from "../../course/course";
 import CoursesUser from "./views/courses/courses";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function UserHome(props) {
   const _container = window !== undefined ? () => window.document.body : undefined;
   const [current, setCurrent] = useState(props.index ?? 3);
   const [mobileOpen, setMobileOpen] = useState(true);
-
-  const [user, setUser] = useState();
 
   const nav_tabs = [
     {
@@ -52,8 +51,33 @@ export default function UserHome(props) {
     },
   ];
 
+  const sendToast = (type, message) => {
+    const opt = {
+      position: "bottom-left",
+    };
+    switch (type) {
+      case "error":
+        toast.error(message, opt);
+        break;
+      case "success":
+        toast.success(message, opt);
+        break;
+      default:
+        toast(message, opt);
+        break;
+    }
+  };
 
-  const components = [<PersonalInfo />, <ScheduleHome />, <CurriculumTab />, <CoursesUser />];
+  const handleSelectTab = (index) => {
+    setCurrent(index);
+  };
+
+  const components = [
+    <PersonalInfo sendToast={sendToast} handleSelectTab={handleSelectTab} />,
+    <ScheduleHome sendToast={sendToast} handleSelectTab={handleSelectTab} />,
+    <CurriculumTab sendToast={sendToast} handleSelectTab={handleSelectTab} />,
+    <CoursesUser sendToast={sendToast} handleSelectTab={handleSelectTab} />,
+  ];
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -74,7 +98,7 @@ export default function UserHome(props) {
                   }}
                   key={tab.name}
                   onClick={() => {
-                    setCurrent(tab.id);
+                    handleSelectTab(tab.id);
                   }}
                 >
                   <ListItemButton
@@ -159,6 +183,8 @@ export default function UserHome(props) {
           </svg>
         </Fab>
       </div>
+
+      <ToastContainer />
     </>
   );
 }

@@ -79,9 +79,7 @@ export default function RequestsAdmin(props) {
     try {
       axios.get(process.env.REACT_APP_HOST_URL + "/request").then((res) => {
         if (!res.data.status) {
-          toast.error(res.data.data, {
-            position: "bottom-left",
-          });
+          props.sendToast("error", res.data.data);
         } else {
           let data = [];
           res.data.data.forEach((request) => {
@@ -95,9 +93,7 @@ export default function RequestsAdmin(props) {
         }
       });
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 
@@ -117,9 +113,7 @@ export default function RequestsAdmin(props) {
       });
       setOpenModal(true);
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 
@@ -131,9 +125,7 @@ export default function RequestsAdmin(props) {
       setSelected(index);
       console.log(index);
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 
@@ -152,9 +144,7 @@ export default function RequestsAdmin(props) {
         setOpen(false);
       });
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
   };
 

@@ -28,15 +28,20 @@ export default function ScheduleListForm(props) {
   }
 
   const fetchLecturers = () => {
-    axios.get(process.env.REACT_APP_HOST_URL + "/user/lecturers").then((res) => {
-      if (res.data.status) {
-        let data = [];
-        for (let i = 0; i < res.data.data.length; i++) {
-          data.push(res.data.data[i]);
+    try {
+      axios.get(process.env.REACT_APP_HOST_URL + "/user/lecturers").then((res) => {
+        if (res.data.status) {
+          let data = [];
+          for (let i = 0; i < res.data.data.length; i++) {
+            data.push(res.data.data[i]);
+          }
+          setLecturers(data);
         }
-        setLecturers(data);
-      }
-    });
+      });
+    } catch (e) {
+      props.sendToast("error", e.toString())
+    }
+
   };
 
   return (

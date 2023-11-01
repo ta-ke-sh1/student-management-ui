@@ -12,15 +12,13 @@ import EventNoteIcon from "@mui/icons-material/EventNote";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import CurriculumTab from "./views/curriculum/curriculum";
 import ClassIcon from "@mui/icons-material/Class";
-import { decodeToken } from "../../../utils/utils";
 import { Main, drawerWidth } from "../../../common/drawer/drawer";
-import CourseUser from "../../course/course";
 import CoursesUser from "./views/courses/courses";
 import { ToastContainer, toast } from "react-toastify";
 
 export default function UserHome(props) {
   const _container = window !== undefined ? () => window.document.body : undefined;
-  const [current, setCurrent] = useState(props.index ?? 3);
+  const [current, setCurrent] = useState(props.index ?? 1);
   const [mobileOpen, setMobileOpen] = useState(true);
 
   const nav_tabs = [
@@ -51,7 +49,7 @@ export default function UserHome(props) {
     },
   ];
 
-  const sendToast = (type, message) => {
+  function sendToast(type, message) {
     const opt = {
       position: "bottom-left",
     };
@@ -68,7 +66,7 @@ export default function UserHome(props) {
     }
   };
 
-  const handleSelectTab = (index) => {
+  function handleSelectTab(index) {
     setCurrent(index);
   };
 

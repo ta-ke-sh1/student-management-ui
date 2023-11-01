@@ -7,8 +7,11 @@ import moment from "moment";
 import Constants from "../../../../../utils/constants";
 import axios from "axios";
 
+import { decodeToken } from "../../../../../utils/utils";
+
 export default function ScheduleHome(props) {
   const token = decodeToken(localStorage.getItem("access_token"));
+  console.log(token)
   // token = {id, avatar, user, email, role}
 
   const constants = new Constants();
@@ -39,16 +42,22 @@ export default function ScheduleHome(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleTakeAttendance = () => {};
+  const handleTakeAttendance = () => { };
 
   const fetchSchedules = () => {
     try {
+      let course_id = ""
+      token.courses.forEach((course) => {
+        course_id += ("%" + course.course_id)
+      })
+
       axios
-        .get(process.env.REACT_APP_HOST_URL + "/schedule/" + role === 2 ? "lecturer" : "student", {
+        .get(process.env.REACT_APP_HOST_URL + "/schedule/" + (token.role === 2 ? "lecturer" : "student"), {
           params: {
-            user_id: token.id,
-            startDate: getFirstDateOfWeek(selectedDate.getTime()),
-            endDate: getLastDateOfWeek(selectedDate.getTime()),
+            user_id: token.user,
+            course_id: course_id,
+            startDate: getFirstDateOfWeek(selectedDate.getTime()).getTime(),
+            endDate: getLastDateOfWeek(selectedDate.getTime()).getTime(),
           },
         })
         .then((res) => {
@@ -58,7 +67,6 @@ export default function ScheduleHome(props) {
             const schedules = res.data.data;
             props.sendToast("success", "Data fetched successfuly");
 
-            initDateMap();
             let d_map = Array.from({ length: 8 }, () => Array.from({ length: 7 }, () => ({ isSlot: false })));
             schedules.forEach((schedule) => {
               let dayNumber = getDayOfWeek(schedule.date);
@@ -93,8 +101,11 @@ export default function ScheduleHome(props) {
               <br />
               {dateMap[slot][dayNumber].class}
               <br />
-              {dateMap[slot][dayNumber].room} - {dateMap[slot][dayNumber].lecturer}
-              <br />({schedule.status === 1 ? "Attended" : schedule.status === 0 ? "Absent" : "Not Yet"})
+              {dateMap[slot][dayNumber].room}
+              <br />
+              {dateMap[slot][dayNumber].lecturer}
+              <br />
+              ({schedule.status === 1 ? "Attended" : schedule.status === 0 ? "Absent" : "Not Yet"})
               <br />
               {token.role === 3 ? <Button onClick={handleTakeAttendance}>Take Attendance</Button> : <></>}
             </div>

@@ -18,7 +18,7 @@ import GradeAdmin from "./components/grades/grade";
 import DocumentsAdmin from "./components/documents/documents";
 import RequestAdmin from "./components/requests/request";
 import { Main, drawerWidth } from "../../../common/drawer/drawer";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function AdminHome() {
   const _container = window !== undefined ? () => window.document.body : undefined;
@@ -146,7 +146,7 @@ export default function AdminHome() {
     </div>
   );
 
-  const sendToast = (type, message) => {
+  function sendToast(type, message) {
     const opt = {
       position: "bottom-left",
     };
@@ -163,7 +163,7 @@ export default function AdminHome() {
     }
   };
 
-  const handleSelectTab = (index) => {
+  function handleSelectTab(index) {
     setCurrent(index);
   };
 

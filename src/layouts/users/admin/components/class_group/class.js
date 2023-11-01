@@ -13,7 +13,6 @@ import ScheduleWidget from "./widgets/scheduleWidget";
 import ScheduleListForm from "./forms/scheduleForm";
 import ParticipantsForm from "./forms/participantsForm";
 import Constants from "../../../../../utils/constants";
-import { ToastContainer, toast } from "react-toastify";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AttendanceWidget from "./widgets/attendanceWidget";
 import AttendanceForm from "./forms/attendanceForm";
@@ -51,8 +50,8 @@ export default function FGWClass(props) {
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogContent, setDialogContent] = useState("");
 
-  const [firstClick, setFirstClick] = useState(true);
-  const [firstClickAttendance, setFirstClickAttendance] = useState(true);
+  const [firstClick, setFirstClick] = useState(false);
+  const [firstClickAttendance, setFirstClickAttendance] = useState(false);
 
   const [open, setOpen] = useState(false);
 
@@ -71,9 +70,7 @@ export default function FGWClass(props) {
               setGroups(res.data.data);
               localStorage.setItem(admin_local_group, res.data.data);
             } else {
-              toast.error(res.data.data, {
-                position: "bottom-left",
-              });
+              props.sendToast("error", res.data.data)
             }
           });
         }
@@ -149,10 +146,9 @@ export default function FGWClass(props) {
         await axios.get(process.env.REACT_APP_HOST_URL + "/semester/groups").then((res) => {
           if (res.data.status) {
             setGroups(res.data.data);
+            props.sendToast("success", "Fetch groups successfully")
           } else {
-            toast.error(res.data.data, {
-              position: "bottom-left",
-            });
+            props.sendToast("error", res.data.data)
           }
         });
       } else {
@@ -181,10 +177,9 @@ export default function FGWClass(props) {
   const fetchSchedules = async (id) => {
     try {
       let data = filterByAttribute(groups, "id", id);
-      await axios.get(process.env.REACT_APP_HOST_URL + "/semester/schedules?id=" + id + "&slots=" + data.slots).then((res) => {
-        console.log(res.data);
+      await axios.get(process.env.REACT_APP_HOST_URL + "/semester/schedules?id=" + id).then((res) => {
         if (res.data.status) {
-          setSchedules(res.data.data ?? []);
+          setSchedules(res.data.data);
         } else {
           props.sendToast("error", res.data.data);
         }
@@ -211,9 +206,6 @@ export default function FGWClass(props) {
   const handleSearchInfo = async (id) => {
     fetchParticipants(id);
     fetchSchedules(id);
-    let data = filterByAttribute(groups, "id", id);
-    console.log(data);
-    setGroup(data);
     setFirstClick(true);
   };
 
@@ -484,8 +476,6 @@ export default function FGWClass(props) {
           <AttendanceForm closeHandler={handleCloseAttendanceFormModal} attendance={attendance} group={group} participants={participants} />
         </DialogContent>
       </Dialog>
-
-      <ToastContainer />
     </>
   );
 }

@@ -8,12 +8,12 @@ import Loading from "../../../../../common/loading/loading";
 import AddressForm from "./form/addressForm";
 import InformationForm from "./form/informationForm";
 
-export default function PersonalInfo() {
+export default function PersonalInfo(props) {
   const token = decodeToken(localStorage.getItem("access_token"));
   const [user, setUser] = useState({});
 
-  const [openAddressModal, setOpenAddressModal] = useState(false)
-  const [openInformationModal, setOpenInformationModal] = useState(false)
+  const [openAddressModal, setOpenAddressModal] = useState(false);
+  const [openInformationModal, setOpenInformationModal] = useState(false);
 
   useEffect(() => {
     fetchUserData();
@@ -21,23 +21,18 @@ export default function PersonalInfo() {
 
   const fetchUserData = () => {
     try {
-      console.log(token)
+      console.log(token);
       axios.get(process.env.REACT_APP_HOST_URL + "/user?id=" + token.id).then((res) => {
         if (!res.data.status) {
-          toast.error(res.data.data, {
-            position: "bottom-left",
-          });
+          props.sendToast("error", res.data.data);
         } else {
-          console.log(res.data)
+          console.log(res.data);
           setUser(res.data.data[0]);
         }
       });
     } catch (e) {
-      toast.error(e.toString(), {
-        position: "bottom-left",
-      });
+      props.sendToast("error", e.toString());
     }
-
   };
 
   return (
@@ -75,7 +70,12 @@ export default function PersonalInfo() {
       >
         <div className="relative-container ">
           <Tooltip title={"Edit"}>
-            <IconButton className="icon-btn" onClick={() => { setOpenInformationModal(true) }}>
+            <IconButton
+              className="icon-btn"
+              onClick={() => {
+                setOpenInformationModal(true);
+              }}
+            >
               <EditIcon />
             </IconButton>
           </Tooltip>
@@ -114,7 +114,12 @@ export default function PersonalInfo() {
       >
         <div className="relative-container ">
           <Tooltip title={"Edit"}>
-            <IconButton className="icon-btn" onClick={() => { setOpenAddressModal(true) }}>
+            <IconButton
+              className="icon-btn"
+              onClick={() => {
+                setOpenAddressModal(true);
+              }}
+            >
               <EditIcon />
             </IconButton>
           </Tooltip>
@@ -143,7 +148,7 @@ export default function PersonalInfo() {
             boxShadow: 12,
           }}
         >
-          <AddressForm user={user} refresh={fetchUserData} />
+          <AddressForm sendToast={props.sendToast} user={user} refresh={fetchUserData} />
         </DialogContent>
       </Dialog>
 
@@ -154,7 +159,7 @@ export default function PersonalInfo() {
             boxShadow: 12,
           }}
         >
-          <InformationForm user={user} refresh={fetchUserData} />
+          <InformationForm sendToast={props.sendToast} user={user} refresh={fetchUserData} />
         </DialogContent>
       </Dialog>
       <ToastContainer />

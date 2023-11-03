@@ -11,7 +11,7 @@ import { decodeToken } from "../../../../../utils/utils";
 
 export default function ScheduleHome(props) {
   const token = decodeToken(localStorage.getItem("access_token"));
-  console.log(token)
+  console.log(token);
   // token = {id, avatar, user, email, role}
 
   const constants = new Constants();
@@ -42,14 +42,16 @@ export default function ScheduleHome(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleTakeAttendance = () => { };
+  const handleTakeAttendance = () => {
+    props.handleSelectTab(5);
+  };
 
   const fetchSchedules = () => {
     try {
-      let course_id = ""
+      let course_id = "";
       token.courses.forEach((course) => {
-        course_id += ("%" + course.course_id)
-      })
+        course_id += "%" + course.course_id;
+      });
 
       axios
         .get(process.env.REACT_APP_HOST_URL + "/schedule/" + (token.role === 2 ? "lecturer" : "student"), {
@@ -104,8 +106,7 @@ export default function ScheduleHome(props) {
               {dateMap[slot][dayNumber].room}
               <br />
               {dateMap[slot][dayNumber].lecturer}
-              <br />
-              ({schedule.status === 1 ? "Attended" : schedule.status === 0 ? "Absent" : "Not Yet"})
+              <br />({schedule.status === 1 ? "Attended" : schedule.status === 0 ? "Absent" : "Not Yet"})
               <br />
               {token.role === 3 ? <Button onClick={handleTakeAttendance}>Take Attendance</Button> : <></>}
             </div>

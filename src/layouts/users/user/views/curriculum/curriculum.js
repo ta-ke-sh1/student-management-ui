@@ -1,6 +1,5 @@
 import { Box, Grid } from "@mui/material";
 import { useEffect, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import { decodeToken } from "../../../../../utils/utils";
 
@@ -13,15 +12,17 @@ export default function CurriculumTab(props) {
   }, []);
 
   const fetchSubject = () => {
-    axios.get(process.env.REACT_APP_HOST_URL + "/user/curriculum?id=" + token.id).then((res) => {
-      if (!res.data.status) {
-        toast.error(res.data.data, {
-          position: "bottom-left",
-        });
-      } else {
-        setSubjects(res.data.data);
-      }
-    });
+    try {
+      axios.get(process.env.REACT_APP_HOST_URL + "/user/curriculum?id=" + token.id).then((res) => {
+        if (!res.data.status) {
+          props.sendToast("error", res.data.data);
+        } else {
+          setSubjects(res.data.data);
+        }
+      });
+    } catch (e) {
+      props.sendToast("error", e.toString());
+    }
   };
 
   return (
@@ -76,7 +77,6 @@ export default function CurriculumTab(props) {
           );
         })}
       </div>
-      <ToastContainer />
     </>
   );
 }

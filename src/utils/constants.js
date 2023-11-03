@@ -183,4 +183,29 @@ export default class Constants {
       },
     ];
   }
+
+  get grades() {
+    return [
+      {
+        name: "Failed",
+        value: "F",
+        number: 0,
+      },
+      {
+        name: "Pass",
+        value: "P",
+        number: 4,
+      },
+      {
+        name: "Merit",
+        value: "M",
+        number: 7,
+      },
+      {
+        name: "Distinction",
+        value: "D",
+        number: 10,
+      },
+    ];
+  }
 }

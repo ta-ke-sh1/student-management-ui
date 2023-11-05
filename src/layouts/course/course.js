@@ -24,7 +24,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import ScheduleTab from "./scheduleTab";
 import ParticipantsTab from "./participants.Tab";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 
 const drawerWidth = 240;
 
@@ -80,7 +80,6 @@ export default function CourseUser() {
           setOpenToast(true);
         }
       });
-      return c;
     } catch (e) {
       sendToast("error", e.toString());
     }

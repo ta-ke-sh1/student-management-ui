@@ -29,7 +29,7 @@ export default function AddressForm(props) {
     setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   function handleConfirm() {
     try {
@@ -39,7 +39,7 @@ export default function AddressForm(props) {
         })
         .then((res) => {
           if (!res.data.status) {
-            props.sendToast("error", e.toString());
+            props.sendToast("error", res.data.data);
           }
         });
     } catch (e) {

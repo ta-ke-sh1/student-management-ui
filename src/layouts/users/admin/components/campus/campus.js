@@ -105,7 +105,6 @@ export default function CampusAdmin(props) {
 
         setRows(result);
         setRowData(result);
-        props.sendToast("success", "Data fetched successfully!");
       });
     } catch (e) {
       props.sendToast("error", e.toString());
@@ -166,10 +165,10 @@ export default function CampusAdmin(props) {
       axios.delete(process.env.REACT_APP_HOST_URL + "/campus/room?q=" + query).then((res) => {
         console.log(res);
         if (res.data.status) {
-          toast("Selected rooms deleted successfully");
+          props.sendToast("success", "Selected rooms deleted successfully")
           fetchRows();
         } else {
-          toast("Failed to delete selected rooms");
+          props.sendToast("error", "Failed to delete selected rooms")
         }
         setOpen(false);
       });
@@ -178,9 +177,8 @@ export default function CampusAdmin(props) {
     }
   };
 
-  const handleSearch = (e) => {
+  const handleSearch = () => {
     try {
-      e.preventDefault();
 
       let query = "Campus: ";
       let searchResult = rowData.filter((r) => r.campus === campus);
@@ -253,7 +251,9 @@ export default function CampusAdmin(props) {
                 </FormControl>
               </Grid>
               <Grid item xs={12} md={3}>
-                <TextField value={number} onChange={(e) => setNumber(e.target.value)} id="form-number" fullWidth label="Room Number" variant="outlined" />
+                <TextField value={number} onChange={(e) => {
+                  setNumber(e.target.value)
+                }} id="form-number" fullWidth label="Room Number" variant="outlined" />
               </Grid>
               <Grid item xs={12} md={3}>
                 <Button fullWidth variant="outlined" sx={{ padding: "15px 30px" }} onClick={(e) => handleSearch(e)}>

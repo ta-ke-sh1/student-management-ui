@@ -25,6 +25,10 @@ export default function CustomTable(props) {
     setOrderBy(property);
   };
 
+  const clearSelected = () => {
+    setSelected([]);
+  }
+
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
       const newSelected = props.rows.map((n) => n.id);
@@ -86,6 +90,7 @@ export default function CustomTable(props) {
         }}>
 
         <EnhancedTableToolbar
+          clearSelected={clearSelected}
           isDownloadable={props.isDownloadable}
           isCampusControl={props.isCampusControl}
           handleRefreshEntry={props.handleRefreshEntry}

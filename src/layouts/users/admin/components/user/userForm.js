@@ -1,28 +1,34 @@
 import { Grid, Select, MenuItem, FormControl, Divider, Button, InputLabel, TextField } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import axios from "axios";
 import { DesktopDatePicker } from "@mui/x-date-pickers";
-
+import address_tree from "../../../../../utils/address_tree.json";
 import { MuiTelInput } from "mui-tel-input";
 import { toast } from "react-toastify";
+import { filterByAttribute } from "../../../../../utils/utils";
 
 export default function UserForm(props) {
   const [id, setId] = useState(props.user.id);
   const [password, setPassword] = useState(props.user.password);
-  const [auth, setAuth] = useState(props.user.auth ?? 1);
-  const [firstName, setFirstName] = useState(props.user.firstName);
-  const [lastName, setLastName] = useState(props.user.lastName);
-  const [dob, setDob] = useState(props.user.dob ? dayjs(props.user.dob) : dayjs(new Date()));
-  const [phone, setPhone] = useState(props.user.phone ?? "+84");
-  const [status, setStatus] = useState(props.user.status);
-  const [department, setDepartment] = useState(props.user.department ?? "GCH");
-  const [email, setEmail] = useState(props.user.email);
 
-  const [city, setCity] = useState("");
-  const [ward, setWard] = useState("");
-  const [district, setDistrict] = useState("");
-  const [address, setAddress] = useState("");
+  const [formData, setFormData] = useState({
+    auth: props.user.auth ?? 1,
+    firstName: props.user.firstName ?? "",
+    lastName: props.user.lastName ?? "",
+    dob: dayjs(props.user.dob) ?? dayjs(new Date()),
+    phone: props.user.phone ?? "+84",
+    email: props.user.email ?? "",
+    department: props.user.department ?? "GCH",
+    city: props.user.city ?? "",
+    district: props.user.district ?? "",
+    ward: props.user.ward ?? "",
+    address: props.user.address ?? "",
+  });
+
+  const [cities, setCities] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
 
   const departments = [
     {
@@ -47,6 +53,33 @@ export default function UserForm(props) {
     },
   ];
 
+  useEffect(() => {
+    try {
+      let citiesMap = objectToMap(address_tree);
+      setCities(citiesMap);
+      if (props.user.id) {
+        if (props.user.city) {
+          let districtsMap = filterByAttribute(citiesMap, "code", props.user.city);
+          setDistricts(objectToMap(districtsMap[0]['quan-huyen']));
+
+          if (props.user.district) {
+            let wardsMap = filterByAttribute(objectToMap(districtsMap[0]['quan-huyen']), "code", props.user.district);
+            setWards(objectToMap(wardsMap[0]["xa-phuong"]))
+          }
+        }
+      }
+    } catch (e) { }
+  }, []);
+
+  function objectToMap(obj) {
+    return Object.keys(obj).map(key => obj[key]);
+  }
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
+  };
+
   const handleDeactivate = (e) => {
     axios.get(process.env.REACT_APP_HOST_URL + "/user/deactivate?id=" + id).then((res) => {
       if (res.status === 200) {
@@ -59,23 +92,23 @@ export default function UserForm(props) {
     e.preventDefault();
     let user = {
       id: id,
-      role: auth,
-      firstName: firstName,
-      lastName: lastName,
-      dob: dayjs(dob).format("YYYY-MM-DD"),
-      phone: phone,
-      status: status ?? "activated",
-      department_id: department,
-      email: email,
-      password: password,
-      city: city,
-      district: district,
-      ward: ward,
-      address: address,
+      role: formData.auth,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      dob: dayjs(formData.dob).format("YYYY-MM-DD"),
+      phone: formData.phone,
+      status: true,
+      department_id: formData.department,
+      email: formData.email,
+      password: formData.password,
+      city: formData.city,
+      district: formData.district,
+      ward: formData.ward,
+      address: formData.address,
     };
     console.log(user);
 
-    if (auth && firstName && lastName && dob && phone && department && email) {
+    if (formData.auth && formData.firstName && formData.lastName && formData.dob && formData.phone && formData.department && formData.email) {
       if (id) {
         console.log(id);
         axios.put(process.env.REACT_APP_HOST_URL + "/user?id=" + id, user).then((res) => {
@@ -107,8 +140,12 @@ export default function UserForm(props) {
   };
 
   const handlePhoneChange = (newValue) => {
-    setPhone(newValue);
+    setFormData((prevFormData) => ({ ...prevFormData, ["phone"]: newValue }));
   };
+
+  const handleChangeDob = (e) => {
+    setFormData((prevFormData) => ({ ...prevFormData, ["dob"]: e }));
+  }
 
   const handleClear = (e) => {
     e.preventDefault();
@@ -139,45 +176,43 @@ export default function UserForm(props) {
               <FormControl fullWidth>
                 <InputLabel id="auth-select-label">Auth Level</InputLabel>
                 <Select
+                  name="auth"
                   id="form-role"
                   labelId="auth-select-label"
-                  value={auth}
+                  value={formData.auth}
                   label="Auth Level"
-                  onChange={(e) => {
-                    setAuth(e.target.value);
-                  }}
+                  onChange={handleChange}
                 >
-                  <MenuItem value={1}>User</MenuItem>
+                  <MenuItem value={1}>Student</MenuItem>
                   <MenuItem value={2}>Lecturer</MenuItem>
                   <MenuItem value={3}>Admin</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField onChange={(e) => setFirstName(e.target.value)} value={firstName} id="form-firstName" fullWidth label="First Name" variant="outlined" />
+              <TextField name="firstName" onChange={(e) => handleChange(e)} value={formData.firstName} id="form-firstName" fullWidth label="First Name" variant="outlined" />
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField onChange={(e) => setLastName(e.target.value)} value={lastName} id="form-lastName" fullWidth label="Last Name" variant="outlined" />
+              <TextField name="lastName" onChange={(e) => handleChange(e)} value={formData.lastName} id="form-lastName" fullWidth label="Last Name" variant="outlined" />
             </Grid>
             <Grid item xs={12} md={6}>
               <DesktopDatePicker
                 sx={{
                   width: "100%",
                 }}
-                onChange={(e) => {
-                  setDob(e);
-                }}
-                value={dob}
+                onChange={handleChangeDob}
+                name="dob"
+                value={formData.dob}
                 id="form-dob"
                 label="Date of Birth"
                 variant="outlined"
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <MuiTelInput onlyCountries={["VN"]} fullWidth value={phone} onChange={handlePhoneChange} />
+              <MuiTelInput onlyCountries={["VN"]} name="phone" fullWidth value={formData.phone} onChange={handlePhoneChange} />
             </Grid>
             <Grid item xs={12} md={12}>
-              <TextField onChange={(e) => setEmail(e.target.value)} value={email} id="form-email" fullWidth label="Email" variant="outlined" />
+              <TextField onChange={handleChange} name="email" value={formData.email} id="form-email" fullWidth label="Email" variant="outlined" />
             </Grid>
           </Grid>
         </Grid>
@@ -187,13 +222,12 @@ export default function UserForm(props) {
               <FormControl fullWidth>
                 <InputLabel id="department-select-label">Department</InputLabel>
                 <Select
+                  name="department"
                   id="form-campus"
                   labelId="department-select-label"
-                  value={department}
+                  value={formData.department}
                   label="Department"
-                  onChange={(e) => {
-                    setDepartment(e.target.value);
-                  }}
+                  onChange={handleChange}
                 >
                   {departments.map((department) => (
                     <MenuItem key={department.id} value={department.id}>
@@ -203,17 +237,100 @@ export default function UserForm(props) {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12}>
-              <TextField onChange={(e) => setCity(e.target.value)} value={city} id="form-city" fullWidth label="City" variant="outlined" />
+            <Grid item xs={12} sm={12}>
+              <FormControl fullWidth>
+                <InputLabel id="city-select-label-form">City</InputLabel>
+                <Select
+                  name="city"
+                  defaultValue={formData.city ?? "01"}
+                  value={formData.city ?? "01"}
+                  label="Campus"
+                  MenuProps={{
+                    disablePortal: true, // <--- HERE
+                    onClick: (e) => {
+                      e.preventDefault();
+                    },
+                  }}
+                  onChange={(e) => {
+                    handleChange(e);
+                    let districtsMap = filterByAttribute(cities, "code", e.target.value);
+                    setDistricts(objectToMap(districtsMap[0]['quan-huyen']));
+                    setWards([]);
+                  }}
+                >
+                  <MenuItem value={"default"} disabled>
+                    Please select a City
+                  </MenuItem>
+                  {cities.map((item) => (
+                    <MenuItem key={"Cities-" + item.code} value={item.code}>
+                      {item.name} -  {item.code}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField onChange={(e) => setDistrict(e.target.value)} value={district} id="form-district" fullWidth label="District" variant="outlined" />
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel id="city-select-label-form">District</InputLabel>
+                <Select
+                  name="district"
+                  defaultValue={formData.district ?? "001"}
+                  value={formData.district ?? "001"}
+                  label="District"
+                  MenuProps={{
+                    disablePortal: true, // <--- HERE
+                    onClick: (e) => {
+                      e.preventDefault();
+                    },
+                  }}
+                  onChange={(e) => {
+                    handleChange(e);
+                    let wardsMap = filterByAttribute(districts, "code", e.target.value);
+                    setWards(objectToMap(wardsMap[0]["xa-phuong"]));
+                  }}
+                >
+                  <MenuItem value={"default"} disabled>
+                    Please select a District
+                  </MenuItem>
+                  {districts.map((item) => (
+                    <MenuItem key={"District-" + item.cod} value={item.code}>
+                      {item.name} -  {item.code}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField onChange={(e) => setWard(e.target.value)} value={ward} id="form-ward" fullWidth label="Ward" variant="outlined" />
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel id="city-select-label-form">Ward</InputLabel>
+                <Select
+                  name="ward"
+                  defaultValue={formData.ward ?? "0001"}
+                  value={formData.ward ?? "0001"}
+                  label="Ward"
+                  MenuProps={{
+                    disablePortal: true, // <--- HERE
+                    onClick: (e) => {
+                      e.preventDefault();
+                    },
+                  }}
+                  onChange={(e) => {
+                    handleChange(e);
+                  }}
+                >
+                  <MenuItem value={"default"} disabled>
+                    Please select a Ward
+                  </MenuItem>
+                  {wards.map((item) => (
+                    <MenuItem key={"Ward-" + item.code} value={item.code}>
+                      {item.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
             <Grid item xs={12} md={12}>
-              <TextField onChange={(e) => setAddress(e.target.value)} value={address} id="form-address" fullWidth label="Address" variant="outlined" />
+              <TextField name="address" onChange={(e) => handleChange(e)} value={formData.address} id="form-address" fullWidth label="Address" variant="outlined" />
             </Grid>
           </Grid>
         </Grid>

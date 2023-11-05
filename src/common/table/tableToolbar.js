@@ -45,8 +45,6 @@ export default function EnhancedTableToolbar(props) {
                 </Typography>
             )}
 
-
-
             {numSelected === 0 ? (
                 <>
 
@@ -73,7 +71,10 @@ export default function EnhancedTableToolbar(props) {
                     </Tooltip>
                     <Tooltip title="Delete">
                         <IconButton
-                            onClick={() => props.handleDelete(selected[0])}>
+                            onClick={() => {
+                                props.clearSelected();
+                                props.handleDelete(selected[0])
+                            }}>
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>

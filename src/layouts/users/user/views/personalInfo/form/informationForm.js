@@ -16,7 +16,7 @@ export default function InformationForm(props) {
     setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   function handleConfirm() {
     try {
@@ -26,7 +26,7 @@ export default function InformationForm(props) {
         })
         .then((res) => {
           if (!res.data.status) {
-            props.sendToast("error", e.toString());
+            props.sendToast("error", res.data.data);
           }
         });
     } catch (e) {

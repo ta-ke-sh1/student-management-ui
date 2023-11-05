@@ -1,5 +1,5 @@
 import { Button } from "@mui/base";
-import { FormControl, FormControlLabel, Grid, Radio, RadioGroup } from "@mui/material";
+import { FormControl, FormControlLabel, Grid, Radio, RadioGroup, Box } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -46,7 +46,7 @@ export default function AttendaceTab(props) {
     }
   }
 
-  function handleReturn() {}
+  function handleReturn() { }
 
   function handleChangeChecked(event, position) {
     event.preventDefault();
@@ -56,7 +56,7 @@ export default function AttendaceTab(props) {
       }
     });
 
-    setCheckedList(updatedCheckState);
+    setAttendances(updatedCheckState);
   }
 
   return (

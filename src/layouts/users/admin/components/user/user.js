@@ -120,13 +120,9 @@ export default function UsersAdmin(props) {
   const [open, setOpen] = useState(false);
   const [openModal, setOpenModal] = useState(false);
 
-  const [students, setStudents] = useState([]);
-  const [lecturers, setLecturers] = useState([]);
+  const [students, setStudents] = useState([])
+  const [lecturers, setLecturers] = useState([])
   const [admins, setAdmins] = useState([]);
-
-  const [rowsStudents, setRowsStudents] = useState([]);
-  const [rowsLecturers, setRowsLecturers] = useState([]);
-  const [rowsAdmin, setRowsAdmins] = useState([]);
 
   useEffect(() => {
     fetchRows("all");
@@ -162,8 +158,8 @@ export default function UsersAdmin(props) {
           res.data.data.forEach((user) => {
             result.push(user);
           });
-          setStudents(result);
-          setRowsStudents(result);
+          console.log(res.data)
+          setStudents(result)
         }
       });
     } catch (e) {
@@ -181,8 +177,8 @@ export default function UsersAdmin(props) {
           res.data.data.forEach((user) => {
             result.push(user);
           });
-          setLecturers(result);
-          setRowsLecturers(result);
+          console.log(res.data)
+          setLecturers(result)
         }
       });
     } catch (e) {
@@ -200,9 +196,8 @@ export default function UsersAdmin(props) {
           res.data.data.forEach((user) => {
             result.push(user);
           });
-          setAdmins(result);
-          setRowsAdmins(result);
-          console.log(result);
+          console.log(res.data)
+          setAdmins(result)
         }
       });
     } catch (e) {
@@ -214,22 +209,14 @@ export default function UsersAdmin(props) {
     return data.find((row) => row.id === id);
   };
 
-  const handleEditStudent = (id) => {
-    let user = findDataById(rowsStudents, id);
-    console.log(user);
-    setUser(user);
-    setOpenModal(true);
-  };
-
-  const handleEditAdmin = (id) => {
-    let user = findDataById(rowsAdmin, id);
-    console.log(user);
-    setUser(user);
-    setOpenModal(true);
-  };
-
-  const handleEditLecturer = (id) => {
-    let user = findDataById(rowsLecturers, id);
+  const handleEditUser = (id) => {
+    let user = findDataById(students, id);
+    if (!user) {
+      user = findDataById(lecturers, id)
+    }
+    if (!user) {
+      user = findDataById(admins, id)
+    }
     console.log(user);
     setUser(user);
     setOpenModal(true);
@@ -273,7 +260,7 @@ export default function UsersAdmin(props) {
     setOpenModal(false);
   };
 
-  const handleConfirm = () => {};
+  const handleConfirm = () => { };
 
   return (
     <>
@@ -354,11 +341,6 @@ export default function UsersAdmin(props) {
                 <TextField onChange={(e) => setEmail(e.target.value)} value={email} id="form-email" fullWidth label="Ward" variant="outlined" />
               </Grid>
               <Grid item xs={6} md={4}>
-                <Button fullWidth variant="contained" sx={{ padding: "15px 30px" }} color="error" onClick={(e) => handleConfirm(e)}>
-                  Reset Password
-                </Button>
-              </Grid>
-              <Grid item xs={6} md={4}>
                 <Button fullWidth variant="contained" sx={{ padding: "15px 30px" }} onClick={(e) => handleConfirm(e)}>
                   Search
                 </Button>
@@ -390,47 +372,11 @@ export default function UsersAdmin(props) {
                   handleOpenModal();
                 }}
                 init_count={4}
-                title="Admins"
-                rows={rowsAdmin}
+                title="Users"
+                rows={[...students, ...lecturers, ...admins]}
                 headCells={headCells}
                 colNames={getAllHeaderColumns(headCells)}
-                handleEdit={handleEditAdmin}
-                handleDelete={handleDelete}
-              />
-            </div>
-          </div>
-        </Grid>
-        <Grid item xs={12}>
-          <div className="big-widget">
-            <div className="campus-list">
-              <CustomTable
-                handleAddEntry={() => {
-                  handleOpenModal();
-                }}
-                init_count={4}
-                title="Lecturers"
-                rows={rowsLecturers}
-                headCells={headCells}
-                colNames={getAllHeaderColumns(headCells)}
-                handleEdit={handleEditLecturer}
-                handleDelete={handleDelete}
-              />
-            </div>
-          </div>
-        </Grid>
-        <Grid item xs={12}>
-          <div className="big-widget">
-            <div className="campus-list">
-              <CustomTable
-                handleAddEntry={() => {
-                  handleOpenModal();
-                }}
-                init_count={4}
-                title="Students"
-                rows={rowsStudents}
-                headCells={headCells}
-                colNames={getAllHeaderColumns(headCells)}
-                handleEdit={handleEditStudent}
+                handleEdit={handleEditUser}
                 handleDelete={handleDelete}
               />
             </div>

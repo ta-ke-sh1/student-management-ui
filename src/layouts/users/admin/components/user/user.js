@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { TextField, Select, MenuItem, InputLabel, FormControl, Button, Grid, Modal, Box } from "@mui/material";
+import { TextField, Select, MenuItem, InputLabel, FormControl, Button, Grid, Modal, Box, IconButton } from "@mui/material";
 import CustomTable from "../../../../../common/table/table";
 
 import Dialog from "@mui/material/Dialog";
@@ -7,22 +7,23 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import dayjs from "dayjs";
 import UserForm from "./userForm";
 import axios from "axios";
 import Constants from "../../../../../utils/constants";
-import { ToastContainer, toast } from "react-toastify";
-import { getAllHeaderColumns } from "../../../../../utils/utils";
+import { filterByAttribute, getAllHeaderColumns, objectToMap } from "../../../../../utils/utils";
+import address_tree from "../../../../../utils/address_tree.json"
+import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from '@mui/icons-material/Clear';
 
 const headCells = [
   {
     id: "id",
     numeric: false,
     disablePadding: true,
-    label: "Id",
+    label: "Username",
   },
   {
-    id: "department",
+    id: "department_id",
     numeric: true,
     disablePadding: false,
     label: "Dept",
@@ -103,120 +104,100 @@ export default function UsersAdmin(props) {
   const constants = new Constants();
   const [user, setUser] = useState({});
 
-  const [id, setId] = useState("");
-  const [password, setPassword] = useState("");
   const [auth, setAuth] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [dob, setDob] = useState(dayjs(new Date()));
-  const [phone, setPhone] = useState("+84");
-  const [status, setStatus] = useState("");
+
+  const [username, setUsername] = useState("");
   const [department, setDepartment] = useState("");
-  const [email, setEmail] = useState("");
+
+  const [city, setCity] = useState("")
+  const [district, setDistrict] = useState("")
+  const [ward, setWard] = useState("")
+
+  const [cities, setCities] = useState([])
+  const [districts, setDistricts] = useState([])
+  const [wards, setWards] = useState([])
 
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogContent, setDialogContent] = useState("");
 
   const [open, setOpen] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-
-  const [students, setStudents] = useState([])
-  const [lecturers, setLecturers] = useState([])
-  const [admins, setAdmins] = useState([]);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    fetchRows("all");
+    fetchRows();
+    try {
+      let citiesMap = objectToMap(address_tree);
+      setCities(citiesMap);
+    } catch (e) {
+      props.sendToast("error", e.toString())
+    }
+
+    return function cleanUp() {
+      localStorage.setItem("users_data", "")
+    }
   }, []);
 
-  const fetchRows = (type) => {
-    switch (type) {
-      case "student":
-        fetchStudentRows();
-        break;
-      case "lecturer":
-        fetchLecturerRows();
-        break;
-      case "admin":
-        fetchAdminRows();
-      case "all":
-        fetchStudentRows();
-        fetchLecturerRows();
-        fetchAdminRows();
-        break;
-      default:
-        break;
+  const handleSearch = () => {
+    let users = JSON.parse(localStorage.getItem("users_data"))
+    if (auth !== "") {
+      users = users.filter(function (user) {
+        return user.role === auth
+      })
     }
-  };
+    if (department !== "") {
+      users = users.filter(function (user) {
+        return user.department_id === department
+      })
+    }
+    if (username !== "") {
+      users = users.filter(function (user) {
+        return user.username.startsWith(username)
+      })
+    }
+    if (city !== "") {
+      users = users.filter(function (user) {
+        return user.city === city
+      })
+    }
+    if (district !== "") {
+      users = users.filter(function (user) {
+        return user.district === district
+      })
+    }
+    if (ward !== "") {
+      users = users.filter(function (user) {
+        return user.ward === ward
+      })
+    }
+    setUsers(users);
+  }
 
-  const fetchStudentRows = () => {
+  const fetchRows = () => {
     try {
-      axios.get(process.env.REACT_APP_HOST_URL + "/user/students").then((res) => {
+      axios.get(process.env.REACT_APP_HOST_URL + "/user/all").then((res) => {
         if (!res.data.status) {
           props.sendToast("error", res.data.data);
         } else {
-          let result = [];
+          let result = []
           res.data.data.forEach((user) => {
             result.push(user);
           });
-          console.log(res.data)
-          setStudents(result)
+          localStorage.setItem("users_data", JSON.stringify(result));
+          setUsers(result)
         }
       });
     } catch (e) {
       props.sendToast("error", e.toString());
     }
-  };
-
-  const fetchLecturerRows = () => {
-    try {
-      axios.get(process.env.REACT_APP_HOST_URL + "/user/lecturers").then((res) => {
-        if (!res.data.status) {
-          props.sendToast("error", res.data.data);
-        } else {
-          let result = [];
-          res.data.data.forEach((user) => {
-            result.push(user);
-          });
-          console.log(res.data)
-          setLecturers(result)
-        }
-      });
-    } catch (e) {
-      props.sendToast("error", e.toString());
-    }
-  };
-
-  const fetchAdminRows = () => {
-    try {
-      axios.get(process.env.REACT_APP_HOST_URL + "/user/admins").then((res) => {
-        if (!res.data.status) {
-          props.sendToast("error", res.data.data);
-        } else {
-          let result = [];
-          res.data.data.forEach((user) => {
-            result.push(user);
-          });
-          console.log(res.data)
-          setAdmins(result)
-        }
-      });
-    } catch (e) {
-      props.sendToast("error", e.toString());
-    }
-  };
+  }
 
   const findDataById = (data, id) => {
     return data.find((row) => row.id === id);
   };
 
   const handleEditUser = (id) => {
-    let user = findDataById(students, id);
-    if (!user) {
-      user = findDataById(lecturers, id)
-    }
-    if (!user) {
-      user = findDataById(admins, id)
-    }
+    let user = findDataById(users, id);
     console.log(user);
     setUser(user);
     setOpenModal(true);
@@ -233,22 +214,17 @@ export default function UsersAdmin(props) {
     setOpen(false);
   };
 
-  const handlePhoneChange = (newValue) => {
-    setPhone(newValue);
-  };
-
   const handleClear = (e) => {
     e.preventDefault();
-    setPassword("");
-    setId("");
     setAuth("");
-    setFirstName("");
-    setLastName("");
-    setDob(dayjs(new Date()));
-    setPhone("+84");
-    setStatus("");
     setDepartment("");
-    setEmail("");
+    setUsername("")
+    setCity("")
+    setDistrict("")
+    setWard("")
+    let users = JSON.parse(localStorage.getItem("users_data"))
+    console.log(users)
+    setUsers(users)
   };
 
   const handleOpenModal = () => {
@@ -259,8 +235,6 @@ export default function UsersAdmin(props) {
   const handleCloseModal = () => {
     setOpenModal(false);
   };
-
-  const handleConfirm = () => { };
 
   return (
     <>
@@ -290,37 +264,14 @@ export default function UsersAdmin(props) {
               </Grid>
               <Grid item xs={12} md={3}>
                 <FormControl fullWidth>
-                  <InputLabel id="department-select-label">Status</InputLabel>
-                  <Select
-                    id="form-campus"
-                    labelId="status-select-label"
-                    value={status}
-                    label="Status"
-                    onChange={(e) => {
-                      setStatus(e.target.value);
-                    }}
-                  >
-                    <MenuItem value={"activated"}>Activated</MenuItem>
-                    <MenuItem value={"deactivated"}>Deactivated</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} md={3}>
-                <TextField onChange={(e) => setFirstName(e.target.value)} value={firstName} id="form-firstName" fullWidth label="First Name" variant="outlined" />
-              </Grid>
-              <Grid item xs={12} md={3}>
-                <TextField onChange={(e) => setLastName(e.target.value)} value={lastName} id="form-lastName" fullWidth label="Last Name" variant="outlined" />
-              </Grid>
-              <Grid item xs={12} md={3}>
-                <FormControl fullWidth>
                   <InputLabel id="department-select-label">Department</InputLabel>
                   <Select
+                    value={department ?? ""}
                     id="form-campus"
                     labelId="department-select-label"
-                    value={department}
                     label="Department"
                     onChange={(e) => {
-                      setDepartment(e.target.value);
+                      setDepartment(e.target.value)
                     }}
                   >
                     {constants.departments.map((department) => (
@@ -332,21 +283,108 @@ export default function UsersAdmin(props) {
                 </FormControl>
               </Grid>
               <Grid item xs={12} md={3}>
-                <TextField onChange={(e) => setLastName(e.target.value)} value={lastName} id="form-lastName" fullWidth label="City" variant="outlined" />
+                <TextField onChange={(e) => setUsername(e.target.value)} value={username} id="form-firstName" fullWidth label="Username" variant="outlined" />
               </Grid>
-              <Grid item xs={12} md={3}>
-                <TextField onChange={(e) => setLastName(e.target.value)} value={lastName} id="form-lastName" fullWidth label="District" variant="outlined" />
+
+              <Grid item xs={12} sm={3}>
+                <FormControl fullWidth>
+                  <InputLabel id="city-select-label-form">City</InputLabel>
+                  <Select
+                    name="city"
+                    defaultValue={city ?? "01"}
+                    value={city ?? "01"}
+                    label="Campus"
+                    MenuProps={{
+                      disablePortal: true, // <--- HERE
+                      onClick: (e) => {
+                        e.preventDefault();
+                      },
+                    }}
+                    onChange={(e) => {
+                      setCity(e.target.value)
+                      let districtsMap = filterByAttribute(cities, "code", e.target.value);
+                      setDistricts(objectToMap(districtsMap[0]['quan-huyen']));
+                      setWards([]);
+                    }}
+                  >
+                    <MenuItem value={"default"} disabled>
+                      Please select a City
+                    </MenuItem>
+                    {cities.map((item) => (
+                      <MenuItem key={"Cities-" + item.code} value={item.code}>
+                        {item.name} -  {item.code}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
-              <Grid item xs={12} md={3}>
-                <TextField onChange={(e) => setEmail(e.target.value)} value={email} id="form-email" fullWidth label="Ward" variant="outlined" />
+              <Grid item xs={12} sm={3}>
+                <FormControl fullWidth>
+                  <InputLabel id="city-select-label-form">District</InputLabel>
+                  <Select
+                    name="district"
+                    defaultValue={district ?? "001"}
+                    value={district ?? "001"}
+                    label="District"
+                    MenuProps={{
+                      disablePortal: true, // <--- HERE
+                      onClick: (e) => {
+                        e.preventDefault();
+                      },
+                    }}
+                    onChange={(e) => {
+                      setDistrict(e.target.value)
+                      let wardsMap = filterByAttribute(districts, "code", e.target.value);
+                      setWards(objectToMap(wardsMap[0]["xa-phuong"]));
+                    }}
+                  >
+                    <MenuItem value={"default"} disabled>
+                      Please select a District
+                    </MenuItem>
+                    {districts.map((item) => (
+                      <MenuItem key={"District-" + item.cod} value={item.code}>
+                        {item.name} -  {item.code}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
-              <Grid item xs={6} md={4}>
-                <Button fullWidth variant="contained" sx={{ padding: "15px 30px" }} onClick={(e) => handleConfirm(e)}>
+              <Grid item xs={12} sm={3}>
+                <FormControl fullWidth>
+                  <InputLabel id="city-select-label-form">Ward</InputLabel>
+                  <Select
+                    name="ward"
+                    defaultValue={ward ?? "0001"}
+                    value={ward ?? "0001"}
+                    label="Ward"
+                    MenuProps={{
+                      disablePortal: true, // <--- HERE
+                      onClick: (e) => {
+                        e.preventDefault();
+                      },
+                    }}
+                    onChange={(e) => {
+                      setWard(e.target.value)
+                    }}
+                  >
+                    <MenuItem value={"default"} disabled>
+                      Please select a Ward
+                    </MenuItem>
+                    {wards.map((item) => (
+                      <MenuItem key={"Ward-" + item.code} value={item.code}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <Button fullWidth variant="contained" sx={{ padding: "15px 30px" }} onClick={(e) => handleSearch()}>
                   Search
                 </Button>
               </Grid>
-              <Grid item xs={6} md={4}>
-                <Button fullWidth variant="outlined" sx={{ padding: "15px 30px" }} onClick={(e) => handleClear(e)}>
+              <Grid item xs={12} sm={3}>
+                <Button fullWidth variant="outlined" color="error" sx={{ padding: "15px 30px" }} onClick={(e) => handleClear(e)}>
                   Clear
                 </Button>
               </Grid>
@@ -358,7 +396,7 @@ export default function UsersAdmin(props) {
             style={{
               backgroundImage: `url(${process.env.PUBLIC_URL}/banner/banner` + 3 + ".jpg)",
               width: "100%",
-              height: "350px",
+              height: "270px",
               borderRadius: "10px",
               backgroundSize: "contain",
             }}
@@ -368,16 +406,18 @@ export default function UsersAdmin(props) {
           <div className="big-widget">
             <div className="campus-list">
               <CustomTable
+
                 handleAddEntry={() => {
                   handleOpenModal();
                 }}
-                init_count={4}
+                init_count={20}
                 title="Users"
-                rows={[...students, ...lecturers, ...admins]}
+                rows={users}
                 headCells={headCells}
                 colNames={getAllHeaderColumns(headCells)}
                 handleEdit={handleEditUser}
                 handleDelete={handleDelete}
+                handleRefreshEntry={fetchRows}
               />
             </div>
           </div>
@@ -414,8 +454,6 @@ export default function UsersAdmin(props) {
           <UserForm closeHandler={handleCloseModal} user={user} refresh={fetchRows} />
         </DialogContent>
       </Dialog>
-
-      <ToastContainer />
     </>
   );
 }

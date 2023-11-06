@@ -25,6 +25,7 @@ export default function ParticipantsForm(props) {
                         data.push(res.data.data[i]);
                     }
                     setStudents(data);
+                    console.log(data)
                 } else {
                     toast.error(res.data.data, {
                         position: "bottom-left"
@@ -43,16 +44,25 @@ export default function ParticipantsForm(props) {
     const handleConfirm = (e) => {
         e.preventDefault();
         try {
-            axios.post(process.env.REACT_APP_HOST_URL + "/schedule/participant", student).then((res) => {
+            axios.post(process.env.REACT_APP_HOST_URL + "/schedule/participant", {
+                group: props.group,
+                participants: student
+            }).then((res) => {
                 console.log(res)
+                if (res.data.status) {
+                    props.refresh(props.group.id)
+                    props.closeHandler()
+                } else {
+                    toast.error(res.data.data, {
+                        position: "bottom-left"
+                    })
+                }
             })
         } catch (e) {
             toast.error(e.toString(), {
                 position: "bottom-left"
             })
         }
-
-
     };
 
     const handleRemove = (e) => {
@@ -69,6 +79,7 @@ export default function ParticipantsForm(props) {
                 <Divider />
                 <Grid item xs={12} md={12}>
                     <Autocomplete
+                        multiple={true}
                         value={student}
                         id="asynchronous-tags-outlined"
                         options={students}
@@ -82,8 +93,8 @@ export default function ParticipantsForm(props) {
                         onClose={() => {
                             setOpen(false);
                         }}
-                        isOptionEqualToValue={(option, value) => option.username === value.username}
-                        getOptionLabel={(option) => option.username}
+                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                        getOptionLabel={(option) => (option.id + " - " + option.department_id + " - " + option.dob.replaceAll("-", "/"))}
 
                         loading={loading}
                         renderInput={(params) => (
@@ -104,17 +115,11 @@ export default function ParticipantsForm(props) {
                         )}
                     />
                 </Grid>
-                {
-                    props.participant.id ? <Grid item xs={12} md={6}>
-                        <Button fullWidth variant="contained" sx={{ padding: "15px 30px" }} onClick={(e) => handleRemove(e)}>
-                            Remove
-                        </Button>
-                    </Grid> : <Grid item xs={12} md={6}>
-                        <Button fullWidth variant="contained" sx={{ padding: "15px 30px" }} onClick={(e) => handleConfirm(e)}>
-                            Add
-                        </Button>
-                    </Grid>
-                }
+                <Grid item xs={12} md={6}>
+                    <Button fullWidth variant="contained" sx={{ padding: "15px 30px" }} onClick={(e) => handleConfirm(e)}>
+                        Add
+                    </Button>
+                </Grid>
 
 
                 <Grid item xs={12} md={6}>

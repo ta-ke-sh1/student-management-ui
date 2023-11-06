@@ -128,9 +128,9 @@ export default function CustomTable(props) {
                   rowCount={props.rows.length}
                 />
                 <TableBody>
-                  {visibleRows.map((row, index) => {
+                  {visibleRows.map((row, i) => {
                     const isItemSelected = isSelected(row.id);
-                    const labelId = `enhanced-table-checkbox-${index}`;
+                    const labelId = `enhanced-table-checkbox-${i}`;
                     return (
                       <TableRow
                         hover
@@ -167,7 +167,7 @@ export default function CustomTable(props) {
                               id={labelId}
                               scope="row"
                               padding="none">
-                              {row[props.colNames[index]]}
+                              {col === "status" ? row[props.colNames[index]] ? "Activated" : "Deactivated" : row[props.colNames[index]]}
                             </TableCell>
                           ) : (
                             <TableCell
@@ -189,7 +189,7 @@ export default function CustomTable(props) {
               </Table>
             </TableContainer>
             <TablePagination
-              rowsPerPageOptions={[4, 8, 12]}
+              rowsPerPageOptions={[4, 8, 12, 20, 30]}
               component="div"
               count={props.rows.length}
               rowsPerPage={rowsPerPage}

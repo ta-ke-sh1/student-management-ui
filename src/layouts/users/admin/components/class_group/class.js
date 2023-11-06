@@ -20,7 +20,6 @@ import { filterByAttribute } from "../../../../../utils/utils";
 
 export default function FGWClass(props) {
   const constants = new Constants();
-  const admin_local_group = "class_group";
 
   const [programme, setProgramme] = useState("");
   const [term, setTerm] = useState("");
@@ -53,48 +52,58 @@ export default function FGWClass(props) {
   const [firstClick, setFirstClick] = useState(false);
   const [firstClickAttendance, setFirstClickAttendance] = useState(false);
 
+
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
     fetchGroups();
+
+    return function cleanUp() {
+      localStorage.setItem("groups_data", "")
+    }
   }, []);
 
   const handleSearchGroup = async () => {
-    try {
-      let group = localStorage.getItem(admin_local_group);
-      if (!group) {
-        if (programme && term && year && department) {
-          console.log(process.env.REACT_APP_HOST_URL + "/schedule?programme=" + programme + "&term=" + (term + "-" + year.toString().substr(2, 2)) + "&department=" + department);
-          await axios.get(process.env.REACT_APP_HOST_URL + "/schedule?programme=" + programme + "&term=" + (term + "-" + year.toString().substr(2, 2)) + "&department=" + department).then((res) => {
-            if (res.data.status) {
-              setGroups(res.data.data);
-              localStorage.setItem(admin_local_group, res.data.data);
-            } else {
-              props.sendToast("error", res.data.data)
-            }
-          });
-        }
-      } else {
-        if (programme && programme !== "") {
-          group = filterByAttribute(group, "programme", programme);
-        }
 
-        if (term && term !== "" && year && year !== 0) {
-          group = filterByAttribute(group, "term", term + "-" + year.toString().substr(2, 2));
-        }
-
-        if (department && department !== "") {
-          group = filterByAttribute(group, "department", department);
-        }
-      }
-    } catch (e) {
-      props.sendToast("error", e.toString());
+    let groups = JSON.parse(localStorage.getItem("groups_data"))
+    if (programme !== "") {
+      groups = groups.filter(function (group) {
+        return group.programme === programme
+      })
     }
+
+    if (term !== "") {
+      groups = groups.filter(function (group) {
+        return group.term.startsWith(term)
+      })
+    }
+
+    if (year !== "") {
+      if (year > 2030 || year < 2000) {
+        props.sendToast("error", "Year must be between 2000 and 2030")
+        return;
+      }
+      groups = groups.filter(function (group) {
+        return group.term.endsWith(year.toString().substr(2, 2))
+      })
+    }
+
+    if (department !== "") {
+      groups = groups.filter(function (group) {
+        return group.department === department
+      })
+    }
+
+    setGroups(groups)
   };
 
   const handleClearSearchGroup = () => {
     setProgramme("");
     setTerm("");
+    setYear("")
+    setDepartment("")
+    let groups = JSON.parse(localStorage.getItem("groups_data"))
+    setGroups(groups)
   };
 
   const handleClose = () => {
@@ -123,37 +132,35 @@ export default function FGWClass(props) {
 
   const handleEditGroup = (id) => {
     let data = filterByAttribute(groups, "id", id);
-    setGroup(data);
+    console.log(data)
+    setGroup(data[0]);
     setOpenGroupModal(true);
   };
 
   const handleEditParticipant = (id) => {
     let data = filterByAttribute(participants, "id", id);
-    setParticipant(data);
+    console.log(data)
+    setParticipant(data[0]);
     setOpenParticipantsModal(true);
   };
 
   const handleEditSchedule = (id) => {
     let data = filterByAttribute(schedules, "id", id);
-    setSchedule(data);
+    console.log(data)
+    setSchedule(data[0]);
     setOpenScheduleModal(true);
   };
 
   const fetchGroups = async () => {
     try {
-      let group = localStorage.getItem(admin_local_group);
-      if (!group) {
-        await axios.get(process.env.REACT_APP_HOST_URL + "/semester/groups").then((res) => {
-          if (res.data.status) {
-            setGroups(res.data.data);
-            props.sendToast("success", "Fetch groups successfully")
-          } else {
-            props.sendToast("error", res.data.data)
-          }
-        });
-      } else {
-        setGroups(group);
-      }
+      await axios.get(process.env.REACT_APP_HOST_URL + "/semester/groups").then((res) => {
+        if (res.data.status) {
+          setGroups(res.data.data);
+          localStorage.setItem("groups_data", JSON.stringify(res.data.data));
+        } else {
+          props.sendToast("error", res.data.data)
+        }
+      });
     } catch (e) {
       props.sendToast("error", e.toString());
     }
@@ -162,7 +169,6 @@ export default function FGWClass(props) {
   const fetchParticipants = async (id) => {
     try {
       await axios.get(process.env.REACT_APP_HOST_URL + "/semester/participants?id=" + id).then((res) => {
-        console.log(res.data);
         if (res.data.status) {
           setParticipants(res.data.data ?? []);
         } else {
@@ -176,7 +182,6 @@ export default function FGWClass(props) {
 
   const fetchSchedules = async (id) => {
     try {
-      let data = filterByAttribute(groups, "id", id);
       await axios.get(process.env.REACT_APP_HOST_URL + "/semester/schedules?id=" + id).then((res) => {
         if (res.data.status) {
           setSchedules(res.data.data);
@@ -191,7 +196,7 @@ export default function FGWClass(props) {
 
   const fetchAttendances = async (id) => {
     try {
-      await axios.get(process.env.REACT_APP_HOST_URL + "/schedules/attendances?id=" + id).then((res) => {
+      await axios.get(process.env.REACT_APP_HOST_URL + "/schedule/attendances?id=" + id).then((res) => {
         if (res.data.status) {
           setAttendances(res.data.data);
         } else {
@@ -204,12 +209,15 @@ export default function FGWClass(props) {
   };
 
   const handleSearchInfo = async (id) => {
+    let group = filterByAttribute(groups, "id", id)
+    setGroup(group[0])
     fetchParticipants(id);
     fetchSchedules(id);
     setFirstClick(true);
   };
 
   const handleSearchAttendance = async (id) => {
+    console.log(id)
     setFirstClickAttendance(true);
     fetchAttendances(id);
   };
@@ -274,7 +282,7 @@ export default function FGWClass(props) {
                 </FormControl>
               </Grid>
               <Grid item xs={12} md={3}>
-                <TextField onChange={(e) => setYear(e.target.value)} value={year} id="year" fullWidth label="Year" variant="outlined" />
+                <TextField type="number" onChange={(e) => setYear(e.target.value)} value={year} id="year" fullWidth label="Year" variant="outlined" />
               </Grid>
               <Grid item xs={12} md={3}>
                 <FormControl fullWidth>
@@ -350,7 +358,7 @@ export default function FGWClass(props) {
                   }}
                   expandIcon={<ExpandMoreIcon />}
                 >
-                  <strong>Selected group details: </strong>
+                  <strong>Selected group details:</strong>
                   <span style={{ marginLeft: "10px" }}>{group.id}</span>
                 </AccordionSummary>
                 <AccordionDetails sx={{ paddingTop: "20px" }}>
@@ -360,10 +368,12 @@ export default function FGWClass(props) {
                         handleAddEntry={() => {
                           setOpenScheduleModal(true);
                         }}
+                        closeHandler={() => setOpenScheduleModal(false)}
                         handleSearchAttendance={handleSearchAttendance}
                         handleEdit={handleEditSchedule}
                         firstClick={firstClick}
                         schedules={schedules}
+                        refresh={fetchSchedules}
                       />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -372,8 +382,10 @@ export default function FGWClass(props) {
                         handleAddEntry={() => {
                           setOpenParticipantsModal(true);
                         }}
+                        closeHandler={() => setOpenParticipantsModal(false)}
                         handleEdit={handleEditParticipant}
                         participants={participants}
+                        refresh={fetchParticipants}
                       />
                     </Grid>
                   </Grid>
@@ -440,7 +452,7 @@ export default function FGWClass(props) {
             boxShadow: 12,
           }}
         >
-          <GroupForm closeHandler={handleCloseGroupFormModal} group={group} />
+          <GroupForm closeHandler={handleCloseGroupFormModal} group={group} refresh={fetchGroups} />
         </DialogContent>
       </Dialog>
 
@@ -451,7 +463,7 @@ export default function FGWClass(props) {
             boxShadow: 12,
           }}
         >
-          <ScheduleListForm closeHandler={handleCloseScheduleFormModal} schedule={schedule} group={group} participants={participants} />
+          <ScheduleListForm closeHandler={handleCloseScheduleFormModal} schedule={schedule} group={group} participants={participants} refresh={fetchSchedules} />
         </DialogContent>
       </Dialog>
 
@@ -462,7 +474,7 @@ export default function FGWClass(props) {
             boxShadow: 12,
           }}
         >
-          <ParticipantsForm closeHandler={handleCloseParticipantFormModal} participant={participant} group={group} />
+          <ParticipantsForm closeHandler={handleCloseParticipantFormModal} refresh={fetchParticipants} participant={participant} group={group} />
         </DialogContent>
       </Dialog>
 

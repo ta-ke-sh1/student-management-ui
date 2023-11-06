@@ -7,12 +7,12 @@ import { ToastContainer, toast } from "react-toastify";
 import DeleteIcon from "@mui/icons-material/Delete";
 import dayjs from "dayjs";
 import { getDayByNumber } from "../../../../../../utils/utils";
+import { departments } from "../../../mockData/mock";
 
 export default function GroupForm(props) {
   const constants = new Constants();
 
-  const isEdit = false;
-  const [term, setTerm] = useState("");
+  const [term, setTerm] = useState(props.group.term.slice(0, 2) ?? "");
   const [programme, setProgramme] = useState(props.group.programme ?? "");
   const [year, setYear] = useState(2023);
   const [name, setName] = useState(props.group.name ?? "");
@@ -34,8 +34,11 @@ export default function GroupForm(props) {
 
   useLayoutEffect(() => {
     if (props.group.department) {
-      handleFetchLecturers(props.group.department);
       handleFetchSubjects(props.group.department);
+    }
+
+    if (props.group.lecturer) {
+      handleFetchLecturers(props.group.department);
     }
   }, []);
 
@@ -50,21 +53,21 @@ export default function GroupForm(props) {
           lecturer: lecturer,
           subject: subject,
           slots: slots,
-          isEdit: isEdit,
           dayOfTheWeek: dayOfTheWeek,
           slot: selectedSlots,
           startDate: dayjs(startDate).valueOf(),
           endDate: dayjs(endDate).valueOf(),
           status: true,
         };
-        if (isEdit) {
-          axios.put(process.env.REACT_APP_HOST_URL + "/schedule/group", data).then((res) => {
+        if (props.group.id) {
+          axios.put(process.env.REACT_APP_HOST_URL + "/schedule/group?id=" + props.group.id, data).then((res) => {
             console.log(res);
             if (res.data.status) {
               toast.success("Group edited!", {
                 position: "bottom-left",
               });
               props.closeHandler();
+              props.refresh();
             } else {
               toast.error(res.data.data, {
                 position: "bottom-left",
@@ -80,6 +83,7 @@ export default function GroupForm(props) {
                 position: "bottom-left",
               });
               props.closeHandler();
+              props.refresh();
             } else {
               toast.error(res.data.data, {
                 position: "bottom-left",
@@ -126,6 +130,7 @@ export default function GroupForm(props) {
             data.push(res.data.data[i]);
           }
           setSubjects(data);
+          console.log(data)
         } else {
           toast.error(res.data.data, {
             position: "bottom-left",
@@ -149,7 +154,7 @@ export default function GroupForm(props) {
 
         <Grid item xs={12} md={12}>
           <Grid container spacing={4}>
-            <Grid item xs={12} md={isEdit ? 12 : 6}>
+            <Grid item xs={12} md={props.group.id ? 12 : 6}>
               <Grid container spacing={4}>
                 <Grid item xs={12} md={6}>
                   <FormControl fullWidth>
@@ -287,7 +292,7 @@ export default function GroupForm(props) {
                 </Grid>
               </Grid>
             </Grid>
-            {isEdit ? (
+            {props.group.id ? (
               <></>
             ) : (
               <Grid item xs={12} md={6}>

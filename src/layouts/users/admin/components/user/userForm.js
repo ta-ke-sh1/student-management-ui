@@ -9,11 +9,10 @@ import { toast } from "react-toastify";
 import { filterByAttribute } from "../../../../../utils/utils";
 
 export default function UserForm(props) {
-  const [id, setId] = useState(props.user.id);
-  const [password, setPassword] = useState(props.user.password);
+  const id = props.user.id;
 
   const [formData, setFormData] = useState({
-    auth: props.user.auth ?? 1,
+    auth: props.user.role ?? 1,
     firstName: props.user.firstName ?? "",
     lastName: props.user.lastName ?? "",
     dob: dayjs(props.user.dob) ?? dayjs(new Date()),
@@ -106,17 +105,16 @@ export default function UserForm(props) {
       ward: formData.ward,
       address: formData.address,
     };
-    console.log(user);
 
     if (formData.auth && formData.firstName && formData.lastName && formData.dob && formData.phone && formData.department && formData.email) {
       if (id) {
-        console.log(id);
         axios.put(process.env.REACT_APP_HOST_URL + "/user?id=" + id, user).then((res) => {
           console.log(res);
           if (res.data.status) {
             toast.success("User edited", {
               position: "bottom-left",
             });
+            props.closeHandler();
           } else {
             toast.error(res.data.data, {
               position: "bottom-left",
@@ -129,6 +127,7 @@ export default function UserForm(props) {
             toast.success("User added", {
               position: "bottom-left",
             });
+            props.closeHandler();
           } else {
             toast.error(res.data.data, {
               position: "bottom-left",
@@ -138,6 +137,24 @@ export default function UserForm(props) {
       }
     }
   };
+
+  const handleResetPassword = () => {
+    try {
+      axios.put(process.env.REACT_APP_HOST_URL + "/user/password?id=" + id + "&role=" + formData.auth).then((res) => {
+        if (res.data.status) {
+          props.closeHandler();
+        } else {
+          toast.error(res.data.data, {
+            position: "bottom-left",
+          });
+        }
+      });
+    } catch (e) {
+      toast.error(e.toString(), {
+        position: "bottom-left",
+      });
+    }
+  }
 
   const handlePhoneChange = (newValue) => {
     setFormData((prevFormData) => ({ ...prevFormData, ["phone"]: newValue }));
@@ -149,17 +166,6 @@ export default function UserForm(props) {
 
   const handleClear = (e) => {
     e.preventDefault();
-    // setPassword("");
-    // setId("");
-    // setAuth("");
-    // setFirstName("");
-    // setLastName("");
-    // setDob(dayjs(new Date()));
-    // setPhone("+84");
-    // setStatus("");
-    // setDepartment("");
-    // setEmail("");
-    props.closeHandler();
   };
 
   return (
@@ -176,6 +182,7 @@ export default function UserForm(props) {
               <FormControl fullWidth>
                 <InputLabel id="auth-select-label">Auth Level</InputLabel>
                 <Select
+                  disabled={id ? true : false}
                   name="auth"
                   id="form-role"
                   labelId="auth-select-label"
@@ -338,7 +345,7 @@ export default function UserForm(props) {
         {id && (
           <>
             <Grid item xs={6} md={3}>
-              <Button fullWidth variant="contained" sx={{ padding: "15px 30px" }} color="error" onClick={(e) => handleDeactivate(e)}>
+              <Button fullWidth variant="contained" sx={{ padding: "15px 30px" }} color="error" onClick={(e) => handleResetPassword(e)}>
                 Reset Password
               </Button>
             </Grid>

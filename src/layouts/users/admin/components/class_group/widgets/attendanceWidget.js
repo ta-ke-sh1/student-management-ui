@@ -10,10 +10,15 @@ const headCells = [
         label: "Attendance Id",
     },
     {
-        id: "slotId",
+        id: "session",
         numeric: true,
         disablePadding: false,
-        label: "Slot Id"
+        label: "Session Number"
+    }, {
+        id: "date",
+        numeric: true,
+        disablePadding: false,
+        label: "Date"
     },
     {
         id: "student_id",
@@ -22,7 +27,7 @@ const headCells = [
         label: "Student Id",
     },
     {
-        id: "student_name",
+        id: "dob",
         numeric: true,
         disablePadding: false,
         label: "Student Name",

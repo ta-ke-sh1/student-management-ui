@@ -4,34 +4,10 @@ import { getAllHeaderColumns } from "../../../../../../utils/utils";
 
 const headCells = [
     {
-        id: "id",
+        id: "student_id",
         numeric: false,
         disablePadding: true,
         label: "Id",
-    },
-    {
-        id: "username",
-        numeric: true,
-        disablePadding: false,
-        label: "Student Code",
-    },
-    {
-        id: "lastName",
-        numeric: true,
-        disablePadding: false,
-        label: "Last Name",
-    },
-    {
-        id: "firstName",
-        numeric: true,
-        disablePadding: false,
-        label: "First Name",
-    },
-    {
-        id: "dob",
-        numeric: true,
-        disablePadding: false,
-        label: "Date of Birth",
     },
 ];
 

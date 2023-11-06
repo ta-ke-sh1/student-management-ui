@@ -111,7 +111,7 @@ export default function AttendaceTab(props) {
                     </Grid>
                     <Grid item xs={2} sm={2}>
                       <FormControl>
-                        <RadioGroup defaultValue={-1} onChange={(e) => handleChangeChecked(e, index)} value={attendance.status}>
+                        <RadioGroup defaultValue={-1} onChange={(e) => handleChangeChecked(e, index)} value={attendance.remark}>
                           <FormControlLabel value={0} label="Absent" control={<Radio />} />
                           <FormControlLabel value={1} label="Attended" control={<Radio />} />
                         </RadioGroup>

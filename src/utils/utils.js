@@ -75,6 +75,10 @@ export function isExpiredToken(secondsSinceEpoch) {
   return secondsSinceEpoch < Date.now() / 1000;
 }
 
+export function objectToMap(obj) {
+  return Object.keys(obj).map(key => obj[key]);
+}
+
 export function convertDateToDayOfTheWeek(date) {
   let day = moment(date, "DD MMM YYYY");
   return day.format("ddd");

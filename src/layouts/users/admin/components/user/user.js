@@ -223,7 +223,6 @@ export default function UsersAdmin(props) {
     setDistrict("")
     setWard("")
     let users = JSON.parse(localStorage.getItem("users_data"))
-    console.log(users)
     setUsers(users)
   };
 

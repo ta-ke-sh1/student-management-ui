@@ -2,34 +2,42 @@ import { Grid, FormControl, Button, TextField, InputLabel, Select, MenuItem, Div
 import { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import Constants from "../../../../../utils/constants";
 
 export default function SubjectForm(props) {
-  const [subject, setSubject] = useState(props.subject);
+  const constants = new Constants();
+
   const _id = props.subject.id;
-  const [subjectId, setSubjectId] = useState(props.subject.id ?? "");
-  const [name, setName] = useState(props.subject.name ?? "");
-  const [description, setDescription] = useState(props.subject.description ?? "");
-  const [prerequisites, setPrerequisites] = useState(props.subject.prerequisites ?? "N/A");
-  const [degree, setDegree] = useState(props.subject.degree ?? "");
-  const [slots, setSlots] = useState(props.subject.slots ?? 40);
+
+  const [formData, setFormData] = useState({
+    department: props.subject.department ?? "",
+    subjectId: props.subject.id ?? "",
+    name: props.subject.name ?? "",
+    description: props.subject.description ?? "",
+    prequisites: props.subject.prequisites ?? "",
+    level: props.subject.level ?? "",
+    slots: props.subject.slots ?? 40,
+  })
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
+  };
+
 
   const handleConfirm = (e) => {
     e.preventDefault();
-    if (name && description && prerequisites && degree && slots) {
+    if (formData.name && formData.department && formData.subjectId && formData.level && formData.slots) {
       if (_id) {
         axios
-          .put(process.env.REACT_APP_HOST_URL + "/subject?id=" + subjectId, {
-            id: subjectId,
-            name: name,
-            description: description,
-            prerequisites: prerequisites,
-            degree: degree,
-            slots: slots,
-          })
+          .put(process.env.REACT_APP_HOST_URL + "/subject?id=" + _id, formData)
           .then((res) => {
             if (res.data.status) {
               props.closeHandler();
               props.refresh();
+              toast.success("Subject updated successfully!", {
+                position: "bottom-left",
+              })
             } else {
               toast.error(res.data.data, {
                 position: "bottom-left",
@@ -38,22 +46,16 @@ export default function SubjectForm(props) {
           });
       } else {
         axios
-          .post(process.env.REACT_APP_HOST_URL + "/subject", {
-            id: subjectId,
-            name: name,
-            description: description,
-            prerequisites: prerequisites,
-            degree: degree,
-            slots: slots,
-          })
+          .post(process.env.REACT_APP_HOST_URL + "/subject", formData)
           .then((res) => {
             if (res.data.status) {
+              toast.success("Subject added successfully!", {
+                position: "bottom-left",
+              })
               props.closeHandler();
               props.refresh();
             } else {
-              toast.error(res.data.data, {
-                position: "bottom-left",
-              });
+              toast.error(res.data.data,);
             }
           });
       }
@@ -71,23 +73,68 @@ export default function SubjectForm(props) {
           <h2 style={{ margin: 0 }}>Manage Subject</h2>
           <p>You can manage the subject using this form</p>
         </Grid>
-        <Grid item xs={12}>
-          <TextField disabled={_id ? true : false} onChange={(e) => setSubjectId(e.target.value)} value={subjectId} id="form-name" fullWidth label="Subject Code" variant="outlined" />
+        <Grid item xs={12} md={12}>
+          <FormControl fullWidth>
+            <InputLabel id="department-select-label">Department</InputLabel>
+            <Select
+              name="department"
+              id="form-department"
+              labelId="department-select-label"
+              defaultValue={formData.department}
+              value={formData.department}
+              label="Department"
+              MenuProps={{
+                disablePortal: true, // <--- HERE
+                onClick: (e) => {
+                  e.preventDefault();
+                },
+              }}
+              onChange={handleChange}
+            >
+              {constants.departments.map((term) =>
+                <MenuItem key={term.id} value={term.id}>
+                  {term.name}
+                </MenuItem>
+              )}
+            </Select>
+          </FormControl>
         </Grid>
         <Grid item xs={12}>
-          <TextField onChange={(e) => setName(e.target.value)} value={name} id="form-name" fullWidth label="Name" variant="outlined" />
+          <TextField name="subjectId" disabled={_id ? true : false} onChange={handleChange} value={formData.subjectId} id="form-name" fullWidth label="Subject Code" variant="outlined" />
         </Grid>
         <Grid item xs={12}>
-          <TextField fullWidth onChange={(e) => setDescription(e.target.value)} value={description} id="form-description" label="Description" variant="outlined" rows={3} multiline />
+          <TextField name="name" onChange={handleChange} value={formData.name} id="form-name" fullWidth label="Name" variant="outlined" />
+        </Grid>
+
+        <Grid item xs={12} md={12}>
+          <FormControl fullWidth>
+            <InputLabel id="level-select-label">Level</InputLabel>
+            <Select
+              name="level"
+              id="form-level"
+              labelId="level-select-label"
+              value={formData.level}
+              label="Level"
+              onChange={handleChange}
+            >
+              {constants.programmes.map((level) => (
+                <MenuItem key={"level-" + level.name} value={level.id}>
+                  {level.name}
+                </MenuItem>
+              )
+              )}
+            </Select>
+          </FormControl>
         </Grid>
         <Grid item xs={12}>
-          <TextField fullWidth value={prerequisites} onChange={(e) => setPrerequisites(e.target.value)} id="form-prerequisites" label="Prerequisites" variant="outlined" />
+          <TextField name="prequisites" fullWidth value={formData.prequisites} onChange={handleChange} id="form-prequisites" label="Prequisites" variant="outlined" />
         </Grid>
         <Grid item xs={12}>
-          <TextField fullWidth value={degree} onChange={(e) => setDegree(e.target.value)} id="form-degree" label="Degree" variant="outlined" />
+          <TextField name="description" fullWidth onChange={handleChange} value={formData.description} id="form-description" label="Description" variant="outlined" rows={3} multiline />
         </Grid>
+
         <Grid item xs={12}>
-          <TextField type="number" fullWidth value={slots} onChange={(e) => setSlots(e.target.value)} id="form-slots" label="Slot Number" variant="outlined" />
+          <TextField type="number" fullWidth value={formData.slots} onChange={handleChange} id="form-slots" label="Slot Number" variant="outlined" />
         </Grid>
         <Grid item xs={6}>
           <Button fullWidth variant="contained" sx={{ padding: "15px 30px" }} onClick={(e) => handleConfirm(e)}>

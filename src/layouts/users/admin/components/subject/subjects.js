@@ -45,10 +45,10 @@ const headCells = [
     label: "Prerequisites",
   },
   {
-    id: "degree",
+    id: "level",
     numeric: true,
     disablePadding: false,
-    label: "Degree",
+    label: "Programme",
   },
   {
     id: "slots",
@@ -64,7 +64,6 @@ export default function SubjectsAdmin(props) {
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogContent, setDialogContent] = useState("");
   const [rows, setRows] = useState([]);
-  const [rowData, setRowData] = useState([]);
   const [open, setOpen] = useState(false);
 
   const [subject, setSubject] = useState({});
@@ -74,10 +73,36 @@ export default function SubjectsAdmin(props) {
   const [id, setId] = useState("");
   const [department, setDepartment] = useState("");
 
-  const handleClearSearch = () => {};
+  const handleClearSearch = () => {
+    setId("")
+    setProgramme("")
+    setDepartment("")
+    setRows(JSON.parse(localStorage.getItem("subjectsData")));
+  };
+
+  const handleSearch = () => {
+    let subjects = JSON.parse(localStorage.getItem("subjectsData"));
+    if (id !== "") {
+      subjects = subjects.filter((subject) => subject.id === id);
+    }
+
+    if (programme !== "") {
+      subjects = subjects.filter((subject) => subject.programme === programme);
+    }
+
+    if (department !== "") {
+      subjects = subjects.filter((subject) => subject.department === department);
+    }
+
+    setRows(subjects);
+  }
 
   useEffect(() => {
     fetchRows();
+
+    return function cleanUp() {
+      localStorage.removeItem("subjectsData");
+    }
   }, []);
 
   const fetchRows = () => {
@@ -91,10 +116,10 @@ export default function SubjectsAdmin(props) {
             data.push(subject);
           });
           setRows(data);
-          setRowData(data);
           toast.success("Data Fetched Succesfully", {
             position: "bottom-left",
           });
+          localStorage.setItem("subjectsData", JSON.stringify(data))
         }
       });
     } catch (e) {
@@ -149,27 +174,19 @@ export default function SubjectsAdmin(props) {
 
   const handleEdit = (id) => {
     let subject = fetchSubject(id);
-    setSubject({
-      id: subject.id,
-      name: subject.name,
-      description: subject.description,
-      prerequisites: subject.prerequisites,
-      degree: subject.degree,
-      slots: subject.slots,
-    });
+    setSubject(subject);
     setOpenSubjectModal(true);
   };
 
   return (
     <>
       <Grid container spacing={4}>
-        <Grid item sm={12} md={12}>
-          <div className="big-widget" style={{ paddingBottom: "25px" }}>
+        <Grid item sm={12} md={8}>
+          <div className="big-widget" style={{ paddingBottom: "15px" }}>
             <h2>Subject Control</h2>
             <p>Search for a subject</p>
-            <br />
             <Grid container spacing={3}>
-              <Grid item xs={12} md={3}>
+              <Grid item xs={12} md={6}>
                 <TextField value={id} onChange={(e) => setId(e.target.value)} fullWidth label="Subject Id" variant="outlined" />
               </Grid>
               <Grid item xs={12} md={3}>
@@ -202,6 +219,7 @@ export default function SubjectsAdmin(props) {
                 <FormControl fullWidth>
                   <InputLabel id="department-select-label">Department</InputLabel>
                   <Select
+
                     id="form-department"
                     labelId="department-select-label"
                     value={department}
@@ -224,7 +242,12 @@ export default function SubjectsAdmin(props) {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={3}>
+              <Grid item xs={12} md={6}>
+                <Button fullWidth variant="outlined" sx={{ padding: "15px 30px" }} onClick={(e) => handleSearch(e)}>
+                  Search
+                </Button>
+              </Grid>
+              <Grid item xs={12} md={6}>
                 <Button color="error" fullWidth variant="outlined" sx={{ padding: "15px 30px" }} onClick={(e) => handleClearSearch(e)}>
                   Clear
                 </Button>
@@ -233,13 +256,26 @@ export default function SubjectsAdmin(props) {
           </div>
         </Grid>
 
+        <Grid item sm={12} md={4}>
+          <div
+            style={{
+              backgroundImage: `url(${process.env.PUBLIC_URL}/banner/banner` + 1 + ".jpg)",
+              width: "100%",
+              height: "270px",
+              borderRadius: "10px",
+              backgroundSize: "contain",
+            }}
+          ></div>
+        </Grid>
+
         <Grid item xs={12} md={12}>
           <div className="big-widget">
             <div className="campus-list">
               <CustomTable
+
                 title={"Courses"}
                 rows={rows}
-                init_count={4}
+                init_count={20}
                 headCells={headCells}
                 colNames={getAllHeaderColumns(headCells)}
                 handleEdit={handleEdit}

@@ -204,11 +204,7 @@ export default function UserForm(props) {
             </Grid>
             <Grid item xs={12} md={6}>
               <DesktopDatePicker
-                sx={{
-                  width: "100%",
-                }}
-                onChange={handleChangeDob}
-                name="dob"
+
                 value={formData.dob}
                 id="form-dob"
                 label="Date of Birth"

@@ -3,14 +3,17 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { MuiFileInput } from "mui-file-input";
 import Constants from "../../../../../utils/constants";
+import { toast } from "react-toastify";
 
 export default function RequestForm(props) {
   const constants = new Constants();
-  const [id, setId] = useState(props.document.id);
-  const [name, setName] = useState(props.document.name);
-  const [path, setPath] = useState(props.document.path);
-  const [status, setStatus] = useState(props.document.status);
-  const [requestType, setRequestType] = useState("");
+  console.log(props.request)
+
+  const [id, setId] = useState(props.request.id ?? "");
+  const [comment, setComment] = useState(props.request.comments ?? "");
+  const [path, setPath] = useState(props.request.path ?? "");
+  const [status, setStatus] = useState(props.request.status ?? "");
+  const [requestType, setRequestType] = useState(props.request.request_type ?? "");
 
   const [file, setFile] = useState(null);
 
@@ -20,25 +23,33 @@ export default function RequestForm(props) {
     if (file) {
       const formData = new FormData();
       formData.append("name", file.name);
-      formData.append("path", "/documents/" + file.name);
+      formData.append("path", "/requests/" + file.name);
       formData.append("file", file);
 
       console.log(file);
 
       if (id) {
-        axios.put(process.env.REACT_APP_HOST_URL + "/document?id=" + id, formData).then((res) => {
-          if (res.status === 200) {
+        axios.put(process.env.REACT_APP_HOST_URL + "/request?id=" + id, formData).then((res) => {
+          if (res.data.status) {
             props.closeHandler();
+          } else {
+            toast.error(res.data.data, {
+              position: "bottom-left"
+            })
           }
         });
       } else {
         axios
-          .post(process.env.REACT_APP_HOST_URL + "/document", formData, {
+          .post(process.env.REACT_APP_HOST_URL + "/request", formData, {
             "Content-Type": "multipart/form-data",
           })
           .then((res) => {
-            if (res.status === 200) {
+            if (res.data.status) {
               props.closeHandler();
+            } else {
+              toast.error(res.data.data, {
+                position: "bottom-left"
+              })
             }
           });
       }
@@ -47,7 +58,7 @@ export default function RequestForm(props) {
 
   const handleChangeFile = (newValue) => {
     setFile(newValue);
-    setName(newValue.name);
+    setComment(newValue.name);
   };
 
   return (
@@ -60,34 +71,40 @@ export default function RequestForm(props) {
         <Divider />
         <Grid item xs={12} md={12}>
           <FormControl fullWidth>
-            <InputLabel id="term-select-label">Select a Request Type</InputLabel>
+            <InputLabel id="requestType-select-label">Select a Request Type</InputLabel>
             <Select
-              labelId="term-select-label"
+              labelId="requestType-select-label"
               value={requestType}
-              label="Select a Type"
+              label="Select a Request Type"
               onChange={(e) => {
                 setRequestType(e.target.value);
               }}
             >
-              {constants.requestTypes.map((term) => (
-                <MenuItem key={"option-term-" + term.id} value={term.id}>
-                  {term.name}
+              {constants.requestTypes.map((requestType) => (
+                <MenuItem key={"option-requestType-" + requestType.id} value={requestType.id}>
+                  {requestType.id} - {requestType.name}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
         </Grid>
+        {
+          props.request.id ?
+            <></>
+            :
+            <Grid item xs={12} md={12}>
+              <MuiFileInput value={file} onChange={handleChangeFile} fullWidth={true} />
+            </Grid>
+        }
+
         <Grid item xs={12} md={12}>
-          <MuiFileInput value={file} onChange={handleChangeFile} fullWidth={true} />
-        </Grid>
-        <Grid item xs={12} md={12}>
-          <TextField onChange={(e) => setName(e.target.value)} value={name} id="form-name" fullWidth label="Name" variant="outlined" />
+          <TextField onChange={(e) => setComment(e.target.value)} value={comment} id="form-comment" fullWidth label="Comment" variant="outlined" />
         </Grid>
         <Grid item xs={12} md={12}>
           <FormControl fullWidth>
-            <InputLabel id="term-select-label">Request Status</InputLabel>
+            <InputLabel id="requestType-select-label">Request Status</InputLabel>
             <Select
-              labelId="term-select-label"
+              labelId="requestType-select-label"
               value={status}
               label="Select a Type"
               onChange={(e) => {

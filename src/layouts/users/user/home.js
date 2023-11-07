@@ -20,6 +20,8 @@ import { useNavigate } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import AllSubmissionsTab from "./views/grade/grades";
 import axios from "axios";
+import RequestsTab from "./views/request/requests";
+import ArchiveIcon from '@mui/icons-material/Archive';
 
 export default function UserHome(props) {
   const _container = window !== undefined ? () => window.document.body : undefined;
@@ -49,11 +51,10 @@ export default function UserHome(props) {
           name: "Curriculum",
           id: 3,
           icon: <ViewListIcon />,
-        },
-        {
-          name: "Courses",
+        }, {
+          name: "Requests",
           id: 4,
-          icon: <ClassIcon />,
+          icon: <ArchiveIcon />,
         },
       ],
     },
@@ -81,11 +82,11 @@ export default function UserHome(props) {
   }
 
   const components = [
-    <Homepage sendToast={sendToast} handleSelectTab={handleSelectTab} />,
+    <CoursesUser sendToast={sendToast} handleSelectTab={handleSelectTab} />,
     <PersonalInfo sendToast={sendToast} handleSelectTab={handleSelectTab} />,
     <ScheduleHome sendToast={sendToast} handleSelectTab={handleSelectTab} />,
     <CurriculumTab sendToast={sendToast} handleSelectTab={handleSelectTab} />,
-    <CoursesUser sendToast={sendToast} handleSelectTab={handleSelectTab} />,
+    <RequestsTab sendToast={sendToast} handleSelectTab={handleSelectTab} />,
     <AttendaceTab sendToast={sendToast} handleSelectTab={handleSelectTab} />,
     <AllSubmissionsTab sendToast={sendToast} handleSelectTab={handleSelectTab} />,
   ];
@@ -248,8 +249,8 @@ function Homepage(props) {
               );
             })
           ) : (
-            <Grid itiem xs={12} sm={12}>
-              <h1>You have no ongoing courses</h1>
+            <Grid item xs={12} sm={12}>
+              <p>You have no ongoing courses</p>
             </Grid>
           )}
         </Grid>

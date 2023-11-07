@@ -16,99 +16,38 @@ function App() {
       <Route
         path="*"
         element={
-          <>
-            <ErrorPage />
-          </>
-        }
-      />
-      <Route
-        path="/"
-        element={
-          <>
-            <CommonHome />
-          </>
+          <ErrorPage />
         }
       />
       <Route
         path="/login"
         element={
-          <>
-            <LoginScreen />
-          </>
+          <LoginScreen />
         }
       />
-
-      <Route
-        path="/grade"
-        element={
-          <>
-            <GradeUser />
-          </>
-        }
-      />
-      <Route
-        path="/course/:id"
-        element={
-          <>
-            <CourseUser />
-          </>
-        }
-      />
-      <Route
-        path="/home"
-        element={
-          <>
-            <UserHome />
-          </>
-        }
-      />
-      <Route
-        path="/test"
-        element={
-          <>
-            <Test />
-          </>
-        }
-      />
-      <Route
-        path="/admin"
-        element={
-          <>
-            <AdminHome />
-          </>
-        }
-      />
-      <Route element={<RequireAuth props={{ clearance: 0 }} />}>
+      <Route element={<RequireAuth props={{ clearance: 1 }} />}>
         <Route
-          path="/grade/:id"
+          path="/grade"
           element={
-            <>
-              <GradeUser />
-            </>
+            <GradeUser />
           }
         />
         <Route
           path="/course/:id"
           element={
-            <>
-              <CourseUser />
-            </>
+            <CourseUser />
           }
         />
         <Route
-          path="/home/:id"
+          path="/home"
           element={
-            <>
-              <UserHome />
-            </>
+            <UserHome />
           }
         />
         <Route
           path="/test"
           element={
-            <>
-              <AdminHome />
-            </>
+            <Test />
           }
         />
       </Route>
@@ -116,9 +55,7 @@ function App() {
         <Route
           path="/admin"
           element={
-            <>
-              <AdminHome />
-            </>
+            <AdminHome />
           }
         />
       </Route>

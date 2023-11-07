@@ -10,56 +10,57 @@ import DialogTitle from "@mui/material/DialogTitle";
 
 import axios from "axios";
 import RequestsForm from "./requestForm";
-import { programmes } from "../../mockData/mock";
 import { ToastContainer, toast } from "react-toastify";
 import { getAllHeaderColumns } from "../../../../../utils/utils";
+import Constants from "../../../../../utils/constants";
+import { DatePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 
 const headCells = [
   {
-    id: "id",
+    id: "user_id",
     numeric: false,
     disablePadding: true,
     label: "Requests Id",
   },
   {
-    id: "campus",
+    id: "request_type",
     numeric: true,
     disablePadding: false,
-    label: "Campus",
+    label: "Request Type",
   },
   {
-    id: "number",
+    id: "date",
     numeric: true,
     disablePadding: false,
-    label: "Requests Number",
+    label: "Date",
   },
   {
-    id: "building",
+    id: "document",
     numeric: true,
     disablePadding: false,
-    label: "Building",
+    label: "Document",
   },
   {
-    id: "capacity",
+    id: "comments",
     numeric: true,
     disablePadding: false,
-    label: "Capacity",
+    label: "Comments",
   },
 ];
 
 export default function RequestsAdmin(props) {
-  const [campus, setCampus] = useState("HN");
+  const constants = new Constants();
 
   // Campus requests data
-  const [rowData, setRowData] = useState([]);
   const [rows, setRows] = useState([]);
 
-  const [number, setNumber] = useState("");
-
   // Selected requests state for editing
-  const [requests, setRequests] = useState({});
+  const [request, setRequest] = useState({});
 
-  const [programme, setProgramme] = useState("");
+  const [date, setDate] = useState(dayjs(new Date()))
+  const [user_id, setUserId] = useState("")
+  const [request_type, setRequestType] = useState("")
 
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogContent, setDialogContent] = useState("");
@@ -69,10 +70,14 @@ export default function RequestsAdmin(props) {
 
   const [selected, setSelected] = useState([]);
 
-  const [tableTitle, setTableTitle] = useState("All Requestss");
+  const [tableTitle, setTableTitle] = useState("All Requests");
 
   useEffect(() => {
     fetchRows();
+
+    return function cleanUp() {
+      localStorage.removeItem("requestsData");
+    }
   }, []);
 
   const fetchRows = () => {
@@ -86,10 +91,7 @@ export default function RequestsAdmin(props) {
             data.push(request);
           });
           setRows(data);
-          setRowData(data);
-          toast.success("Data Fetched Succesfully", {
-            position: "bottom-left",
-          });
+          localStorage.setItem("requestsData", JSON.stringify(data));
         }
       });
     } catch (e) {
@@ -97,20 +99,10 @@ export default function RequestsAdmin(props) {
     }
   };
 
-  const fetchRequests = (id) => {
-    return rows.find((row) => row.id === id);
-  };
-
   const handleEdit = (id) => {
     try {
-      let requests = fetchRequests(id);
-      setRequests({
-        id: requests.id,
-        campus: requests.campus,
-        building: requests.building,
-        number: requests.number,
-        capacity: requests.capacity,
-      });
+      let request = fetchData(id);
+      setRequest(request);
       setOpenModal(true);
     } catch (e) {
       props.sendToast("error", e.toString());
@@ -123,7 +115,6 @@ export default function RequestsAdmin(props) {
       setDialogContent("This requests will be deleted, are you sure? This change cannot be undone");
       setOpen(true);
       setSelected(index);
-      console.log(index);
     } catch (e) {
       props.sendToast("error", e.toString());
     }
@@ -148,84 +139,74 @@ export default function RequestsAdmin(props) {
     }
   };
 
+  const fetchData = (id) => {
+    return rows.find((row) => row.id === id);
+  };
+
   const handleSearch = (e) => {
     e.preventDefault();
-
-    let query = "Campus: ";
-    let searchResult = rowData.filter((r) => r.campus === campus);
-    query += campus;
-
-    if (number !== "") {
-      query += " / Requests number: " + number;
-      searchResult = rowData.filter((r) => r.campus === campus && r.number === number);
+    let data = localStorage.getItem("requestsData");
+    data = JSON.parse(data);
+    if (user_id !== "") {
+      data = data.filter((row) => row.user_id.startsWith(user_id));
+    }
+    if (request_type !== "") {
+      data = data.filter((row) => row.request_type === request_type);
     }
 
-    if (!Array.isArray(searchResult)) {
-      searchResult = [];
-    }
-
-    setRows(searchResult);
-    setTableTitle(query);
+    setRows(data);
   };
 
   const handleClearSearch = (e) => {
     e.preventDefault();
-    setRows(rowData);
-    setCampus("HN");
-    setNumber("");
-    setTableTitle("All Requestss");
+    setRequestType("");
+    setDate(dayjs(new Date()))
+    setUserId("")
+    setRows(JSON.parse(localStorage.getItem("requestsData")));
   };
 
   const handleClose = () => {
     setOpen(false);
   };
 
-  const handleOpenModal = () => {
-    setRequests({});
-    setOpenModal(true);
-  };
-
   const handleCloseModal = () => {
     setOpenModal(false);
   };
+
+  const handleSearchInfo = () => {
+
+  }
 
   return (
     <>
       <Grid container spacing={4}>
         <Grid item sm={12} md={8} xl={6}>
-          <div className="big-widget" style={{ paddingBottom: "25px" }}>
+          <div className="big-widget" style={{ paddingBottom: "15px" }}>
             <h2>Requests Control</h2>
             <p>Search for a requests</p>
-            <br />
             <Grid container spacing={3}>
               <Grid item xs={12} md={3}>
+                <TextField value={user_id} onChange={(e) => setUserId(e.target.value)} id="form-user-id" fullWidth label="User Id" variant="outlined" />
+              </Grid>
+              <Grid item xs={12} md={3}>
                 <FormControl fullWidth>
-                  <InputLabel id="programme-select-label">Programme</InputLabel>
+                  <InputLabel id="programme-select-label">Request Type</InputLabel>
                   <Select
                     id="form-programme"
                     labelId="programme-select-label"
-                    value={programme}
-                    label="Programme"
+                    value={request_type}
+                    label="Request Type"
                     onChange={(e) => {
-                      setProgramme(e.target.value);
+                      setRequestType(e.target.value);
                     }}
                   >
-                    {programmes.map((programme) =>
-                      programme.id === -1 ? (
-                        <MenuItem disabled={true} key={programme.id} value={programme.id}>
-                          {programme.name}
-                        </MenuItem>
-                      ) : (
-                        <MenuItem key={programme.id} value={programme.id}>
-                          {programme.name}
-                        </MenuItem>
-                      )
+                    {constants.requestTypes.map((requestType) =>
+                      <MenuItem key={"option-requestType-" + requestType.id} value={requestType.id}>
+                        {requestType.id} - {requestType.name}
+                      </MenuItem>
                     )}
                   </Select>
                 </FormControl>
-              </Grid>
-              <Grid item xs={12} md={3}>
-                <TextField value={number} onChange={(e) => setNumber(e.target.value)} id="form-number" fullWidth label="Requests Number" variant="outlined" />
               </Grid>
               <Grid item xs={12} md={3}>
                 <Button fullWidth variant="outlined" sx={{ padding: "15px 30px" }} onClick={(e) => handleSearch(e)}>
@@ -245,7 +226,7 @@ export default function RequestsAdmin(props) {
             style={{
               backgroundImage: `url(${process.env.PUBLIC_URL}/banner/banner` + 5 + ".jpg)",
               width: "100%",
-              height: "225px",
+              height: "195px",
               borderRadius: "10px",
               backgroundSize: "contain",
             }}
@@ -257,8 +238,12 @@ export default function RequestsAdmin(props) {
               <CustomTable
                 handleRefreshEntry={fetchRows}
                 handleAddEntry={() => {
-                  handleOpenModal();
+                  toast.error("This function is prohibited", {
+                    position: "bottom-left"
+                  })
                 }}
+                isCampusControl={true}
+                handleSearchInfo={handleSearchInfo}
                 title={tableTitle}
                 rows={rows}
                 headCells={headCells}
@@ -298,7 +283,7 @@ export default function RequestsAdmin(props) {
             boxShadow: 12,
           }}
         >
-          <RequestsForm closeHandler={handleCloseModal} requests={requests} refresh={fetchRows} />
+          <RequestsForm closeHandler={handleCloseModal} request={request} refresh={fetchRows} />
         </DialogContent>
       </Dialog>
 

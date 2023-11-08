@@ -98,7 +98,6 @@ export default function UserForm(props) {
       phone: formData.phone,
       status: true,
       department_id: formData.department,
-      email: formData.email,
       password: formData.password,
       city: formData.city,
       district: formData.district,
@@ -106,7 +105,7 @@ export default function UserForm(props) {
       address: formData.address,
     };
 
-    if (formData.auth && formData.firstName && formData.lastName && formData.dob && formData.phone && formData.department && formData.email) {
+    if (formData.auth && formData.firstName && formData.lastName && formData.dob && formData.phone && formData.department) {
       if (id) {
         axios.put(process.env.REACT_APP_HOST_URL + "/user?id=" + id, user).then((res) => {
           console.log(res);
@@ -196,31 +195,6 @@ export default function UserForm(props) {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField name="firstName" onChange={(e) => handleChange(e)} value={formData.firstName} id="form-firstName" fullWidth label="First Name" variant="outlined" />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField name="lastName" onChange={(e) => handleChange(e)} value={formData.lastName} id="form-lastName" fullWidth label="Last Name" variant="outlined" />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <DesktopDatePicker
-
-                value={formData.dob}
-                id="form-dob"
-                label="Date of Birth"
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <MuiTelInput onlyCountries={["VN"]} name="phone" fullWidth value={formData.phone} onChange={handlePhoneChange} />
-            </Grid>
-            <Grid item xs={12} md={12}>
-              <TextField onChange={handleChange} name="email" value={formData.email} id="form-email" fullWidth label="Email" variant="outlined" />
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={6}>
-          <Grid container spacing={3}>
             <Grid item xs={12} md={12}>
               <FormControl fullWidth>
                 <InputLabel id="department-select-label">Department</InputLabel>
@@ -240,6 +214,29 @@ export default function UserForm(props) {
                 </Select>
               </FormControl>
             </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField name="firstName" onChange={(e) => handleChange(e)} value={formData.firstName} id="form-firstName" fullWidth label="First Name" variant="outlined" />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField name="lastName" onChange={(e) => handleChange(e)} value={formData.lastName} id="form-lastName" fullWidth label="Last Name" variant="outlined" />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <DesktopDatePicker
+
+                value={formData.dob}
+                id="form-dob"
+                label="Date of Birth"
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <MuiTelInput onlyCountries={["VN"]} name="phone" fullWidth value={formData.phone} onChange={handlePhoneChange} />
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid item xs={6}>
+          <Grid container spacing={3}>
+
             <Grid item xs={12} sm={12}>
               <FormControl fullWidth>
                 <InputLabel id="city-select-label-form">City</InputLabel>

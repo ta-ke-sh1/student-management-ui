@@ -24,15 +24,25 @@ export default function CourseworkFormModal(props) {
     }, [])
 
     const handleConfirm = () => {
-        axios.post(process.env.REACT_APP_HOST_URL + "/course/coursework", {
-            id: id,
-            name: name,
-            start: dayjs(openDate).unix(),
-            deadline: dayjs(deadline).unix(),
-            close: dayjs(closedDate).unix()
-        }).then((res) => {
-            console.log(res)
-        })
+        try {
+            axios.post(process.env.REACT_APP_HOST_URL + "/course/coursework", {
+                id: id,
+                name: name,
+                start: dayjs(openDate).unix(),
+                deadline: dayjs(deadline).unix(),
+                close: dayjs(closedDate).unix()
+            }).then((res) => {
+                if (res.data.status) {
+                    props.closeHandler();
+                } else {
+                    props.sendToast("error", res.data.data)
+                }
+                console.log(res)
+            })
+        } catch (e) {
+            props.sendToast("error", e.toString())
+        }
+
     }
 
     return (<>

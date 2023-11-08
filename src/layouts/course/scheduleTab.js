@@ -42,10 +42,6 @@ export default function ScheduleTab(props) {
 
     return (
         <div >
-            <p>
-                This site will provide you all the key information and learning resources for this module. Please ensure you familiarise yourself with the University of Greenwich Vietnam's Handbook where you will find all the information regarding the module, weekly schedule, assessments and more.
-                If you have any questions or no content is being shown in this CMS Page, please get in touch with your lecturer in the first instance. Alternatively, you may wish to contact your Programme Leader or Head of Department/School.
-            </p>
             <h2 className="bold" style={{
                 fontSize: '1.75rem',
             }}>Schedules</h2>

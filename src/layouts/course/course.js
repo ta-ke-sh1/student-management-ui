@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, Snackbar } from "@mui/material";
+import { Dialog, DialogContent, Divider, Snackbar } from "@mui/material";
 import { useState, useMemo, useEffect } from "react";
 import { Drawer, Box, Fab } from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
@@ -25,6 +25,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import ScheduleTab from "./scheduleTab";
 import ParticipantsTab from "./participants.Tab";
 import { ToastContainer, toast } from "react-toastify";
+import AssignmentTab from "./assignmentTab";
 
 const drawerWidth = 240;
 
@@ -56,18 +57,32 @@ export default function CourseUser() {
   const _container = window !== undefined ? () => window.document.body : undefined;
   const [mobileOpen, setMobileOpen] = useState(true);
   // const { courseData } = useFetchCourses("test");
-  const [current, setCurrent] = useState(1);
+  const [current, setCurrent] = useState(3);
 
   const [openCourseworkModal, setOpenCourseworkModal] = useState(false);
   const [openMaterialModal, setOpenMaterialModal] = useState(false);
 
-  const memo_course = useMemo(() => fetchCourse(), [id]);
+  const [course, setCourse] = useState({
+    id: 'UOG-SP-24-GCH-Testing2',
+    slots: '42',
+    subject: 'COMP1786',
+    isEdit: false,
+    dayOfTheWeek: 4,
+    name: 'Testing2',
+    department: 'GCH',
+    programme: 'UOG',
+    status: true,
+    lecturer: 'tungdt',
+    term: 'SP-23',
+    startDate: 1699283143698,
+    endDate: 1707321199000,
+    title: 'Mobile Application Design and Development',
+    description: 'Mobile application development is the process of making software for smartphones, tablets and digital assistants, most commonly for the Android and iOS operating systems. The software can be preinstalled on the device, downloaded from a mobile app store or accessed through a mobile web browser. ',
+    assignments: []
+  });
 
   useEffect(() => {
-    console.log(id);
     fetchCourse();
-
-    console.log(memo_course);
   }, []);
 
   function fetchCourse() {
@@ -85,8 +100,6 @@ export default function CourseUser() {
     }
   }
 
-  const [course, setCourse] = useState({});
-
   const handleOpenCourseworkModal = () => {
     setOpenCourseworkModal(true);
   };
@@ -95,7 +108,12 @@ export default function CourseUser() {
     setOpenMaterialModal(true);
   };
 
-  const components = [<CourseworkTab decoded={decoded} course={course} handleOpenCourseworkModal={handleOpenCourseworkModal} handleOpenMaterialModal={handleOpenMaterialModal} />, <ScheduleTab />, <ParticipantsTab />];
+  const components = [
+    <CourseworkTab handleSelectTab={handleSelectTab} sendToast={sendToast} decoded={decoded} course={course} handleOpenCourseworkModal={handleOpenCourseworkModal} handleOpenMaterialModal={handleOpenMaterialModal} />,
+    <ScheduleTab handleSelectTab={handleSelectTab} sendToast={sendToast} />,
+    <ParticipantsTab handleSelectTab={handleSelectTab} sendToast={sendToast} />,
+    <AssignmentTab handleSelectTab={handleSelectTab} sendToast={sendToast} />
+  ];
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -251,8 +269,21 @@ export default function CourseUser() {
                   fontSize: "3rem",
                 }}
               >
-                {course.group} - {course.lecturer} - {course.name}
+                {course.name} - {course.lecturer} - {course.title}
               </div>
+              <p>
+                This site will provide you all the key information and learning resources for this module. Please ensure you familiarise yourself with the University of Greenwich Vietnam's Handbook where you will find all the information regarding the module, weekly schedule, assessments and more.
+                If you have any questions or no content is being shown in this CMS Page, please get in touch with your lecturer in the first instance. Alternatively, you may wish to contact your Programme Leader or Head of Department/School.
+              </p>
+              <p>
+                If you experience technical difficulties please visit: https://www.gre.ac.uk/it-and-library
+              </p>
+              <Divider />
+              <p>
+                <h3>Course Description</h3>
+                {course.description}
+              </p>
+
               {components[current]}
             </div>
           </div>
@@ -275,7 +306,7 @@ export default function CourseUser() {
           }}
           className={"modal"}
         >
-          <CourseworkFormModal closeHandler={() => setOpenCourseworkModal(false)} />
+          <CourseworkFormModal closeHandler={() => setOpenCourseworkModal(false)} sendToast={sendToast} />
         </DialogContent>
       </Dialog>
       <Dialog className="modal" fullWidth={true} open={openMaterialModal} onClose={() => setOpenMaterialModal(false)}>
@@ -286,7 +317,7 @@ export default function CourseUser() {
           }}
           className={"modal"}
         >
-          <CourseworkMaterialModal closeHandler={() => setOpenMaterialModal(false)} />
+          <CourseworkMaterialModal closeHandler={() => setOpenMaterialModal(false)} sendToast={sendToast} />
         </DialogContent>
       </Dialog>
       <ToastContainer />

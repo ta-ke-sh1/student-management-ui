@@ -46,7 +46,7 @@ export default function PersonalInfo(props) {
         <div
           className="profile-pic-container"
           style={{
-            backgroundImage: `url(${process.env.REACT_APP_HOST_URL}/avatar/` + token.avatar + `)`,
+            backgroundImage: `url(${process.env.REACT_APP_HOST_URL}` + token.avatar + `)`,
           }}
         ></div>
         <div className="user-contact">

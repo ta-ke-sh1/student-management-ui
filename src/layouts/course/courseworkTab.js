@@ -59,7 +59,12 @@ export default function CourseworkTab(props) {
             <br />
             {
                 assignments && assignments.map((assignment, index) => {
-                    return props.decoded.role === 1 ? <SubmmissionAccordion course={props.course} decoded={props.decoded} assignment={assignment} /> :
+                    return props.decoded.role === 1 ? <SubmmissionAccordion
+                        refresh={fetchCourseworks}
+                        course={props.course}
+                        sendToast={props.sendToast}
+                        decoded={props.decoded}
+                        assignment={assignment} /> :
                         <Card sx={{
                             width: '100%',
                         }}>

@@ -57,7 +57,7 @@ export default function CourseUser() {
   const _container = window !== undefined ? () => window.document.body : undefined;
   const [mobileOpen, setMobileOpen] = useState(true);
   // const { courseData } = useFetchCourses("test");
-  const [current, setCurrent] = useState(3);
+  const [current, setCurrent] = useState(0);
 
   const [openCourseworkModal, setOpenCourseworkModal] = useState(false);
   const [openMaterialModal, setOpenMaterialModal] = useState(false);

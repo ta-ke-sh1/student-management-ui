@@ -46,9 +46,9 @@ export default function ScheduleTab(props) {
         },
     ]);
 
-    useEffect(() => {}, []);
+    useEffect(() => { }, []);
 
-    const takeAttendance = () => {};
+    const takeAttendance = () => { };
 
     const normalizeIndex = (index) => {
         const limit = 5;

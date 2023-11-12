@@ -34,6 +34,7 @@ export default function CourseworkFormModal(props) {
             }).then((res) => {
                 if (res.data.status) {
                     props.closeHandler();
+                    window.location.reload();
                 } else {
                     props.sendToast("error", res.data.data)
                 }

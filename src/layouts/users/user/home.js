@@ -22,13 +22,15 @@ import AllSubmissionsTab from "./views/grade/grades";
 import axios from "axios";
 import RequestsTab from "./views/request/requests";
 import ArchiveIcon from '@mui/icons-material/Archive';
+import { decodeToken } from "../../../utils/utils";
 
 export default function UserHome(props) {
+  const token = decodeToken(localStorage.getItem("access_token"));
   const _container = window !== undefined ? () => window.document.body : undefined;
   const [current, setCurrent] = useState(props.index ?? 0);
   const [mobileOpen, setMobileOpen] = useState(true);
 
-  const nav_tabs = [
+  const nav_tabs = token.role === 1 ? [
     {
       title: "Navigation",
       tabs: [
@@ -52,6 +54,32 @@ export default function UserHome(props) {
           id: 3,
           icon: <ViewListIcon />,
         }, {
+          name: "Requests",
+          id: 4,
+          icon: <ArchiveIcon />,
+        },
+      ],
+    },
+  ] : [
+    {
+      title: "Navigation",
+      tabs: [
+        {
+          name: "Home",
+          id: 0,
+          icon: <HomeIcon />,
+        },
+        {
+          name: "Personal Info",
+          id: 1,
+          icon: <AccountCircleIcon />,
+        },
+        {
+          name: "Schedule",
+          id: 2,
+          icon: <EventNoteIcon />,
+        },
+        {
           name: "Requests",
           id: 4,
           icon: <ArchiveIcon />,

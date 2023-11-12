@@ -1,9 +1,9 @@
-import { Divider, Button, Card, CardHeader, Typography, CardContent, CardActionArea } from "@mui/material"
+import { Divider, Button, Card, Typography, CardContent, CardActionArea } from "@mui/material"
 import SubmmissionAccordion from "./components/submission_accordion"
 import MaterialItem from "./components/material_item"
 import { useEffect, useState } from "react"
 import axios from "axios"
-import { fromMilisecondsToDateString, fromMilisecondsToDisplayFormatDateString } from "../../utils/utils"
+import { fromMilisecondsToDisplayFormatDateString } from "../../utils/utils"
 import { useNavigate } from "react-router-dom"
 
 export default function CourseworkTab(props) {
@@ -14,7 +14,8 @@ export default function CourseworkTab(props) {
     useEffect(() => {
         fetchCourseworks();
         fetchMaterials();
-    }, [])
+        console.log("Fetch")
+    }, [props.id])
 
     function fetchCourseworks() {
         try {
@@ -45,7 +46,7 @@ export default function CourseworkTab(props) {
     }
 
     function handleNavigate(index) {
-        localStorage.setItem("assignemnt", JSON.stringify(assignments[index]))
+        localStorage.setItem("assignment", JSON.stringify(assignments[index]))
         props.handleSelectTab(3);
     }
 
@@ -58,7 +59,7 @@ export default function CourseworkTab(props) {
             </div>
             <br />
             {
-                assignments && assignments.map((assignment, index) => {
+                assignments.length > 0 ? assignments.map((assignment, index) => {
                     return props.decoded.role === 1 ? <SubmmissionAccordion
                         refresh={fetchCourseworks}
                         course={props.course}
@@ -67,17 +68,24 @@ export default function CourseworkTab(props) {
                         assignment={assignment} /> :
                         <Card sx={{
                             width: '100%',
+                            marginBottom: "20px"
                         }}>
                             <CardActionArea onClick={() => handleNavigate(index)}>
                                 <CardContent>
                                     <Typography gutterBottom variant="h5" component="div">
-                                        Assigment:{assignment.name} - Deadline:{fromMilisecondsToDisplayFormatDateString(assignment.deadline * 1000)}
+                                        Assigment: {assignment.name} - Deadline: {fromMilisecondsToDisplayFormatDateString(assignment.deadline * 1000)}
                                     </Typography>
                                 </CardContent>
                             </CardActionArea>
 
                         </Card>
-                })
+                }) : <>
+                    <p style={{
+                        marginTop: '-10px'
+                    }}>
+                        Currently, there are no courseworks available for this course.
+                    </p>
+                </>
             }
             <Divider sx={{ margin: '20px 0' }} />
             <div className='row-space-between'>
@@ -85,9 +93,15 @@ export default function CourseworkTab(props) {
                 {props.decoded.role > 1 ? <Button onClick={props.handleOpenMaterialModal}>Add Material</Button> : <></>}
             </div>
             {
-                materials && materials.map((material) => {
-                    return <MaterialItem material={material} />
-                })
+                materials.length > 0 ? materials.map((material) => {
+                    return <MaterialItem material={material} onClick={() => { }} />
+                }) : <>
+                    <p style={{
+                        marginTop: '10px'
+                    }}>
+                        Currently, there are no materials available for this course.
+                    </p>
+                </>
             }
             <br />
         </>

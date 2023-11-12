@@ -4,9 +4,11 @@ import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Grid
 import axios from "axios";
 
 import { useNavigate } from "react-router-dom";
-import { fromMilisecondsToDisplayFormatDateString } from "../../../../../utils/utils";
+import { decodeToken, fromMilisecondsToDisplayFormatDateString } from "../../../../../utils/utils";
 
 export default function CoursesUser(props) {
+    const token = decodeToken(localStorage.getItem("access_token"));
+
     const [otherCourses, setOtherCourses] = useState([])
     const [onGoingCourses, setOngoingCourses] = useState([]);
 
@@ -26,7 +28,7 @@ export default function CoursesUser(props) {
     }
 
     function fetchCourse() {
-        axios.get(process.env.REACT_APP_HOST_URL + "/course?id=ductm", {}).then((res) => {
+        axios.get(process.env.REACT_APP_HOST_URL + "/course?id=" + token.id + "&role=" + token.role, {}).then((res) => {
             if (res.data.status) {
                 let courses = res.data.data
                 let ongoing = [];
@@ -69,8 +71,8 @@ export default function CoursesUser(props) {
                         onGoingCourses.length > 0 ?
                             onGoingCourses.map((course, index) => {
                                 return (
-                                    <Grid item xs={6} sm={4} md={3}>
-                                        <Card sx={{ width: 345 }} >
+                                    <Grid item xs={6} sm={4} md={4}>
+                                        <Card >
                                             <CardActionArea onClick={() => handleNavigate(course.id)}>
                                                 <CardMedia
                                                     sx={{ height: 120, backgroundImage: `url(${process.env.PUBLIC_URL}/banner/banner` + (index + 1) + ".jpg)", }}

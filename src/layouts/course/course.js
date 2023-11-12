@@ -57,29 +57,12 @@ export default function CourseUser() {
   const _container = window !== undefined ? () => window.document.body : undefined;
   const [mobileOpen, setMobileOpen] = useState(true);
   // const { courseData } = useFetchCourses("test");
-  const [current, setCurrent] = useState(0);
+  const [current, setCurrent] = useState(3);
 
   const [openCourseworkModal, setOpenCourseworkModal] = useState(false);
   const [openMaterialModal, setOpenMaterialModal] = useState(false);
 
-  const [course, setCourse] = useState({
-    id: 'UOG-SP-24-GCH-Testing2',
-    slots: '42',
-    subject: 'COMP1786',
-    isEdit: false,
-    dayOfTheWeek: 4,
-    name: 'Testing2',
-    department: 'GCH',
-    programme: 'UOG',
-    status: true,
-    lecturer: 'tungdt',
-    term: 'SP-23',
-    startDate: 1699283143698,
-    endDate: 1707321199000,
-    title: 'Mobile Application Design and Development',
-    description: 'Mobile application development is the process of making software for smartphones, tablets and digital assistants, most commonly for the Android and iOS operating systems. The software can be preinstalled on the device, downloaded from a mobile app store or accessed through a mobile web browser. ',
-    assignments: []
-  });
+  const [course, setCourse] = useState({});
 
   useEffect(() => {
     fetchCourse();
@@ -109,7 +92,7 @@ export default function CourseUser() {
   };
 
   const components = [
-    <CourseworkTab handleSelectTab={handleSelectTab} sendToast={sendToast} decoded={decoded} course={course} handleOpenCourseworkModal={handleOpenCourseworkModal} handleOpenMaterialModal={handleOpenMaterialModal} />,
+    <CourseworkTab id={course.id} handleSelectTab={handleSelectTab} sendToast={sendToast} decoded={decoded} course={course} handleOpenCourseworkModal={handleOpenCourseworkModal} handleOpenMaterialModal={handleOpenMaterialModal} />,
     <ScheduleTab handleSelectTab={handleSelectTab} sendToast={sendToast} />,
     <ParticipantsTab handleSelectTab={handleSelectTab} sendToast={sendToast} />,
     <AssignmentTab handleSelectTab={handleSelectTab} sendToast={sendToast} />

@@ -11,7 +11,6 @@ export default function RequestForm(props) {
 
     const [id, setId] = useState(props.request.id ?? "");
     const [comment, setComment] = useState(props.request.comments ?? "");
-    const [path, setPath] = useState(props.request.path ?? "");
     const [status, setStatus] = useState(props.request.status ?? "");
     const [requestType, setRequestType] = useState(props.request.request_type ?? "");
 
@@ -25,6 +24,8 @@ export default function RequestForm(props) {
             formData.append("name", file.name);
             formData.append("path", "/requests/" + file.name);
             formData.append("file", file);
+            formData.append("user_id", props.user.id);
+            formData.append("status", -1);
 
             console.log(file);
 
@@ -58,7 +59,6 @@ export default function RequestForm(props) {
 
     const handleChangeFile = (newValue) => {
         setFile(newValue);
-        setComment(newValue.name);
     };
 
     return (
@@ -100,23 +100,29 @@ export default function RequestForm(props) {
                 <Grid item xs={12} md={12}>
                     <TextField onChange={(e) => setComment(e.target.value)} value={comment} id="form-comment" fullWidth label="Comment" variant="outlined" />
                 </Grid>
-                <Grid item xs={12} md={12}>
-                    <FormControl fullWidth>
-                        <InputLabel id="requestType-select-label">Request Status</InputLabel>
-                        <Select
-                            labelId="requestType-select-label"
-                            value={status}
-                            label="Select a Type"
-                            onChange={(e) => {
-                                setStatus(e.target.value);
-                            }}
-                        >
-                            <MenuItem value={-1}>Pending</MenuItem>
-                            <MenuItem value={0}>Declined</MenuItem>
-                            <MenuItem value={1}>Accepted</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Grid>
+                {
+                    props.userRole === 1 ? <></> :
+                        <>
+                            <Grid item xs={12} md={12}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="requestType-select-label">Request Status</InputLabel>
+                                    <Select
+                                        labelId="requestType-select-label"
+                                        value={status}
+                                        label="Select a Type"
+                                        onChange={(e) => {
+                                            setStatus(e.target.value);
+                                        }}
+                                    >
+                                        <MenuItem value={-1}>Pending</MenuItem>
+                                        <MenuItem value={0}>Declined</MenuItem>
+                                        <MenuItem value={1}>Accepted</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                        </>
+                }
+
                 <Grid item xs={12} md={6}>
                     <Button fullWidth variant="contained" sx={{ padding: "15px 30px" }} onClick={(e) => handleConfirm(e)}>
                         Save

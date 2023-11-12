@@ -42,7 +42,7 @@ export function RequireAuth({ props }) {
     console.log(auth)
 
     if (!auth.token) {
-        return <Navigate to="/" />;
+        return <Navigate to="/login" />;
     }
 
     if (props) {

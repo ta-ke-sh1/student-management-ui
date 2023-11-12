@@ -20,6 +20,12 @@ function App() {
         }
       />
       <Route
+        path="/"
+        element={
+          <LoginScreen />
+        }
+      />
+      <Route
         path="/login"
         element={
           <LoginScreen />
@@ -29,33 +35,42 @@ function App() {
         <Route
           path="/grade"
           element={
-            <GradeUser />
+            <>
+              <NavBar />
+              <GradeUser />
+            </>
           }
         />
         <Route
           path="/course/:id"
           element={
-            <CourseUser />
+            <>
+              <NavBar />
+              <CourseUser />
+            </>
+
           }
         />
         <Route
           path="/home"
           element={
-            <UserHome />
-          }
-        />
-        <Route
-          path="/test"
-          element={
-            <Test />
+            <>
+              <NavBar />
+              <UserHome />
+            </>
           }
         />
       </Route>
       <Route element={<RequireAuth props={{ clearance: 2 }} />}>
+
         <Route
           path="/admin"
           element={
-            <AdminHome />
+            <>
+              <NavBar />
+              <AdminHome />
+            </>
+
           }
         />
       </Route>

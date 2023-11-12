@@ -1,7 +1,7 @@
-import { Box, Grid } from "@mui/material";
+import { Box, Card, CardContent, CardMedia, Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { decodeToken } from "../../../../../utils/utils";
+import { decodeToken, normalizeIndex } from "../../../../../utils/utils";
 
 export default function CurriculumTab(props) {
   const token = decodeToken(localStorage.getItem("access_token"));
@@ -36,43 +36,40 @@ export default function CurriculumTab(props) {
         >
           Curriculum
         </h2>
-        <div className="curriculum-row">
-          <Grid container>
-            <Grid item xs={2}>
-              Index
-            </Grid>
-            <Grid item xs={2}>
-              Code
-            </Grid>
-            <Grid item xs={6}>
-              Name
-            </Grid>
-            <Grid item xs={2}>
-              <Box display="flex" justifyContent="flex-end">
-                Grade
-              </Box>
-            </Grid>
-          </Grid>
-        </div>
         {subjects.map((subject, index) => {
           return (
             <div className="curriculum-row">
-              <Grid container>
-                <Grid item xs={2}>
-                  {index}
-                </Grid>
-                <Grid item xs={2}>
-                  {subject.id}
-                </Grid>
-                <Grid item xs={6}>
-                  {subject.name}
-                </Grid>
-                <Grid item justify="flex-end" xs={2}>
-                  <Box display="flex" justifyContent="flex-end">
-                    {subject.grade ? <>{subject.grade}</> : <>Not yet</>}
-                  </Box>
-                </Grid>
-              </Grid>
+              <Card sx={{
+                display: "flex",
+              }}>
+                <CardMedia sx={{
+                  width: "150px",
+                  backgroundImage:
+                    `url(${process.env.PUBLIC_URL}/banner/banner` +
+                    normalizeIndex(index + 1) +
+                    ".jpg)",
+                }}>
+                </CardMedia>
+                <CardContent sx={{
+                  padding: "20px",
+                  flex: "1 0 auto",
+                }}>
+                  <Grid container alignItems="center">
+                    <Grid item xs={2}>
+                      <strong style={{ marginRight: '10px' }}>{subject.id}</strong>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <strong style={{ marginRight: '10px' }}></strong> {subject.name}
+                    </Grid>
+                    <Grid item justify="flex-end" xs={2}>
+                      <Box display="flex" justifyContent="flex-end">
+                        <strong style={{ marginRight: '10px' }}>Grade:</strong> {subject.grade ? <>{subject.grade}</> : <>Not yet</>}
+                      </Box>
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+
             </div>
           );
         })}

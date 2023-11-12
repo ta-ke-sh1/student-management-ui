@@ -179,3 +179,9 @@ export function downloadFile(url, filename) {
     })
     .catch((error) => console.error('Error:', error));
 }
+
+export function normalizeIndex(index) {
+  const limit = 5;
+  return index > limit ? (index % (limit + 1)) + 1 : index;
+};
+

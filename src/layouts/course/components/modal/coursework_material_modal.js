@@ -8,6 +8,7 @@ export default function CourseworkMaterialModal(props) {
 
     const handleConfirm = () => {
         console.log(file);
+
     };
 
     const handleChangeFile = (newValue) => {

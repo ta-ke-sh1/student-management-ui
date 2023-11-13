@@ -9,46 +9,36 @@ import {
     CardMedia,
 } from "@mui/material";
 import { fromMilisecondsToDisplayFormatDateString } from "../../utils/utils";
+import axios from "axios";
 
 export default function ScheduleTab(props) {
-    const [schedules, setSchedules] = useState([
-        {
-            session: 1,
-            lecturer: "tungdt",
-            date: 1697553920,
-            slot: 2,
-        },
-        {
-            session: 2,
-            lecturer: "tungdt",
-            date: 1697553920,
-            slot: 3,
-        },
-        {
-            session: 3,
-            lecturer: "tungdt",
-            date: 1697640320,
-            slot: 2,
-        },
-        {
-            session: 4,
-            lecturer: "tungdt",
-            date: 1697640320,
-            slot: 3,
-        },
-    ]);
+    const course = props.course;
+    const [schedules, setSchedules] = useState();
 
-    const [participants, setParticipants] = useState([
-        {
-            id: "trunght",
-            firstName: "Trung",
-            lastName: "Ha The",
-        },
-    ]);
+    useEffect(() => {
+        fetchSchedules();
+    }, [course]);
 
-    useEffect(() => { }, []);
+    function fetchSchedules() {
+        try {
+            axios.get(process.env.REACT_APP_HOST_URL + "/course/schedules?id=" + course.id).then((res) => {
+                if (res.data.status) {
+                    let data = res.data.data;
+                    let sorted = data.sort((a, b) => a.session - b.session)
+                    setSchedules(sorted);
+                } else {
+                    props.sendToast("error", res.data.data)
+                }
+            });
+        } catch (e) {
+            props.sendToast("error", e.toString())
+        }
+    }
 
-    const takeAttendance = () => { };
+    const takeAttendance = (index) => {
+        localStorage.setItem("schedule", JSON.stringify(schedules[index]))
+        props.handleSelectTab(4);
+    };
 
     const normalizeIndex = (index) => {
         const limit = 5;
@@ -72,7 +62,7 @@ export default function ScheduleTab(props) {
                 }}>
                 Schedules
             </h2>
-            {schedules.map((schedule, index) => {
+            {schedules && schedules.map((schedule, index) => {
                 return (
                     <div
                         className="curriculum-row"
@@ -88,7 +78,7 @@ export default function ScheduleTab(props) {
                                     width: "150px",
                                     backgroundImage:
                                         `url(${process.env.PUBLIC_URL}/banner/banner` +
-                                        normalizeIndex(index + 1) +
+                                        normalizeIndex(index) +
                                         ".jpg)",
                                 }}></CardMedia>
                             <CardContent
@@ -124,7 +114,7 @@ export default function ScheduleTab(props) {
                                                     disabled={isValidDate(
                                                         schedule.date * 1000
                                                     )}
-                                                    onClick={takeAttendance}
+                                                    onClick={() => takeAttendance(index)}
                                                     variant="contained">
                                                     Take Attendance
                                                 </Button>

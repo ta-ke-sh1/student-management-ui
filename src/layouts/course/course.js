@@ -23,9 +23,10 @@ import axios from "axios";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import ScheduleTab from "./scheduleTab";
-import ParticipantsTab from "./participants.Tab";
+import ParticipantsTab from "./participantsTab";
 import { ToastContainer, toast } from "react-toastify";
 import AssignmentTab from "./assignmentTab";
+import AttendanceTab from "./attendanceTab";
 
 const drawerWidth = 240;
 
@@ -56,8 +57,8 @@ export default function CourseUser() {
 
   const _container = window !== undefined ? () => window.document.body : undefined;
   const [mobileOpen, setMobileOpen] = useState(true);
-  // const { courseData } = useFetchCourses("test");
-  const [current, setCurrent] = useState(3);
+
+  const [current, setCurrent] = useState(4);
 
   const [openCourseworkModal, setOpenCourseworkModal] = useState(false);
   const [openMaterialModal, setOpenMaterialModal] = useState(false);
@@ -93,9 +94,10 @@ export default function CourseUser() {
 
   const components = [
     <CourseworkTab id={course.id} handleSelectTab={handleSelectTab} sendToast={sendToast} decoded={decoded} course={course} handleOpenCourseworkModal={handleOpenCourseworkModal} handleOpenMaterialModal={handleOpenMaterialModal} />,
-    <ScheduleTab handleSelectTab={handleSelectTab} sendToast={sendToast} />,
-    <ParticipantsTab handleSelectTab={handleSelectTab} sendToast={sendToast} />,
-    <AssignmentTab handleSelectTab={handleSelectTab} sendToast={sendToast} />
+    <ScheduleTab course={course} handleSelectTab={handleSelectTab} sendToast={sendToast} />,
+    <ParticipantsTab course={course} handleSelectTab={handleSelectTab} sendToast={sendToast} />,
+    <AssignmentTab course={course} handleSelectTab={handleSelectTab} sendToast={sendToast} />,
+    <AttendanceTab course={course} handleSelectTab={handleSelectTab} sendToast={sendToast} />
   ];
 
   const handleDrawerToggle = () => {

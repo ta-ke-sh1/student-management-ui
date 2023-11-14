@@ -22,6 +22,7 @@ export default function CourseworkTab(props) {
             axios.get(process.env.REACT_APP_HOST_URL + "/course/courseworks?id=" + props.course.id).then((res) => {
                 if (res.data.status) {
                     setAssignments(res.data.data)
+                    console.log(res.data.data)
                 } else {
                     props.sendToast("error", res.data.data)
                 }

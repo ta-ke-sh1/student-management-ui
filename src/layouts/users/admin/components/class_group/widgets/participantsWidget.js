@@ -12,6 +12,11 @@ const headCells = [
 ];
 
 export default function ParticipantsWidget(props) {
+
+    const handleDelete = (id) => {
+        console.log(id)
+    }
+
     return (
         <Grid
             container>
@@ -26,7 +31,7 @@ export default function ParticipantsWidget(props) {
                                 headCells={headCells}
                                 colNames={getAllHeaderColumns(headCells)}
                                 handleEdit={props.handleEdit}
-                                handleDelete={props.handleDelete}
+                                handleDelete={handleDelete}
                             /> : <><h3>Please select a group to see its participants</h3></>
                         }
 

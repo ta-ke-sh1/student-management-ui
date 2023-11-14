@@ -58,7 +58,7 @@ export default function CourseUser() {
   const _container = window !== undefined ? () => window.document.body : undefined;
   const [mobileOpen, setMobileOpen] = useState(true);
 
-  const [current, setCurrent] = useState(4);
+  const [current, setCurrent] = useState(1);
 
   const [openCourseworkModal, setOpenCourseworkModal] = useState(false);
   const [openMaterialModal, setOpenMaterialModal] = useState(false);

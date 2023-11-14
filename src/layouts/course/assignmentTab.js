@@ -1,7 +1,7 @@
 import { Box, Button, Card, CardActionArea, CardContent, CardMedia, Dialog, DialogContent, Grid, Typography } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { fromMilisecondsToDisplayFormatDateString, normalizeIndex } from "../../utils/utils";
+import { downloadFile, fromMilisecondsToDisplayFormatDateString, normalizeIndex } from "../../utils/utils";
 import AssignmentGradingModal from "./components/modal/assignment_grading_modal";
 
 export default function AssignmentTab(props) {
@@ -34,7 +34,17 @@ export default function AssignmentTab(props) {
         }
     }
 
-    function handleDownload() { }
+    function handleDownload(index) {
+        console.log()
+        const submission = assignments[index];
+        submission.fileNames.forEach((file) => {
+            downloadFile(
+                process.env.REACT_APP_HOST_URL + submission.path,
+                file
+            );
+        })
+
+    }
 
     function handleGrade(id) {
         let asm = assignments.find((row) => row.id === id);
@@ -77,16 +87,16 @@ export default function AssignmentTab(props) {
                                     }}>
                                         <Grid container alignItems="center">
                                             <Grid item xs={1}>
-                                                <strong style={{ marginRight: '10px' }}>No.{index}</strong>
+                                                <strong style={{ marginRight: '10px' }}>No.{index + 1}</strong>
                                             </Grid>
                                             <Grid item xs={2}>
                                                 <strong style={{ marginRight: '10px' }}>Student: {assignment.user_id}</strong>
                                             </Grid>
                                             <Grid item xs={3}>
-                                                <strong style={{ marginRight: '10px' }}>Submitted at: {fromMilisecondsToDisplayFormatDateString(assignment.date)}</strong>
+                                                <strong style={{ marginRight: '10px' }}>Submitted at: </strong>{fromMilisecondsToDisplayFormatDateString(assignment.date)}
                                             </Grid>
                                             <Grid item xs={2}>
-                                                <Button variant="outlined" onClick={handleDownload}>Download</Button>
+                                                <Button variant="outlined" onClick={() => handleDownload(index)}>Download</Button>
                                             </Grid>
                                             <Grid item justify="flex-end" xs={1}>
                                                 <Box display="flex" justifyContent="flex-end">
@@ -126,7 +136,7 @@ export default function AssignmentTab(props) {
                     boxShadow: 12,
                 }}
             >
-                <AssignmentGradingModal assignment={assignment} closeHandler={handleCloseModal} refresh={fetchRows} />
+                <AssignmentGradingModal sendToast={props.sendToast} assignment={assignment} closeHandler={handleCloseModal} refresh={fetchRows} />
             </DialogContent>
         </Dialog>
     </>)

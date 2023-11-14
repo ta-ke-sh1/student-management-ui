@@ -14,7 +14,9 @@ export default function ScheduleListForm(props) {
   const [rooms, setRooms] = useState([]);
   const [lecturers, setLecturers] = useState([]);
 
-  const handleConfirm = () => { };
+  const handleConfirm = () => {
+
+  };
 
   useEffect(() => {
     fetchLecturers();
@@ -51,9 +53,8 @@ export default function ScheduleListForm(props) {
           <h2 style={{ margin: 0 }}>Manage Schedule</h2>
         </Grid>
 
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={12}>
           <Grid container spacing={4}>
-
             <Divider />
             <Grid item xs={12} md={12}>
               <TextField disabled={props.id ? true : false} type="number" onChange={(e) => setSession(e.target.value)} value={session} id="form-ession" fullWidth label="Session Number" variant="outlined" />
@@ -147,49 +148,12 @@ export default function ScheduleListForm(props) {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={12}>
-              <Typography variant="h5">
-                Participants List
-              </Typography>
-            </Grid>
-            <Grid item xs={12} sm={12}>
-              <List sx={{
-                width: '100%',
-                borderRadius: '10px',
-                bgcolor: '#f9f9f9',
-                position: 'relative',
-                overflow: 'auto',
-                minHeight: 345,
-                maxHeight: 345,
-                '& ul': { padding: 0 },
-              }}
-                subheader={<li />}>
-                {
-                  props.participants && props.participants.map((participant, index) => {
-                    return (
-                      <ListItem key={"participant-list-" + index}>
-                        <ListItemText>{participant.username}</ListItemText>
-                      </ListItem>
-                    )
-                  })
-                }
-              </List>
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <Button fullWidth variant="outlined" sx={{ padding: "15px 30px" }} onClick={(e) => handleConfirm(e)}>
-            Create Attendance Reports
-          </Button>
-        </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={6}>
           <Button fullWidth variant="contained" sx={{ padding: "15px 30px" }} onClick={(e) => handleConfirm(e)}>
             Save
           </Button>
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={6}>
           <Button color="error" fullWidth variant="outlined" sx={{ padding: "15px 30px" }} onClick={props.closeHandler}>
             Cancel
           </Button>

@@ -171,6 +171,7 @@ export default function FGWClass(props) {
       await axios.get(process.env.REACT_APP_HOST_URL + "/semester/participants?id=" + id).then((res) => {
         if (res.data.status) {
           setParticipants(res.data.data ?? []);
+          console.log(res.data.data)
         } else {
           props.sendToast("error", res.data.data);
         }

@@ -48,7 +48,7 @@ export default function ScheduleTab(props) {
     function isValidDate(date) {
         const current = new Date().getTime();
         return (
-            date * 1000 > current - 86400000 && date * 1000 < current + 86400000
+            date > current - 86400000 && date < current + 86400000
         );
     }
 
@@ -98,7 +98,7 @@ export default function ScheduleTab(props) {
                                     <Grid item xs={2} alignItems="center">
                                         <strong>Date: </strong>
                                         {fromMilisecondsToDisplayFormatDateString(
-                                            schedule.date * 1000
+                                            schedule.date
                                         )}
                                     </Grid>
                                     <Grid item xs={2}>
@@ -112,7 +112,7 @@ export default function ScheduleTab(props) {
                                                 justifyContent="flex-end">
                                                 <Button
                                                     disabled={isValidDate(
-                                                        schedule.date * 1000
+                                                        schedule.date
                                                     )}
                                                     onClick={() => takeAttendance(index)}
                                                     variant="contained">

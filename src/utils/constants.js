@@ -187,7 +187,7 @@ export default class Constants {
   get grades() {
     return [
       {
-        name: "Failed",
+        name: "Refer",
         value: "F",
         number: 0,
       },

@@ -9,16 +9,15 @@ export default function AttendanceTab(props) {
     const [attendances, setAttendances] = useState([]);
 
     useEffect(() => {
-        const course = JSON.parse(localStorage.getItem("schedule"));
-        console.log(course);
-        fetchRows(course);
-
+        fetchRows();
         return function CleanUp() {
             localStorage.removeItem("schedule");
         }
     }, [session])
 
-    function fetchRows(course) {
+    function fetchRows() {
+        const course = JSON.parse(localStorage.getItem("schedule"));
+        console.log(course);
         try {
             axios.get(process.env.REACT_APP_HOST_URL + "/course/attendances", {
                 params: {
@@ -46,9 +45,12 @@ export default function AttendanceTab(props) {
 
     function handleTakeAttendance() {
         try {
-            axios.post(process.env.REACT_APP_HOST_URL + "/course/attendances", attendances).then((res) => {
+            axios.post(process.env.REACT_APP_HOST_URL + "/schedule/attendance", {
+                attendance: attendances
+            }).then((res) => {
                 if (res.data.status) {
                     props.sendToast("success", "Attendance saved!")
+                    fetchRows()
                 } else {
                     props.sendToast("error", res.data.data)
                 }

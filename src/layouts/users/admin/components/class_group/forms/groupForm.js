@@ -12,7 +12,7 @@ import { departments } from "../../../mockData/mock";
 export default function GroupForm(props) {
   const constants = new Constants();
 
-  const [term, setTerm] = useState(props.group.term.slice(0, 2) ?? "");
+  const [term, setTerm] = useState(props.group.term ? props.group.term.slice(0, 2) : "");
   const [programme, setProgramme] = useState(props.group.programme ?? "");
   const [year, setYear] = useState(2023);
   const [name, setName] = useState(props.group.name ?? "");

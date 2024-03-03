@@ -46,11 +46,11 @@ export default function ScheduleHome(props) {
     props.handleSelectTab(5);
   };
 
-  const fetchSchedules = () => {
+  const fetchSchedules = (date) => {
     try {
       let course_id = "";
       token.courses.forEach((course) => {
-        course_id += "%" + course.course_id;
+        course_id += "%" + course.group_id;
       });
 
       axios
@@ -58,8 +58,8 @@ export default function ScheduleHome(props) {
           params: {
             user_id: token.user,
             course_id: course_id,
-            startDate: getFirstDateOfWeek(selectedDate.getTime()).getTime(),
-            endDate: getLastDateOfWeek(selectedDate.getTime()).getTime(),
+            startDate: getFirstDateOfWeek(date ?? selectedDate.getTime()).getTime(),
+            endDate: getLastDateOfWeek(date ?? selectedDate.getTime()).getTime(),
           },
         })
         .then((res) => {
@@ -138,6 +138,7 @@ export default function ScheduleHome(props) {
               <DatePicker
                 onChange={(e) => {
                   setSelectedDate(e);
+                  fetchSchedules(e)
                 }}
                 label="Select a Date"
                 slotProps={{ textField: { size: "small" } }}

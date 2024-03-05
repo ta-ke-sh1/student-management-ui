@@ -129,11 +129,11 @@ export default function AttendanceTab(props) {
                 <Grid item xs={12} sm={12}>
                     <Grid container spacing={4}>
                         {
-                            attendances.length > 0 ? <Grid item xs={3} sm={3}>
+                            attendances.length > 0 ? <Grid item xs={3} sm={6}>
                                 <Button fullWidth variant="outlined" onClick={handleTakeAttendance}>Take Attendance</Button>
                             </Grid> : <></>
                         }
-                        <Grid item xs={3} sm={3}>
+                        <Grid item xs={3} sm={6}>
                             <Button variant="outlined" color="error" fullWidth onClick={() => {
                                 props.handleSelectTab(1);
                             }}>Return</Button>

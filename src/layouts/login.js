@@ -60,6 +60,7 @@ export default function LoginScreen() {
             const token = decodeToken(t);
             auth.clearance = token.role;
             handleNavigate(token);
+            window.location.reload();
           } else {
             setError("Failed to retrieve a valid token!");
           }
@@ -67,7 +68,7 @@ export default function LoginScreen() {
       })
       .catch((error) => {
         console.log(error);
-        setError(error.message);
+        setError("Failed to login!");
         // setError(error)
       });
   };
@@ -88,14 +89,6 @@ export default function LoginScreen() {
 
     return;
   };
-
-  if (!isLoggedIn) {
-    return (
-      <>
-        <h1>Checking data</h1>
-      </>
-    );
-  }
 
   return (
     <div className="login-container">

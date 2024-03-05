@@ -39,8 +39,6 @@ export function AuthProvider({ children }) {
 export function RequireAuth({ props }) {
     let auth = useAuth();
 
-    console.log(auth)
-
     if (!auth.token) {
         return <Navigate to="/login" />;
     }

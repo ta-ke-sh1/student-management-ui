@@ -89,7 +89,7 @@ export default function ScheduleTab(props) {
                                 <Grid container alignItems="center">
                                     <Grid item xs={2} alignItems="center">
                                         <strong>Session: </strong>
-                                        {schedule.session}
+                                        {schedule.session + 1}
                                     </Grid>
                                     <Grid item xs={3} alignItems="center">
                                         <strong>Lecturer: </strong>

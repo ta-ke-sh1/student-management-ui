@@ -6,7 +6,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-
+import LogoutIcon from '@mui/icons-material/Logout';
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import { styled } from "@mui/material/styles";
@@ -17,7 +17,7 @@ import { decodeToken } from "../../utils/utils";
 import CourseworkTab from "./courseworkTab";
 import CourseworkFormModal from "./components/modal/coursework_form_modal";
 import CourseworkMaterialModal from "./components/modal/coursework_material_modal";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 import IconButton from "@mui/material/IconButton";
@@ -48,6 +48,7 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(({
 }));
 
 export default function CourseUser() {
+  const navigate = useNavigate();
   const auth = useAuth();
   const decoded = useMemo(() => decodeToken(auth.token), [auth]);
   const { id } = useParams();
@@ -144,6 +145,11 @@ export default function CourseUser() {
           id: 2,
           icon: <ViewListIcon />,
         },
+        {
+          name: "Return",
+          id: 5,
+          icon: <LogoutIcon />,
+        },
       ],
     },
   ];
@@ -163,7 +169,11 @@ export default function CourseUser() {
                   }}
                   key={tab.name}
                   onClick={() => {
-                    setCurrent(tab.id);
+                    if (tab.id !== 5) {
+                      setCurrent(tab.id)
+                    } else {
+                      navigate("/home")
+                    }
                   }}
                 >
                   <ListItemButton

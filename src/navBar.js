@@ -15,7 +15,8 @@ export default function NavBar() {
   const handleLogout = () => {
     auth.logout();
     navigator("/");
-    window.location.reload(false);
+    // localStorage.clear();
+    window.location.reload();
   };
 
   const handleOpenMenu = (e) => {
@@ -75,7 +76,7 @@ export default function NavBar() {
               </MenuItem>
               <MenuItem
                 onClick={() => {
-                  handleCloseMenu();
+                  handleLogout()
                 }}
               >
                 Logout

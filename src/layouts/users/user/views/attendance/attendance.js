@@ -123,7 +123,7 @@ export default function AttendaceTab(props) {
             </div>
           );
         })}
-        <div className="curriculum-row">
+        <div className="curriculum-row" style={{ backgroundColor: 'red' }}>
           <Grid container spacing={3}>
             <Grid item xs={6} sm={6}>
               <Button onClick={() => handleSubmit()}>Submit</Button>

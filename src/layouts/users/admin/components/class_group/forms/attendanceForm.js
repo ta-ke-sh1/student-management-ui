@@ -1,11 +1,13 @@
-import { Grid, List, Button, TextField, ListItem, Autocomplete, CircularProgress, ListItemText, Divider, Typography } from "@mui/material";
+import { Grid, List, Button, Select, InputLabel, Divider, MenuItem, FormControl } from "@mui/material";
 import { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 
 export default function AttendanceForm(props) {
+    console.log(props)
+
     const [students, setStudents] = useState([]);
-    const [student, setStudent] = useState();
+    const [student, setStudent] = useState({});
     const [open, setOpen] = useState(false);
     const loading = open && students.length === 0;
     const handleConfirm = () => { };
@@ -25,6 +27,8 @@ export default function AttendanceForm(props) {
         setStudents([...students, student])
     }
 
+    const [isAttended, setIsAttended] = useState(props.attendance.isAttended ?? -1);
+
     return (
         <>
             <Grid container spacing={3}>
@@ -33,42 +37,36 @@ export default function AttendanceForm(props) {
                 </Grid>
                 <Divider />
                 <Grid item xs={12} md={12}>
-                    <Autocomplete
-                        multiple={true}
-                        value={student}
-                        id="asynchronous-tags-outlined"
-                        options={students}
-                        open={open}
-                        onInputChange={(e, value) => {
-                            fetchStudents();
-                            setStudent(value)
-                        }}
-                        onOpen={() => {
-                            setOpen(true);
-                        }}
-                        onClose={() => {
-                            setOpen(false);
-                        }}
-                        isOptionEqualToValue={(option, value) => option.username === value.username}
-                        getOptionLabel={(option) => option.username}
-
-                        loading={loading}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label="Students"
-                                placeholder="Search for a student"
-                                InputProps={{
-                                    ...params.InputProps,
-                                    endAdorment: (
-                                        <>
-                                            {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                                            {params.InputProps.endAdornment}
-                                        </>
-                                    )
-                                }}
-                            />
-                        )} />
+                    <FormControl fullWidth>
+                        <InputLabel id="campus-select-label-form">Has attended</InputLabel>
+                        <Select
+                            defaultValue={isAttended}
+                            value={isAttended}
+                            label="Has attended"
+                            MenuProps={{
+                                disablePortal: true, // <--- HERE
+                                onClick: (e) => {
+                                    e.preventDefault();
+                                },
+                            }}
+                            onChange={(e) => {
+                                setIsAttended(e.target.value);
+                            }}
+                        >
+                            <MenuItem value={"default"} disabled>
+                                Please select a Campus
+                            </MenuItem>
+                            <MenuItem value={1}>
+                                Attended
+                            </MenuItem>
+                            <MenuItem value={0}>
+                                Not Attended
+                            </MenuItem>
+                            <MenuItem value={-1}>
+                                Not Yet
+                            </MenuItem>
+                        </Select>
+                    </FormControl>
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <Button fullWidth variant="contained" sx={{ padding: "15px 30px" }} onClick={(e) => handleConfirm(e)}>

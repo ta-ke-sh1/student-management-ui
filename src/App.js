@@ -13,6 +13,7 @@ import Test from "./test";
 function App() {
   return (
     <Routes>
+      <Route path="/test" element={<Test />} />
       <Route
         path="*"
         element={

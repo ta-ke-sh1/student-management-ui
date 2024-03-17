@@ -17,6 +17,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AttendanceWidget from "./widgets/attendanceWidget";
 import AttendanceForm from "./forms/attendanceForm";
 import { filterByAttribute } from "../../../../../utils/utils";
+import { toast } from "react-toastify";
 
 export default function FGWClass(props) {
   const constants = new Constants();
@@ -132,21 +133,22 @@ export default function FGWClass(props) {
 
   const handleEditGroup = (id) => {
     let data = filterByAttribute(groups, "id", id);
-    console.log(data)
     setGroup(data[0]);
     setOpenGroupModal(true);
   };
 
   const handleEditParticipant = (id) => {
-    let data = filterByAttribute(participants, "id", id);
-    console.log(data)
-    setParticipant(data[0]);
-    setOpenParticipantsModal(true);
+    toast("This function is not available")
+  };
+
+  const handleEditAttendance = (id) => {
+    let data = filterByAttribute(attendances, "id", id);
+    setAttendance(data[0])
+    setOpenAttendanceModal(true);
   };
 
   const handleEditSchedule = (id) => {
     let data = filterByAttribute(schedules, "id", id);
-    console.log(data)
     setSchedule(data[0]);
     setOpenScheduleModal(true);
   };
@@ -167,6 +169,7 @@ export default function FGWClass(props) {
   };
 
   const fetchParticipants = async (id) => {
+    console.log(id)
     try {
       await axios.get(process.env.REACT_APP_HOST_URL + "/semester/participants?id=" + id).then((res) => {
         if (res.data.status) {
@@ -379,6 +382,7 @@ export default function FGWClass(props) {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <ParticipantsWidget
+                        fetchAttendances={fetchAttendances}
                         firstClick={firstClick}
                         handleAddEntry={() => {
                           setOpenParticipantsModal(true);
@@ -386,7 +390,7 @@ export default function FGWClass(props) {
                         closeHandler={() => setOpenParticipantsModal(false)}
                         handleEdit={handleEditParticipant}
                         participants={participants}
-                        refresh={fetchParticipants}
+                        handleRefreshEntry={fetchParticipants}
                       />
                     </Grid>
                   </Grid>
@@ -414,7 +418,7 @@ export default function FGWClass(props) {
                   handleAddEntry={() => {
                     setOpenAttendanceModal(true);
                   }}
-                  handleEdit={handleEditParticipant}
+                  handleEdit={handleEditAttendance}
                   attendances={attendances}
                 />
               </AccordionDetails>

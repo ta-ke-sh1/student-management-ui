@@ -83,11 +83,11 @@ export default function SubjectsAdmin(props) {
   const handleSearch = () => {
     let subjects = JSON.parse(localStorage.getItem("subjectsData"));
     if (id !== "") {
-      subjects = subjects.filter((subject) => subject.id === id);
+      subjects = subjects.filter((subject) => subject.id.startsWith(id));
     }
 
     if (programme !== "") {
-      subjects = subjects.filter((subject) => subject.programme === programme);
+      subjects = subjects.filter((subject) => subject.level === programme);
     }
 
     if (department !== "") {

@@ -86,7 +86,7 @@ export default function DocumentsAdmin(props) {
 
   const handleEdit = (id) => {
     try {
-      let document = fetchDocuments(id);
+      let document = fetchDocuments(rows, id);
       setDocuments(document);
       setOpenModal(true);
     } catch (e) {
@@ -116,7 +116,7 @@ export default function DocumentsAdmin(props) {
       }
 
       console.log(query);
-      axios.delete(process.env.REACT_APP_HOST_URL + "/documents?id=" + id).then((res) => {
+      axios.delete(process.env.REACT_APP_HOST_URL + "/document?id=" + id).then((res) => {
         console.log(res);
         setOpen(false);
       });
@@ -138,11 +138,23 @@ export default function DocumentsAdmin(props) {
     setOpenModal(false);
   };
 
-  const handleDownload = (e) => {
-    console.log(e);
+  const handleDownload = async (e) => {
+    try {
+      const document = fetchDocuments(rows, e);
+      window.open(process.env.REACT_APP_HOST_URL + document.path)
+    } catch (e) {
+      props.sendToast("error", e.toString());
+    }
+
   };
 
-  const handleDownloadAll = () => {};
+  const handleDownloadAll = () => {
+    try {
+      window.open(process.env.REACT_APP_HOST_URL + "/documents/documents.rar")
+    } catch (e) {
+      props.sendToast("error", e.toString());
+    }
+  };
 
   return (
     <>

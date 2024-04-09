@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { TextField, Select, Button, Grid } from "@mui/material";
+import { TextField, Button, Grid } from "@mui/material";
 import CustomTable from "../../../../../common/table/table";
 
 import "react-toastify/dist/ReactToastify.css";
@@ -11,7 +11,7 @@ const headCells = [
         id: "id",
         numeric: false,
         disablePadding: true,
-        label: "Feedback Id",
+        label: "Id",
     },
     {
         id: "course_id",
@@ -73,20 +73,31 @@ const headCells = [
         disablePadding: false,
         label: "Question 7",
     },
+    {
+        id: "q8",
+        numeric: true,
+        disablePadding: false,
+        label: "Question 8",
+    },
+    {
+        id: "total",
+        numeric: true,
+        disablePadding: false,
+        label: "Total Score",
+    },
 ];
 
 export default function FeedbackAdmin(props) {
-    const [campus, setFeedback] = useState("HN");
+    const [feedback, setFeedback] = useState("HN");
 
     // Feedback room data
     const [rowData, setRowData] = useState([]);
     const [rows, setRows] = useState([]);
 
-    const [number, setNumber] = useState("");
-
-    // Selected room state for editing
-
-    const [selected, setSelected] = useState([]);
+    const [feedbackId, setFeedbackId] = useState("");
+    const [courseId, setCourseId] = useState("");
+    const [studentId, setStudentId] = useState("");
+    const [lecturerId, setLecturerId] = useState("");
 
     const [tableTitle, setTableTitle] = useState("All Feedbacks");
 
@@ -116,14 +127,6 @@ export default function FeedbackAdmin(props) {
         }
     };
 
-    const fetchFeedback = (id) => {
-        try {
-            return rows.find((row) => row.id === id);
-        } catch (e) {
-            props.sendToast("error", e.toString());
-        }
-    };
-
     const handleRefreshEntry = () => {
         console.log("Fetch rows!");
         fetchRows();
@@ -140,18 +143,29 @@ export default function FeedbackAdmin(props) {
     const handleSearch = () => {
         try {
             let query = "Feedback: ";
-            let searchResult = rowData.filter((r) => r.campus === campus);
-            query += campus;
-
-            if (number !== "") {
-                query += " / Feedback number: " + number;
-                searchResult = rowData.filter(
-                    (r) => r.campus === campus && r.number === number
+            let searchResult = rowData;
+            if (feedbackId !== "") {
+                searchResult = searchResult.filter((r) =>
+                    r.id.startsWith(feedbackId)
                 );
             }
 
-            if (!Array.isArray(searchResult)) {
-                searchResult = [];
+            if (courseId !== "") {
+                searchResult = searchResult.filter((r) =>
+                    r.course_id.startsWith(feedbackId)
+                );
+            }
+
+            if (lecturerId !== "") {
+                searchResult = searchResult.filter((r) =>
+                    r.lecturer_id.startsWith(feedbackId)
+                );
+            }
+
+            if (studentId !== "") {
+                searchResult = searchResult.filter((r) =>
+                    r.student_id.startsWith(feedbackId)
+                );
             }
 
             setRows(searchResult);
@@ -164,13 +178,11 @@ export default function FeedbackAdmin(props) {
     const handleClearSearch = (e) => {
         e.preventDefault();
         setRows(rowData);
-        setFeedback("HN");
-        setNumber("");
+        setFeedbackId("");
+        setStudentId("");
+        setCourseId("");
+        setLecturerId("");
         setTableTitle("All Feedbacks");
-    };
-
-    const handleClose = () => {
-        setOpen(false);
     };
 
     return (
@@ -180,24 +192,57 @@ export default function FeedbackAdmin(props) {
                     <div
                         className="big-widget"
                         style={{ paddingBottom: "25px" }}>
-                        <h2>Feedback Control</h2>
-                        <p>Search for your room</p>
-                        <br />
+                        <h2>Feedback Search</h2>
                         <Grid container spacing={3}>
-                            <Grid item xs={12} md={3}></Grid>
                             <Grid item xs={12} md={3}>
                                 <TextField
-                                    value={number}
+                                    value={feedbackId}
                                     onChange={(e) => {
-                                        setNumber(e.target.value);
+                                        setFeedbackId(e.target.value);
                                     }}
-                                    id="form-number"
+                                    id="form-feedbackId"
                                     fullWidth
-                                    label="Feedback Number"
+                                    label="Feedback Id"
                                     variant="outlined"
                                 />
                             </Grid>
                             <Grid item xs={12} md={3}>
+                                <TextField
+                                    value={courseId}
+                                    onChange={(e) => {
+                                        setCourseId(e.target.value);
+                                    }}
+                                    id="form-courseId"
+                                    fullWidth
+                                    label="Course Id"
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <TextField
+                                    value={lecturerId}
+                                    onChange={(e) => {
+                                        setLecturerId(e.target.value);
+                                    }}
+                                    id="form-lecturerId"
+                                    fullWidth
+                                    label="Lecturer Id"
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <TextField
+                                    value={studentId}
+                                    onChange={(e) => {
+                                        setStudentId(e.target.value);
+                                    }}
+                                    id="form-studentId"
+                                    fullWidth
+                                    label="Student Id"
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6}>
                                 <Button
                                     fullWidth
                                     variant="outlined"
@@ -206,7 +251,7 @@ export default function FeedbackAdmin(props) {
                                     Search
                                 </Button>
                             </Grid>
-                            <Grid item xs={12} md={3}>
+                            <Grid item xs={12} md={6}>
                                 <Button
                                     color="error"
                                     fullWidth
@@ -227,18 +272,15 @@ export default function FeedbackAdmin(props) {
                                 5 +
                                 ".jpg)",
                             width: "100%",
-                            height: "225px",
+                            height: "240px",
                             borderRadius: "10px",
                             backgroundSize: "contain",
                         }}></div>
                 </Grid>
                 <Grid item xs={12}>
                     <div className="big-widget">
-                        <div className="campus-list">
+                        <div className="feedback-list">
                             <CustomTable
-                                handleAddEntry={() => {
-                                    handleOpenModal();
-                                }}
                                 title={tableTitle}
                                 rows={rows}
                                 headCells={headCells}

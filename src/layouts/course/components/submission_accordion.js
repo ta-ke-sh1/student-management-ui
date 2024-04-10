@@ -37,7 +37,11 @@ export default function SubmmissionAccordion(props) {
         new Date() / 1000,
         props.assignment.deadline
     );
+
+    const remainingTimeMiliseconds = (props.assignment.deadline - new Date() / 1000)
     const openTime = props.assignment.start - new Date() / 1000;
+    console.log(remainingTimeMiliseconds)
+
     useEffect(() => {
         fetchAssignment();
     }, []);
@@ -47,12 +51,12 @@ export default function SubmmissionAccordion(props) {
             axios
                 .get(
                     process.env.REACT_APP_HOST_URL +
-                        "/submission?id=" +
-                        props.course.id +
-                        "-" +
-                        props.assignment.name +
-                        "-" +
-                        props.decoded.id
+                    "/submission?id=" +
+                    props.course.id +
+                    "-" +
+                    props.assignment.name +
+                    "-" +
+                    props.decoded.id
                 )
                 .then((res) => {
                     console.log(res.data);
@@ -267,6 +271,7 @@ export default function SubmmissionAccordion(props) {
                                 </TableCell>
                                 <TableCell className="col-2">
                                     <MuiFileInput
+                                        disabled={remainingTimeMiliseconds < 0}
                                         value={files}
                                         multiple={true}
                                         onChange={(newValue) => {
@@ -278,24 +283,30 @@ export default function SubmmissionAccordion(props) {
                                         Maximum 10 files with no more than 20mb
                                         size
                                     </p>
+                                    {
+                                        remainingTimeMiliseconds < 0 ? <p style={{ color: 'red' }}>File submission is locked</p> : <></>
+                                    }
                                 </TableCell>
                             </TableRow>
                             <TableRow>
                                 <TableCell className="col-1"></TableCell>
                                 <TableCell className="col-2">
-                                    {openTime < 0 ? (
-                                        <Button
-                                            variant="contained"
-                                            onClick={handleSubmit}>
-                                            Submit
-                                        </Button>
-                                    ) : (
-                                        <Button
-                                            variant="contained"
-                                            disabled={true}>
-                                            Not yet open for submission
-                                        </Button>
-                                    )}
+                                    {
+                                        remainingTimeMiliseconds < 0 ? <></> : openTime < 0 ? (
+                                            <Button
+                                                variant="contained"
+                                                onClick={handleSubmit}>
+                                                Submit
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                variant="contained"
+                                                disabled={true}>
+                                                Not yet open for submission
+                                            </Button>
+                                        )
+
+                                    }
                                 </TableCell>
                             </TableRow>
                         </Table>

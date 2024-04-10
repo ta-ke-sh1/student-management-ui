@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Grid, Box, Card, CardContent } from "@mui/material";
+import { Grid, Box, Card } from "@mui/material";
 import axios from "axios";
 
 export default function ParticipantsTab(props) {
@@ -36,6 +36,7 @@ export default function ParticipantsTab(props) {
             </h2>
             <Grid container spacing={4}>
                 {participants.map((participant, index) => {
+                    console.log(participant)
                     return (
                         <Grid item sm={4}>
                             <Card sx={{ padding: '15px' }}>

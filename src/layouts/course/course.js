@@ -59,7 +59,7 @@ export default function CourseUser() {
   const _container = window !== undefined ? () => window.document.body : undefined;
   const [mobileOpen, setMobileOpen] = useState(true);
 
-  const [current, setCurrent] = useState(1);
+  const [current, setCurrent] = useState(0);
 
   const [openCourseworkModal, setOpenCourseworkModal] = useState(false);
   const [openMaterialModal, setOpenMaterialModal] = useState(false);
@@ -95,7 +95,7 @@ export default function CourseUser() {
 
   const components = [
     <CourseworkTab id={course.id} handleSelectTab={handleSelectTab} sendToast={sendToast} decoded={decoded} course={course} handleOpenCourseworkModal={handleOpenCourseworkModal} handleOpenMaterialModal={handleOpenMaterialModal} />,
-    <ScheduleTab course={course} handleSelectTab={handleSelectTab} sendToast={sendToast} />,
+    <ScheduleTab course={course} handleSelectTab={handleSelectTab} sendToast={sendToast} decoded={decoded} />,
     <ParticipantsTab course={course} handleSelectTab={handleSelectTab} sendToast={sendToast} />,
     <AssignmentTab course={course} handleSelectTab={handleSelectTab} sendToast={sendToast} />,
     <AttendanceTab course={course} handleSelectTab={handleSelectTab} sendToast={sendToast} />

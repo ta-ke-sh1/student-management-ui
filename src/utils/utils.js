@@ -1,10 +1,12 @@
 import moment from "moment";
 import jwt_decode from "jwt-decode";
 
+// Find item that matches value of an attribute
 export function filterByAttribute(array, attr, value) {
   return array.filter((obj) => obj.hasOwnProperty(attr) && obj[attr] === value);
 }
 
+// Get all keys of an object
 export function getAllKeys(object) {
   return Object.keys(object);
 }
@@ -116,7 +118,7 @@ export function subtractTime(date_now, date_future) {
   str += days > 0 ? days + " days, " : "";
   str += hours > 0 ? hours + " hours, " : "";
   str += minutes + " minutes";
-  return isNegative ? "-" + str : str;
+  return isNegative ? "Overdue for " + str : str;
 }
 
 export const getDeviceType = () => {

@@ -24,7 +24,7 @@ export default function AdminHome() {
   const _container = window !== undefined ? () => window.document.body : undefined;
 
   const [mobileOpen, setMobileOpen] = useState(true);
-  const [current, setCurrent] = useState(5);
+  const [current, setCurrent] = useState(0);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -35,7 +35,7 @@ export default function AdminHome() {
       title: "Facilities",
       tabs: [
         {
-          name: "Rooms",
+          name: "Campus",
           id: 0,
           icon: <TableRestaurantIcon />,
         },
@@ -88,11 +88,12 @@ export default function AdminHome() {
     },
   ];
 
+  // MAIN COMPONENT TO BE RENDERED
   const components = [
-    <CampusAdmin sendToast={sendToast} handleSelectTab={handleSelectTab} />,
-    <UsersAdmin sendToast={sendToast} handleSelectTab={handleSelectTab} />,
-    <FGWClass sendToast={sendToast} handleSelectTab={handleSelectTab} />,
-    <SubjectsAdmin sendToast={sendToast} handleSelectTab={handleSelectTab} />,
+    <CampusAdmin sendToast={sendToast} handleSelectTab={handleSelectTab} />, // 0
+    <UsersAdmin sendToast={sendToast} handleSelectTab={handleSelectTab} />,  // 1
+    <FGWClass sendToast={sendToast} handleSelectTab={handleSelectTab} />, // 2
+    <SubjectsAdmin sendToast={sendToast} handleSelectTab={handleSelectTab} />, // ...
     <GradeAdmin sendToast={sendToast} handleSelectTab={handleSelectTab} />,
     <DocumentsAdmin sendToast={sendToast} handleSelectTab={handleSelectTab} />,
     <RequestAdmin sendToast={sendToast} handleSelectTab={handleSelectTab} />,

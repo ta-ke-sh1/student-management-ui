@@ -19,12 +19,14 @@ import DocumentsAdmin from "./components/documents/documents";
 import RequestAdmin from "./components/requests/request";
 import { Main, drawerWidth } from "../../../common/drawer/drawer";
 import { ToastContainer, toast } from "react-toastify";
+import FeedbackAdmin from "./components/feedback/feedback";
 
 export default function AdminHome() {
-  const _container = window !== undefined ? () => window.document.body : undefined;
+  const _container =
+    window !== undefined ? () => window.document.body : undefined;
 
   const [mobileOpen, setMobileOpen] = useState(true);
-  const [current, setCurrent] = useState(0);
+  const [current, setCurrent] = useState(5);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -35,7 +37,7 @@ export default function AdminHome() {
       title: "Facilities",
       tabs: [
         {
-          name: "Campus",
+          name: "Rooms",
           id: 0,
           icon: <TableRestaurantIcon />,
         },
@@ -69,6 +71,11 @@ export default function AdminHome() {
           id: 4,
           icon: <CalendarMonthIcon />,
         },
+        {
+          name: "Feedbacks",
+          id: 5,
+          icon: <BookmarksIcon />,
+        },
       ],
     },
     {
@@ -76,27 +83,39 @@ export default function AdminHome() {
       tabs: [
         {
           name: "Documents",
-          id: 5,
+          id: 6,
           icon: <BookmarksIcon />,
         },
         {
           name: "Requests",
-          id: 6,
+          id: 7,
           icon: <InboxIcon />,
         },
       ],
     },
   ];
 
-  // MAIN COMPONENT TO BE RENDERED
   const components = [
-    <CampusAdmin sendToast={sendToast} handleSelectTab={handleSelectTab} />, // 0
-    <UsersAdmin sendToast={sendToast} handleSelectTab={handleSelectTab} />,  // 1
-    <FGWClass sendToast={sendToast} handleSelectTab={handleSelectTab} />, // 2
-    <SubjectsAdmin sendToast={sendToast} handleSelectTab={handleSelectTab} />, // ...
+    <CampusAdmin sendToast={sendToast} handleSelectTab={handleSelectTab} />,
+    <UsersAdmin sendToast={sendToast} handleSelectTab={handleSelectTab} />,
+    <FGWClass sendToast={sendToast} handleSelectTab={handleSelectTab} />,
+    <SubjectsAdmin
+      sendToast={sendToast}
+      handleSelectTab={handleSelectTab}
+    />,
     <GradeAdmin sendToast={sendToast} handleSelectTab={handleSelectTab} />,
-    <DocumentsAdmin sendToast={sendToast} handleSelectTab={handleSelectTab} />,
-    <RequestAdmin sendToast={sendToast} handleSelectTab={handleSelectTab} />,
+    <FeedbackAdmin
+      sendToast={sendToast}
+      handleSelectTab={handleSelectTab}
+    />,
+    <DocumentsAdmin
+      sendToast={sendToast}
+      handleSelectTab={handleSelectTab}
+    />,
+    <RequestAdmin
+      sendToast={sendToast}
+      handleSelectTab={handleSelectTab}
+    />,
   ];
 
   const drawer = (
@@ -115,25 +134,31 @@ export default function AdminHome() {
                   key={tab.name}
                   onClick={() => {
                     setCurrent(tab.id);
-                  }}
-                >
+                  }}>
                   <ListItemButton
                     sx={{
-                      backgroundColor: tab.id === current ? "#F0F7FF" : "white",
+                      backgroundColor:
+                        tab.id === current
+                          ? "#F0F7FF"
+                          : "white",
                       borderRadius: "5px",
-                    }}
-                  >
+                    }}>
                     <ListItemIcon
                       sx={{
-                        color: tab.id === current ? "#1976d2" : "#757575",
+                        color:
+                          tab.id === current
+                            ? "#1976d2"
+                            : "#757575",
                         padding: 0,
-                      }}
-                    >
+                      }}>
                       {tab.icon}
                     </ListItemIcon>
                     <ListItemText
                       sx={{
-                        color: tab.id === current ? "#1976d2" : "#757575",
+                        color:
+                          tab.id === current
+                            ? "#1976d2"
+                            : "#757575",
                       }}
                       primary={tab.name}
                     />
@@ -162,11 +187,11 @@ export default function AdminHome() {
         toast(message, opt);
         break;
     }
-  };
+  }
 
   function handleSelectTab(index) {
     setCurrent(index);
-  };
+  }
 
   return (
     <>
@@ -178,8 +203,7 @@ export default function AdminHome() {
             flexShrink: { sm: 0 },
             zIndex: 10,
           }}
-          aria-label="mailbox folders"
-        >
+          aria-label="mailbox folders">
           <Drawer
             elevation={0}
             container={_container}
@@ -197,8 +221,7 @@ export default function AdminHome() {
               border: "none",
             }}
             variant="persistent"
-            anchor="left"
-          >
+            anchor="left">
             {drawer}
           </Drawer>
         </Box>
@@ -207,17 +230,27 @@ export default function AdminHome() {
             className="admin-container"
             style={{
               marginTop: "120px",
-            }}
-          >
+            }}>
             {components[current]}
           </div>
         </Main>
       </Box>
       <div className={"fab"}>
         <Fab onClick={handleDrawerToggle}>
-          <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none">
+          <svg
+            width="30px"
+            height="30px"
+            viewBox="0 0 24 24"
+            fill="none">
             <g id="Menu / Hamburger_MD">
-              <path id="Vector" d="M5 17H19M5 12H19M5 7H19" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path
+                id="Vector"
+                d="M5 17H19M5 12H19M5 7H19"
+                stroke="#000000"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </g>
           </svg>
         </Fab>

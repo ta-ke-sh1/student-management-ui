@@ -25,9 +25,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import ScheduleTab from "./scheduleTab";
 import ParticipantsTab from "./participantsTab";
 import { ToastContainer, toast } from "react-toastify";
-import AssignmentTab from "./assignmentTab";
-import AttendanceTab from "./attendanceTab";
-import FeedbackTab from "./feedbackTab";
+import FeedbackStudentTab from "./components/feedback/feedbackStudentTab";
+import FeedbackLecturerTab from "./components/feedback/feedbackLecturerTab";
 
 const drawerWidth = 240;
 
@@ -121,13 +120,23 @@ export default function CourseUser() {
             handleSelectTab={handleSelectTab}
             sendToast={sendToast}
         />,
-        <FeedbackTab
-            id={course.id}
-            user={decoded}
-            course={course}
-            handleSelectTab={handleSelectTab}
-            sendToast={sendToast}
-        />,
+        decoded.role === 1 ? (
+            <FeedbackStudentTab
+                id={course.id}
+                user={decoded}
+                course={course}
+                handleSelectTab={handleSelectTab}
+                sendToast={sendToast}
+            />
+        ) : (
+            <FeedbackLecturerTab
+                id={course.id}
+                user={decoded}
+                course={course}
+                handleSelectTab={handleSelectTab}
+                sendToast={sendToast}
+            />
+        ),
     ];
 
     const handleDrawerToggle = () => {

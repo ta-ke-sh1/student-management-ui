@@ -10,7 +10,7 @@ import {
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-export default function FeedbackTab(props) {
+export default function FeedbackStudentTab(props) {
     const hasExpired = props.course.endDate > new Date();
     const [canSubmit, setCanSubmit] = useState(true);
     const [hasSubmitted, setHasSubmitted] = useState(false);
@@ -26,11 +26,31 @@ export default function FeedbackTab(props) {
         q8: 3,
     });
 
-    useEffect(() => {}, []);
+    useEffect(() => {
+        fetchFeedback();
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFeedback((feedback) => ({ ...feedback, [name]: parseInt(value) }));
+    };
+
+    const fetchFeedback = () => {
+        axios
+            .get(process.env.REACT_APP_HOST_URL + "/feedback", {
+                params: {
+                    id: "Feedback-" + props.course.id + "-" + props.user.id,
+                },
+            })
+            .then((res) => {
+                if (res.status) {
+                    if (res.data === -1) {
+                        setHasSubmitted(true);
+                    }
+                } else {
+                    props.sendToast("error", "Error in fetching feedback");
+                }
+            });
     };
 
     const sendFeedback = () => {
@@ -38,9 +58,19 @@ export default function FeedbackTab(props) {
             return;
         }
         setCanSubmit(false);
+        const total =
+            feedback.q1 +
+            feedback.q2 +
+            feedback.q3 +
+            feedback.q4 +
+            feedback.q5 +
+            feedback.q6 +
+            feedback.q7 +
+            feedback.q8;
         axios
             .post(process.env.REACT_APP_HOST_URL + "/feedback", {
                 ...feedback,
+                total: total,
                 course_id: props.course.id,
                 lecturer_id: props.course.lecturer,
                 student_id: props.user.id,

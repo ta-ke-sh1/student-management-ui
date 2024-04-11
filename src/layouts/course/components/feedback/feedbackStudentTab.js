@@ -6,6 +6,7 @@ import {
     Grid,
     Radio,
     RadioGroup,
+    TextField,
 } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -24,6 +25,7 @@ export default function FeedbackStudentTab(props) {
         q6: 3,
         q7: 3,
         q8: 3,
+        comments: "",
     });
 
     useEffect(() => {
@@ -96,7 +98,8 @@ export default function FeedbackStudentTab(props) {
                             <Grid item xs={12}>
                                 <FormControl>
                                     <FormLabel>
-                                        From 1-5, rate your lecturer
+                                        From 1-5, rate your lecturer's overall
+                                        punctuality during the course
                                     </FormLabel>
                                     <RadioGroup
                                         row
@@ -134,7 +137,8 @@ export default function FeedbackStudentTab(props) {
                             <Grid item xs={12}>
                                 <FormControl>
                                     <FormLabel>
-                                        From 1-5, rate your lecturer
+                                        From 1-5, did your lecturer meet your
+                                        expectation?
                                     </FormLabel>
                                     <RadioGroup
                                         row
@@ -172,7 +176,8 @@ export default function FeedbackStudentTab(props) {
                             <Grid item xs={12}>
                                 <FormControl>
                                     <FormLabel>
-                                        From 1-5, rate your lecturer
+                                        From 1-5, rate your lecturer's
+                                        enthusiasm about the course
                                     </FormLabel>
                                     <RadioGroup
                                         row
@@ -210,7 +215,8 @@ export default function FeedbackStudentTab(props) {
                             <Grid item xs={12}>
                                 <FormControl>
                                     <FormLabel>
-                                        From 1-5, rate your lecturer
+                                        From 1-5, rate your lecturer answers to
+                                        your questions
                                     </FormLabel>
                                     <RadioGroup
                                         row
@@ -248,7 +254,8 @@ export default function FeedbackStudentTab(props) {
                             <Grid item xs={12}>
                                 <FormControl>
                                     <FormLabel>
-                                        From 1-5, rate your lecturer
+                                        From 1-5, rate the knowledge level that
+                                        you gained after this course
                                     </FormLabel>
                                     <RadioGroup
                                         row
@@ -286,7 +293,8 @@ export default function FeedbackStudentTab(props) {
                             <Grid item xs={12}>
                                 <FormControl>
                                     <FormLabel>
-                                        From 1-5, rate your lecturer
+                                        From 1-5, assess the lecturer's ability
+                                        in guiding you through the assignment
                                     </FormLabel>
                                     <RadioGroup
                                         row
@@ -324,7 +332,8 @@ export default function FeedbackStudentTab(props) {
                             <Grid item xs={12}>
                                 <FormControl>
                                     <FormLabel>
-                                        From 1-5, rate your lecturer
+                                        From 1-5, did the lessons knowledge
+                                        sufficient to do the assignments?
                                     </FormLabel>
                                     <RadioGroup
                                         row
@@ -362,7 +371,8 @@ export default function FeedbackStudentTab(props) {
                             <Grid item xs={12}>
                                 <FormControl>
                                     <FormLabel>
-                                        From 1-5, rate your lecturer
+                                        From 1-5, were you satisfied with the
+                                        course overall knowledge and content?
                                     </FormLabel>
                                     <RadioGroup
                                         row
@@ -395,6 +405,16 @@ export default function FeedbackStudentTab(props) {
                                             label={"5"}
                                         />
                                     </RadioGroup>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormControl>
+                                    <TextField
+                                        name="comments"
+                                        label="Do you have any additional comments?"
+                                        value={feedback.comments}
+                                        onChange={handleChange}
+                                    />
                                 </FormControl>
                             </Grid>
                             <Grid item xs={12}>

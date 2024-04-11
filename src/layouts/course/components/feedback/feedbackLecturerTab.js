@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Grid } from "@mui/material";
 
 export default function FeedbackLecturerTab(props) {
     const [feedbacks, setFeedbacks] = useState([]);
@@ -10,7 +11,7 @@ export default function FeedbackLecturerTab(props) {
 
     function fetchFeedbacks() {
         axios
-            .get(process.env.REACT_APP_HOST_URL + "/lecturer/course", {
+            .get(process.env.REACT_APP_HOST_URL + "/feedback/course", {
                 params: {
                     course_id: props.course.id,
                 },

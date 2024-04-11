@@ -14,7 +14,7 @@ import GradingIcon from "@mui/icons-material/Grading";
 
 import { useAuth } from "../../hooks/auth/useAuth";
 import { decodeToken } from "../../utils/utils";
-import CourseworkTab from "./courseworkTab";
+import CourseworkTab from "./coursework/courseworkTab";
 import CourseworkFormModal from "./components/modal/coursework_form_modal";
 import CourseworkMaterialModal from "./components/modal/coursework_material_modal";
 import { useNavigate, useParams } from "react-router-dom";
@@ -27,6 +27,7 @@ import ParticipantsTab from "./participantsTab";
 import { ToastContainer, toast } from "react-toastify";
 import FeedbackStudentTab from "./components/feedback/feedbackStudentTab";
 import FeedbackLecturerTab from "./components/feedback/feedbackLecturerTab";
+import CourseworkLecturer from "./coursework/courseworkLecturer";
 
 const drawerWidth = 240;
 
@@ -101,21 +102,33 @@ export default function CourseUser() {
     };
 
     const components = [
-        <CourseworkTab
-            id={course.id}
-            handleSelectTab={handleSelectTab}
-            sendToast={sendToast}
-            decoded={decoded}
-            course={course}
-            handleOpenCourseworkModal={handleOpenCourseworkModal}
-            handleOpenMaterialModal={handleOpenMaterialModal}
-        />,
+        decoded.role === 1 ? (
+            <CourseworkTab
+                id={course.id}
+                handleSelectTab={handleSelectTab}
+                sendToast={sendToast}
+                decoded={decoded}
+                course={course}
+                handleOpenCourseworkModal={handleOpenCourseworkModal}
+                handleOpenMaterialModal={handleOpenMaterialModal}
+            />
+        ) : (
+            <CourseworkLecturer
+                id={course.id}
+                handleSelectTab={handleSelectTab}
+                sendToast={sendToast}
+                decoded={decoded}
+                course={course}
+            />
+        ),
         <ScheduleTab
+            decoded={decoded}
             course={course}
             handleSelectTab={handleSelectTab}
             sendToast={sendToast}
         />,
         <ParticipantsTab
+            decoded={decoded}
             course={course}
             handleSelectTab={handleSelectTab}
             sendToast={sendToast}

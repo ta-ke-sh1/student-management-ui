@@ -14,7 +14,9 @@ import axios from "axios";
 export default function ScheduleTab(props) {
     const course = props.course;
     const [schedules, setSchedules] = useState();
-    const user = props.decoded
+    const user = props.decoded;
+
+    console.log(props);
 
     useEffect(() => {
         fetchSchedules();
@@ -22,22 +24,28 @@ export default function ScheduleTab(props) {
 
     function fetchSchedules() {
         try {
-            axios.get(process.env.REACT_APP_HOST_URL + "/course/schedules?id=" + course.id).then((res) => {
-                if (res.data.status) {
-                    let data = res.data.data;
-                    let sorted = data.sort((a, b) => a.session - b.session)
-                    setSchedules(sorted);
-                } else {
-                    props.sendToast("error", res.data.data)
-                }
-            });
+            axios
+                .get(
+                    process.env.REACT_APP_HOST_URL +
+                        "/course/schedules?id=" +
+                        course.id
+                )
+                .then((res) => {
+                    if (res.data.status) {
+                        let data = res.data.data;
+                        let sorted = data.sort((a, b) => a.session - b.session);
+                        setSchedules(sorted);
+                    } else {
+                        props.sendToast("error", res.data.data);
+                    }
+                });
         } catch (e) {
-            props.sendToast("error", e.toString())
+            props.sendToast("error", e.toString());
         }
     }
 
     const takeAttendance = (index) => {
-        localStorage.setItem("schedule", JSON.stringify(schedules[index]))
+        localStorage.setItem("schedule", JSON.stringify(schedules[index]));
         props.handleSelectTab(4);
     };
 
@@ -48,9 +56,7 @@ export default function ScheduleTab(props) {
 
     function isValidDate(date) {
         const current = new Date().getTime();
-        return (
-            date > current - 86400000 && date < current + 86400000
-        );
+        return date > current - 86400000 && date < current + 86400000;
     }
 
     return (
@@ -63,78 +69,85 @@ export default function ScheduleTab(props) {
                 }}>
                 Schedules
             </h2>
-            {schedules && schedules.map((schedule, index) => {
-                return (
-                    <div
-                        className="curriculum-row"
-                        style={{
-                            marginBottom: "15px",
-                        }}>
-                        <Card
-                            sx={{
-                                display: "flex",
+            {schedules &&
+                schedules.map((schedule, index) => {
+                    return (
+                        <div
+                            className="curriculum-row"
+                            style={{
+                                marginBottom: "15px",
                             }}>
-                            <CardMedia
+                            <Card
                                 sx={{
-                                    width: "150px",
-                                    backgroundImage:
-                                        `url(${process.env.PUBLIC_URL}/banner/banner` +
-                                        normalizeIndex(index) +
-                                        ".jpg)",
-                                }}></CardMedia>
-                            <CardContent
-                                sx={{
-                                    padding: "20px",
-                                    flex: "1 0 auto",
+                                    display: "flex",
                                 }}>
-                                <Grid container alignItems="center">
-                                    <Grid item xs={2} alignItems="center">
-                                        <strong>Session: </strong>
-                                        {schedule.session + 1}
-                                    </Grid>
-                                    <Grid item xs={3} alignItems="center">
-                                        <strong>Lecturer: </strong>
-                                        {schedule.lecturer}
-                                    </Grid>
-                                    <Grid item xs={2} alignItems="center">
-                                        <strong>Date: </strong>
-                                        {fromMilisecondsToDisplayFormatDateString(
-                                            schedule.date
+                                <CardMedia
+                                    sx={{
+                                        width: "150px",
+                                        backgroundImage:
+                                            `url(${process.env.PUBLIC_URL}/banner/banner` +
+                                            normalizeIndex(index) +
+                                            ".jpg)",
+                                    }}></CardMedia>
+                                <CardContent
+                                    sx={{
+                                        padding: "20px",
+                                        flex: "1 0 auto",
+                                    }}>
+                                    <Grid container alignItems="center">
+                                        <Grid item xs={2} alignItems="center">
+                                            <strong>Session: </strong>
+                                            {schedule.session + 1}
+                                        </Grid>
+                                        <Grid item xs={3} alignItems="center">
+                                            <strong>Lecturer: </strong>
+                                            {schedule.lecturer}
+                                        </Grid>
+                                        <Grid item xs={2} alignItems="center">
+                                            <strong>Date: </strong>
+                                            {fromMilisecondsToDisplayFormatDateString(
+                                                schedule.date
+                                            )}
+                                        </Grid>
+                                        <Grid item xs={user.role === 2 ? 2 : 5}>
+                                            <div
+                                                style={{
+                                                    width: "100%",
+                                                    display: "flex",
+                                                    justifyContent: "flex-end",
+                                                }}>
+                                                <strong>Slot: </strong>
+                                                {schedule.slot}
+                                            </div>
+                                        </Grid>
+                                        {user.role === 2 ? (
+                                            <Grid item xs={3}>
+                                                <Box
+                                                    display="flex"
+                                                    justifyContent="flex-end">
+                                                    <Button
+                                                        disabled={isValidDate(
+                                                            schedule.date
+                                                        )}
+                                                        onClick={() =>
+                                                            takeAttendance(
+                                                                index
+                                                            )
+                                                        }
+                                                        variant="contained">
+                                                        Take Attendance
+                                                    </Button>
+                                                </Box>
+                                            </Grid>
+                                        ) : (
+                                            <></>
                                         )}
                                     </Grid>
-                                    <Grid item xs={user.role === 2 ? 2 : 5} >
-                                        <div style={{
-                                            width: '100%',
-                                            display: 'flex',
-                                            justifyContent: 'flex-end'
-                                        }}>
-                                            <strong>Slot: </strong>
-                                            {schedule.slot}
-                                        </div>
-
-                                    </Grid>
-                                    {
-                                        user.role === 2 ? <Grid item xs={3}>
-                                            <Box
-                                                display="flex"
-                                                justifyContent="flex-end">
-                                                <Button
-                                                    disabled={isValidDate(
-                                                        schedule.date
-                                                    )}
-                                                    onClick={() => takeAttendance(index)}
-                                                    variant="contained">
-                                                    Take Attendance
-                                                </Button>
-                                            </Box>
-                                        </Grid> : <></>
-                                    }
-                                </Grid>
-                            </CardContent>
-                        </Card>
-                    </div>
-                );
-            })}
+                                </CardContent>
+                            </Card>
+                        </div>
+                    );
+                })}
         </div>
     );
 }

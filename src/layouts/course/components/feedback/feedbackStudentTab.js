@@ -34,7 +34,10 @@ export default function FeedbackStudentTab(props) {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFeedback((feedback) => ({ ...feedback, [name]: parseInt(value) }));
+        setFeedback((feedback) => ({
+            ...feedback,
+            [name]: name == "comments" ? value : parseInt(value),
+        }));
     };
 
     const fetchFeedback = () => {
@@ -45,8 +48,9 @@ export default function FeedbackStudentTab(props) {
                 },
             })
             .then((res) => {
+                console.log(res);
                 if (res.status) {
-                    if (res.data === -1) {
+                    if (res.data.data !== -1) {
                         setHasSubmitted(true);
                     }
                 } else {
@@ -78,10 +82,11 @@ export default function FeedbackStudentTab(props) {
                 student_id: props.user.id,
             })
             .then((res) => {
+                if (res.status) {
+                    setHasSubmitted(true);
+                }
                 setCanSubmit(true);
-                setHasSubmitted(true);
             });
-        console.log(feedback);
     };
 
     return (

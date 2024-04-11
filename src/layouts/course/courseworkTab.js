@@ -61,6 +61,7 @@ export default function CourseworkTab(props) {
             <br />
             {
                 assignments.length > 0 ? assignments.map((assignment, index) => {
+                    console.log(assignment)
                     return props.decoded.role === 1 ? <SubmmissionAccordion
                         refresh={fetchCourseworks}
                         course={props.course}

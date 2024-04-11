@@ -46,6 +46,7 @@ export function RequireAuth({ props }) {
     if (props) {
         var clearance = auth.clearance;
         if (clearance < props.clearance) {
+            // TODO: need handling redirect logic 
             console.log(
                 "Your level of authority is too low! Level: " + props.clearance
             );

@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 
 export default function RequestForm(props) {
   const constants = new Constants();
+
   console.log(props.request)
 
   const [id, setId] = useState(props.request.id ?? "");
@@ -25,34 +26,36 @@ export default function RequestForm(props) {
       formData.append("name", file.name);
       formData.append("path", "/requests/" + file.name);
       formData.append("file", file);
-
-      console.log(file);
-
-      if (id) {
-        axios.put(process.env.REACT_APP_HOST_URL + "/request?id=" + id, formData).then((res) => {
+      axios
+        .post(process.env.REACT_APP_HOST_URL + "/request", formData, {
+          "Content-Type": "multipart/form-data",
+        })
+        .then((res) => {
           if (res.data.status) {
             props.closeHandler();
+            if (props.refresh) {
+              props.refresh()
+            }
+
           } else {
             toast.error(res.data.data, {
               position: "bottom-left"
             })
           }
         });
-      } else {
-        axios
-          .post(process.env.REACT_APP_HOST_URL + "/request", formData, {
-            "Content-Type": "multipart/form-data",
+    } else if (id) {
+      axios.put(process.env.REACT_APP_HOST_URL + "/request?id=" + id, {
+        status: status
+      }).then((res) => {
+        if (res.data.status) {
+          props.closeHandler();
+          props.refresh()
+        } else {
+          toast.error(res.data.data, {
+            position: "bottom-left"
           })
-          .then((res) => {
-            if (res.data.status) {
-              props.closeHandler();
-            } else {
-              toast.error(res.data.data, {
-                position: "bottom-left"
-              })
-            }
-          });
-      }
+        }
+      });
     }
   };
 
@@ -90,7 +93,9 @@ export default function RequestForm(props) {
         </Grid>
         {
           props.request.id ?
-            <></>
+            <>
+              { }
+            </>
             :
             <Grid item xs={12} md={12}>
               <MuiFileInput value={file} onChange={handleChangeFile} fullWidth={true} />

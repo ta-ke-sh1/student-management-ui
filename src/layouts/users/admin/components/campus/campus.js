@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { TextField, Select, MenuItem, InputLabel, FormControl, Button, Grid, useThemeProps } from "@mui/material";
+import { TextField, Select, MenuItem, InputLabel, FormControl, Button, Grid } from "@mui/material";
 import CustomTable from "../../../../../common/table/table";
 
 import Dialog from "@mui/material/Dialog";
@@ -8,7 +8,6 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import CampusForm from "./campusForm";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { getAllHeaderColumns } from "../../../../../utils/utils";
@@ -72,6 +71,7 @@ export default function CampusAdmin(props) {
   const [rowData, setRowData] = useState([]);
   const [rows, setRows] = useState([]);
 
+  //
   const [number, setNumber] = useState("");
 
   // Selected room state for editing
@@ -91,6 +91,7 @@ export default function CampusAdmin(props) {
     fetchRows();
   }, []);
 
+  // Get all rooms from "room" table in database
   const fetchRows = () => {
     let result = [];
     try {
@@ -186,7 +187,7 @@ export default function CampusAdmin(props) {
 
       if (number !== "") {
         query += " / Room number: " + number;
-        searchResult = rowData.filter((r) => r.campus === campus && r.number === number);
+        searchResult = rowData.filter((r) => r.campus === campus && r.number.startsWith(number));
       }
 
       if (!Array.isArray(searchResult)) {

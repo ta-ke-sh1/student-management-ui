@@ -38,10 +38,6 @@ export default function LoginScreen() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log({
-      username: username,
-      password: password,
-    });
 
     await axios
       .post(process.env.REACT_APP_HOST_URL + "/auth/oauth", {
@@ -109,7 +105,16 @@ export default function LoginScreen() {
             <h1>Sign In</h1>
             <p>Login using your username and password to access University of Greenwich Vietnam' student services.</p>
             <form onSubmit={handleSubmit}>
-              <TextField onChange={(e) => setUsername(e.target.value)} margin="normal" required fullWidth id="username-form" label="Username" name="username" autoComplete="username" autoFocus />
+              <TextField
+                onChange={(e) => setUsername(e.target.value)}
+                margin="normal"
+                required
+                fullWidth
+                id="username-form"
+                label="Username"
+                name="username"
+                autoComplete="username"
+                autoFocus />
               <TextField
                 onChange={(e) => setPassword(e.target.value)}
                 margin="normal"

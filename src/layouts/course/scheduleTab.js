@@ -14,6 +14,7 @@ import axios from "axios";
 export default function ScheduleTab(props) {
     const course = props.course;
     const [schedules, setSchedules] = useState();
+    const user = props.decoded
 
     useEffect(() => {
         fetchSchedules();
@@ -101,12 +102,19 @@ export default function ScheduleTab(props) {
                                             schedule.date
                                         )}
                                     </Grid>
-                                    <Grid item xs={2}>
-                                        <strong>Slot: </strong>
-                                        {schedule.slot}
+                                    <Grid item xs={user.role === 2 ? 2 : 5} >
+                                        <div style={{
+                                            width: '100%',
+                                            display: 'flex',
+                                            justifyContent: 'flex-end'
+                                        }}>
+                                            <strong>Slot: </strong>
+                                            {schedule.slot}
+                                        </div>
+
                                     </Grid>
                                     {
-                                        <Grid item xs={3}>
+                                        user.role === 2 ? <Grid item xs={3}>
                                             <Box
                                                 display="flex"
                                                 justifyContent="flex-end">
@@ -119,7 +127,7 @@ export default function ScheduleTab(props) {
                                                     Take Attendance
                                                 </Button>
                                             </Box>
-                                        </Grid>
+                                        </Grid> : <></>
                                     }
                                 </Grid>
                             </CardContent>

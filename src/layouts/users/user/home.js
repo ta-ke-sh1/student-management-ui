@@ -133,10 +133,6 @@ export default function UserHome(props) {
             sendToast={sendToast}
             handleSelectTab={handleSelectTab}
         />,
-        <AllSubmissionsTab
-            sendToast={sendToast}
-            handleSelectTab={handleSelectTab}
-        />,
     ];
 
     const handleDrawerToggle = () => {

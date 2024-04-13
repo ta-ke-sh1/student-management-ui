@@ -27,7 +27,9 @@ import ParticipantsTab from "./participantsTab";
 import { ToastContainer, toast } from "react-toastify";
 import FeedbackStudentTab from "./components/feedback/feedbackStudentTab";
 import FeedbackLecturerTab from "./components/feedback/feedbackLecturerTab";
-import CourseworkLecturer from "./coursework/courseworkLecturer";
+
+import AttendanceTab from "./attendanceTab";
+import AllSubmissionsTab from "../users/user/views/grade/grades";
 
 const drawerWidth = 240;
 
@@ -113,12 +115,10 @@ export default function CourseUser() {
                 handleOpenMaterialModal={handleOpenMaterialModal}
             />
         ) : (
-            <CourseworkLecturer
-                id={course.id}
+            <AllSubmissionsTab
+                course={course}
                 handleSelectTab={handleSelectTab}
                 sendToast={sendToast}
-                decoded={decoded}
-                course={course}
             />
         ),
         <ScheduleTab
@@ -150,6 +150,11 @@ export default function CourseUser() {
                 sendToast={sendToast}
             />
         ),
+        <AttendanceTab
+            course={course}
+            handleSelectTab={handleSelectTab}
+            sendToast={sendToast}
+        />,
     ];
 
     const handleDrawerToggle = () => {

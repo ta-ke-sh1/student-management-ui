@@ -29,7 +29,7 @@ import FeedbackStudentTab from "./components/feedback/feedbackStudentTab";
 import FeedbackLecturerTab from "./components/feedback/feedbackLecturerTab";
 
 import AttendanceTab from "./attendanceTab";
-import AllSubmissionsTab from "../users/user/views/grade/grades";
+import AllSubmissionsTab from "./coursework/courseworkLecturer";
 
 const drawerWidth = 240;
 

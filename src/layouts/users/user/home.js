@@ -18,7 +18,7 @@ import { ToastContainer, toast } from "react-toastify";
 import AttendaceTab from "./views/attendance/attendance";
 import { useNavigate } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
-import AllSubmissionsTab from "./views/grade/grades";
+import AllSubmissionsTab from "../../course/coursework/courseworkLecturer";
 import axios from "axios";
 import RequestsTab from "./views/request/requests";
 import ArchiveIcon from "@mui/icons-material/Archive";

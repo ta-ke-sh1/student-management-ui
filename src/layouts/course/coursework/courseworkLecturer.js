@@ -66,14 +66,31 @@ export default function AllSubmissionsTab(props) {
     return (
         <>
             <div className="curriculum-container">
-                <h3
-                    className="bold"
+                <div
                     style={{
-                        fontSize: "1.75rem",
-                        marginBottom: "4px",
+                        height: "40px",
+                        width: "100%",
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        margin: "20px 0",
                     }}>
-                    Submissions
-                </h3>
+                    <h3
+                        className="bold"
+                        style={{
+                            lineHeight: "1.5rem",
+                            fontSize: "1.75rem",
+                        }}>
+                        Submissions
+                    </h3>
+                    <Button
+                        onClick={props.handleOpenCourseworkModal}
+                        variant="contained">
+                        Add New Coursework
+                    </Button>
+                </div>
+
                 <div
                     style={{
                         marginBottom: "20px",

@@ -111,23 +111,23 @@ export default function CourseUser() {
                 sendToast={sendToast}
                 decoded={decoded}
                 course={course}
-                handleOpenCourseworkModal={handleOpenCourseworkModal}
-                handleOpenMaterialModal={handleOpenMaterialModal}
             />
         ) : (
             <AllSubmissionsTab
                 course={course}
                 handleSelectTab={handleSelectTab}
                 sendToast={sendToast}
+                handleOpenCourseworkModal={handleOpenCourseworkModal}
+                handleOpenMaterialModal={handleOpenMaterialModal}
             />
         ),
-        <ScheduleTab
+        <ParticipantsTab
             decoded={decoded}
             course={course}
             handleSelectTab={handleSelectTab}
             sendToast={sendToast}
         />,
-        <ParticipantsTab
+        <ScheduleTab
             decoded={decoded}
             course={course}
             handleSelectTab={handleSelectTab}
@@ -193,12 +193,12 @@ export default function CourseUser() {
                 },
                 {
                     name: "Schedule",
-                    id: 1,
+                    id: 2,
                     icon: <EventNoteIcon />,
                 },
                 {
                     name: "Participants",
-                    id: 2,
+                    id: 1,
                     icon: <ViewListIcon />,
                 },
                 {

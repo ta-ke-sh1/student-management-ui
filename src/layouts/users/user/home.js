@@ -11,25 +11,26 @@ import ScheduleHome from "./views/schedule/schedule";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import CurriculumTab from "./views/curriculum/curriculum";
-import ClassIcon from "@mui/icons-material/Class";
 import { Main, drawerWidth } from "../../../common/drawer/drawer";
 import CoursesUser from "./views/courses/courses";
 import { ToastContainer, toast } from "react-toastify";
 import AttendaceTab from "./views/attendance/attendance";
 import { useNavigate } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
-import AllSubmissionsTab from "../../course/coursework/courseworkLecturer";
 import axios from "axios";
 import RequestsTab from "./views/request/requests";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import { decodeToken } from "../../../utils/utils";
+import AttendanceTab from "../../course/attendanceTab";
 
 export default function UserHome(props) {
     const token = decodeToken(localStorage.getItem("access_token"));
     const _container =
         window !== undefined ? () => window.document.body : undefined;
-    const [current, setCurrent] = useState(props.index ?? 0);
+    const [current, setCurrent] = useState(props.index ?? 2);
     const [mobileOpen, setMobileOpen] = useState(true);
+
+    const [course, setCourse] = useState({});
 
     const nav_tabs =
         token.role === 1
@@ -114,6 +115,10 @@ export default function UserHome(props) {
         setCurrent(index);
     }
 
+    function handleChangeAttendance() {
+        setCurrent(5);
+    }
+
     const components = [
         <CoursesUser sendToast={sendToast} handleSelectTab={handleSelectTab} />,
         <PersonalInfo
@@ -121,6 +126,7 @@ export default function UserHome(props) {
             handleSelectTab={handleSelectTab}
         />,
         <ScheduleHome
+            handleChangeAttendance={handleChangeAttendance}
             sendToast={sendToast}
             handleSelectTab={handleSelectTab}
         />,
@@ -129,9 +135,10 @@ export default function UserHome(props) {
             handleSelectTab={handleSelectTab}
         />,
         <RequestsTab sendToast={sendToast} handleSelectTab={handleSelectTab} />,
-        <AttendaceTab
-            sendToast={sendToast}
+        <AttendanceTab
+            course={course}
             handleSelectTab={handleSelectTab}
+            sendToast={sendToast}
         />,
     ];
 
@@ -269,65 +276,6 @@ export default function UserHome(props) {
             </div>
 
             <ToastContainer />
-        </>
-    );
-}
-
-function Homepage(props) {
-    const [courses, setCourses] = useState([]);
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        fetchRows();
-    }, []);
-
-    function handleNavigate(course_id) {
-        navigate("/course/" + course_id);
-    }
-
-    function fetchRows() {
-        try {
-            axios
-                .get(process.env.REACT_APP_HOST_URL + "/semester/courses", {})
-                .then((res) => {
-                    if (res.data.status) {
-                        setCourses(res.data.data);
-                    } else {
-                        props.sendToast("error", res.data.data);
-                    }
-                });
-        } catch (e) {
-            props.sendToast("error", e.toString());
-        }
-    }
-    return (
-        <>
-            <div className="big-widget">
-                <h1>On going courses</h1>
-                <Grid container spacing={4}>
-                    {courses.length > 0 ? (
-                        courses.map((course) => {
-                            return (
-                                <Grid item xs={6} sm={4} md={3}>
-                                    <Card
-                                        onClick={() => {
-                                            handleNavigate(course.id);
-                                        }}
-                                        sx={{
-                                            minHeight: "100px",
-                                        }}>
-                                        {course.id}
-                                    </Card>
-                                </Grid>
-                            );
-                        })
-                    ) : (
-                        <Grid item xs={12} sm={12}>
-                            <p>You have no ongoing courses</p>
-                        </Grid>
-                    )}
-                </Grid>
-            </div>
         </>
     );
 }

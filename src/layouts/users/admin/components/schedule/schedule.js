@@ -15,92 +15,59 @@ const headCells = [
     },
     {
         id: "course_id",
-        numeric: false,
-        disablePadding: true,
+        numeric: true,
+        disablePadding: false,
         label: "Course Id",
     },
     {
-        id: "lecturer_id",
-        numeric: false,
-        disablePadding: true,
-        label: "Lecturer Id",
-    },
-    {
-        id: "student_id",
-        numeric: false,
-        disablePadding: true,
-        label: "Student Id",
-    },
-    {
-        id: "q1",
+        id: "subject",
         numeric: true,
         disablePadding: false,
-        label: "Question 1",
+        label: "Subject",
     },
     {
-        id: "q2",
+        id: "session",
         numeric: true,
         disablePadding: false,
-        label: "Question 2",
+        label: "Session",
     },
     {
-        id: "q3",
+        id: "lecturer",
         numeric: true,
         disablePadding: false,
-        label: "Question 3",
+        label: "Lecturer",
     },
     {
-        id: "q4",
+        id: "date",
         numeric: true,
         disablePadding: false,
-        label: "Question 4",
+        label: "Date",
     },
     {
-        id: "q5",
+        id: "slot",
         numeric: true,
         disablePadding: false,
-        label: "Question 2",
+        label: "Slot",
     },
     {
-        id: "q6",
+        id: "room",
         numeric: true,
         disablePadding: false,
-        label: "Question 6",
-    },
-    {
-        id: "q7",
-        numeric: true,
-        disablePadding: false,
-        label: "Question 7",
-    },
-    {
-        id: "q8",
-        numeric: true,
-        disablePadding: false,
-        label: "Question 8",
-    },
-    {
-        id: "total",
-        numeric: true,
-        disablePadding: false,
-        label: "Total Score",
+        label: "Room",
     },
 ];
 
-export default function FeedbackAdmin(props) {
-    const tableRef = useRef();
-    const [feedback, setFeedback] = useState("HN");
-
-    // Feedback room data
+export default function ScheduleAdmin(props) {
+    // Schedule schedule data
+    const tableRef = useRef(null);
     const [rowData, setRowData] = useState([]);
     const [rows, setRows] = useState([]);
 
-    const [feedbackId, setFeedbackId] = useState("");
+    const [scheduleId, setScheduleId] = useState("");
     const [courseId, setCourseId] = useState("");
-    const [studentId, setStudentId] = useState("");
-    const [lecturerId, setLecturerId] = useState("");
+    const [session, setSession] = useState(0);
 
-    const [tableTitle, setTableTitle] = useState("All Feedbacks");
+    const [tableTitle, setTableTitle] = useState("All Schedules");
 
     useEffect(() => {
         fetchRows();
@@ -110,14 +77,14 @@ export default function FeedbackAdmin(props) {
         let result = [];
         try {
             axios
-                .get(process.env.REACT_APP_HOST_URL + "/feedback")
+                .get(process.env.REACT_APP_HOST_URL + "/schedule/all")
                 .then((res) => {
                     if (!res.data.status) {
                         props.sendToast("error", res.data.data);
                     }
 
-                    res.data.data.forEach((room) => {
-                        result.push(room);
+                    res.data.data.forEach((schedule) => {
+                        result.push(schedule);
                     });
 
                     setRows(result);
@@ -134,21 +101,21 @@ export default function FeedbackAdmin(props) {
     };
 
     const handleEdit = (id) => {
-        props.sendToast("error", "Cannot edit student's feedback!");
+        props.sendToast("error", "Cannot edit student's schedule!");
     };
 
     const handleDelete = (index) => {
-        props.sendToast("error", "Cannot delete student's feedback!");
+        props.sendToast("error", "Cannot delete student's schedule!");
     };
 
     const handleSearch = () => {
         try {
             tableRef.current.clearSelected();
-            let query = "Feedback: ";
+            let query = "Schedule: ";
             let searchResult = rowData;
-            if (feedbackId !== "") {
+            if (scheduleId !== "") {
                 searchResult = searchResult.filter((r) =>
-                    r.id.startsWith(feedbackId)
+                    r.id.startsWith(scheduleId)
                 );
             }
 
@@ -158,15 +125,9 @@ export default function FeedbackAdmin(props) {
                 );
             }
 
-            if (lecturerId !== "") {
-                searchResult = searchResult.filter((r) =>
-                    r.lecturer_id.startsWith(lecturerId)
-                );
-            }
-
-            if (studentId !== "") {
-                searchResult = searchResult.filter((r) =>
-                    r.student_id.startsWith(studentId)
+            if (session !== "") {
+                searchResult = searchResult.filter(
+                    (r) => r.session === session
                 );
             }
 
@@ -180,11 +141,10 @@ export default function FeedbackAdmin(props) {
     const handleClearSearch = (e) => {
         e.preventDefault();
         setRows(rowData);
-        setFeedbackId("");
-        setStudentId("");
+        setScheduleId("");
         setCourseId("");
-        setLecturerId("");
-        setTableTitle("All Feedbacks");
+        setSession("");
+        setTableTitle("All Schedules");
     };
 
     return (
@@ -194,21 +154,21 @@ export default function FeedbackAdmin(props) {
                     <div
                         className="big-widget"
                         style={{ paddingBottom: "25px" }}>
-                        <h2>Feedback Search</h2>
+                        <h2>Schedule Search</h2>
                         <Grid container spacing={3}>
-                            <Grid item xs={12} md={3}>
+                            <Grid item xs={12} md={4}>
                                 <TextField
-                                    value={feedbackId}
+                                    value={scheduleId}
                                     onChange={(e) => {
-                                        setFeedbackId(e.target.value);
+                                        setScheduleId(e.target.value);
                                     }}
-                                    id="form-feedbackId"
+                                    id="form-scheduleId"
                                     fullWidth
-                                    label="Feedback Id"
+                                    label="Schedule Id"
                                     variant="outlined"
                                 />
                             </Grid>
-                            <Grid item xs={12} md={3}>
+                            <Grid item xs={12} md={4}>
                                 <TextField
                                     value={courseId}
                                     onChange={(e) => {
@@ -220,27 +180,17 @@ export default function FeedbackAdmin(props) {
                                     variant="outlined"
                                 />
                             </Grid>
-                            <Grid item xs={12} md={3}>
+                            <Grid item xs={12} md={4}>
                                 <TextField
-                                    value={lecturerId}
+                                    value={session}
                                     onChange={(e) => {
-                                        setLecturerId(e.target.value);
+                                        if (e.target.value === "") return;
+                                        let val = parseInt(e.target.value);
+                                        setSession(isNaN(val) ? 0 : val);
                                     }}
-                                    id="form-lecturerId"
+                                    id="form-session"
                                     fullWidth
-                                    label="Lecturer Id"
-                                    variant="outlined"
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={3}>
-                                <TextField
-                                    value={studentId}
-                                    onChange={(e) => {
-                                        setStudentId(e.target.value);
-                                    }}
-                                    id="form-studentId"
-                                    fullWidth
-                                    label="Student Id"
+                                    label="Session"
                                     variant="outlined"
                                 />
                             </Grid>
@@ -281,7 +231,7 @@ export default function FeedbackAdmin(props) {
                 </Grid>
                 <Grid item xs={12}>
                     <div className="big-widget">
-                        <div className="feedback-list">
+                        <div className="schedule-list">
                             <CustomTable
                                 ref={tableRef}
                                 title={tableTitle}

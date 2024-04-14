@@ -14,93 +14,50 @@ const headCells = [
         label: "Id",
     },
     {
-        id: "course_id",
-        numeric: false,
-        disablePadding: true,
-        label: "Course Id",
-    },
-    {
-        id: "lecturer_id",
-        numeric: false,
-        disablePadding: true,
-        label: "Lecturer Id",
+        id: "group_id",
+        numeric: true,
+        disablePadding: false,
+        label: "Group ID",
     },
     {
         id: "student_id",
-        numeric: false,
-        disablePadding: true,
-        label: "Student Id",
-    },
-    {
-        id: "q1",
         numeric: true,
         disablePadding: false,
-        label: "Question 1",
+        label: "Student ID",
     },
     {
-        id: "q2",
+        id: "firstName",
         numeric: true,
         disablePadding: false,
-        label: "Question 2",
+        label: "First Name",
     },
     {
-        id: "q3",
+        id: "lastName",
         numeric: true,
         disablePadding: false,
-        label: "Question 3",
+        label: "Last Name",
     },
     {
-        id: "q4",
+        id: "dob",
         numeric: true,
         disablePadding: false,
-        label: "Question 4",
-    },
-    {
-        id: "q5",
-        numeric: true,
-        disablePadding: false,
-        label: "Question 2",
-    },
-    {
-        id: "q6",
-        numeric: true,
-        disablePadding: false,
-        label: "Question 6",
-    },
-    {
-        id: "q7",
-        numeric: true,
-        disablePadding: false,
-        label: "Question 7",
-    },
-    {
-        id: "q8",
-        numeric: true,
-        disablePadding: false,
-        label: "Question 8",
-    },
-    {
-        id: "total",
-        numeric: true,
-        disablePadding: false,
-        label: "Total Score",
+        label: "Date of Birth",
     },
 ];
 
-export default function FeedbackAdmin(props) {
+export default function RegistrationAdmin(props) {
     const tableRef = useRef();
-    const [feedback, setFeedback] = useState("HN");
+    const [registration, setRegistration] = useState("HN");
 
-    // Feedback room data
+    // Registration room data
     const [rowData, setRowData] = useState([]);
     const [rows, setRows] = useState([]);
 
-    const [feedbackId, setFeedbackId] = useState("");
-    const [courseId, setCourseId] = useState("");
+    const [registrationId, setRegistrationId] = useState("");
+    const [groupId, setGroupId] = useState("");
     const [studentId, setStudentId] = useState("");
-    const [lecturerId, setLecturerId] = useState("");
 
-    const [tableTitle, setTableTitle] = useState("All Feedbacks");
+    const [tableTitle, setTableTitle] = useState("All Registrations");
 
     useEffect(() => {
         fetchRows();
@@ -110,7 +67,9 @@ export default function FeedbackAdmin(props) {
         let result = [];
         try {
             axios
-                .get(process.env.REACT_APP_HOST_URL + "/feedback")
+                .get(
+                    process.env.REACT_APP_HOST_URL + "/course/registration/all"
+                )
                 .then((res) => {
                     if (!res.data.status) {
                         props.sendToast("error", res.data.data);
@@ -134,33 +93,27 @@ export default function FeedbackAdmin(props) {
     };
 
     const handleEdit = (id) => {
-        props.sendToast("error", "Cannot edit student's feedback!");
+        props.sendToast("error", "Cannot edit student's registration!");
     };
 
     const handleDelete = (index) => {
-        props.sendToast("error", "Cannot delete student's feedback!");
+        props.sendToast("error", "Cannot delete student's registration!");
     };
 
     const handleSearch = () => {
         try {
             tableRef.current.clearSelected();
-            let query = "Feedback: ";
+            let query = "Registration: ";
             let searchResult = rowData;
-            if (feedbackId !== "") {
+            if (registrationId !== "") {
                 searchResult = searchResult.filter((r) =>
-                    r.id.startsWith(feedbackId)
+                    r.id.startsWith(registrationId)
                 );
             }
 
-            if (courseId !== "") {
+            if (groupId !== "") {
                 searchResult = searchResult.filter((r) =>
-                    r.course_id.startsWith(courseId)
-                );
-            }
-
-            if (lecturerId !== "") {
-                searchResult = searchResult.filter((r) =>
-                    r.lecturer_id.startsWith(lecturerId)
+                    r.group_id.startsWith(groupId)
                 );
             }
 
@@ -180,11 +133,10 @@ export default function FeedbackAdmin(props) {
     const handleClearSearch = (e) => {
         e.preventDefault();
         setRows(rowData);
-        setFeedbackId("");
+        setRegistrationId("");
         setStudentId("");
-        setCourseId("");
-        setLecturerId("");
-        setTableTitle("All Feedbacks");
+        setGroupId("");
+        setTableTitle("All Registrations");
     };
 
     return (
@@ -194,45 +146,33 @@ export default function FeedbackAdmin(props) {
                     <div
                         className="big-widget"
                         style={{ paddingBottom: "25px" }}>
-                        <h2>Feedback Search</h2>
+                        <h2>Registration Search</h2>
                         <Grid container spacing={3}>
-                            <Grid item xs={12} md={3}>
+                            <Grid item xs={12} md={4}>
                                 <TextField
-                                    value={feedbackId}
+                                    value={registrationId}
                                     onChange={(e) => {
-                                        setFeedbackId(e.target.value);
+                                        setRegistrationId(e.target.value);
                                     }}
-                                    id="form-feedbackId"
+                                    id="form-registrationId"
                                     fullWidth
-                                    label="Feedback Id"
+                                    label="Registration Id"
                                     variant="outlined"
                                 />
                             </Grid>
-                            <Grid item xs={12} md={3}>
+                            <Grid item xs={12} md={4}>
                                 <TextField
-                                    value={courseId}
+                                    value={groupId}
                                     onChange={(e) => {
-                                        setCourseId(e.target.value);
+                                        setGroupId(e.target.value);
                                     }}
-                                    id="form-courseId"
+                                    id="form-groupId"
                                     fullWidth
-                                    label="Course Id"
+                                    label="Class Id"
                                     variant="outlined"
                                 />
                             </Grid>
-                            <Grid item xs={12} md={3}>
-                                <TextField
-                                    value={lecturerId}
-                                    onChange={(e) => {
-                                        setLecturerId(e.target.value);
-                                    }}
-                                    id="form-lecturerId"
-                                    fullWidth
-                                    label="Lecturer Id"
-                                    variant="outlined"
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={3}>
+                            <Grid item xs={12} md={4}>
                                 <TextField
                                     value={studentId}
                                     onChange={(e) => {
@@ -281,7 +221,7 @@ export default function FeedbackAdmin(props) {
                 </Grid>
                 <Grid item xs={12}>
                     <div className="big-widget">
-                        <div className="feedback-list">
+                        <div className="registration-list">
                             <CustomTable
                                 ref={tableRef}
                                 title={tableTitle}

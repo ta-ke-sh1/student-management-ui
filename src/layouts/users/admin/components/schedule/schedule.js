@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { TextField, Button, Grid } from "@mui/material";
+import { TextField, Button, Grid, Dialog, DialogTitle, DialogContentText, DialogContent, DialogActions } from "@mui/material";
 import CustomTable from "../../../../../common/table/table";
 
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-import { getAllHeaderColumns } from "../../../../../utils/utils";
+import { fetchDocuments, getAllHeaderColumns } from "../../../../../utils/utils";
+import AttendanceScheduleForm from "./scheduleForm";
 
 const headCells = [
     {
@@ -68,6 +69,15 @@ export default function ScheduleAdmin(props) {
     const [session, setSession] = useState(0);
 
     const [tableTitle, setTableTitle] = useState("All Schedules");
+    const [openModal, setOpenModal] = useState(false)
+    const [openDialog, setOpenDialog] = useState(false)
+
+    const [schedule, setSchedule] = useState({});
+
+    const handleOpenModal = () => setOpenModal(true)
+    const handleOpenDialog = () => setOpenDialog(true)
+    const handleCloseModal = () => setOpenModal(false)
+    const handleCloseDialog = () => setOpenDialog(false)
 
     useEffect(() => {
         fetchRows();
@@ -101,7 +111,9 @@ export default function ScheduleAdmin(props) {
     };
 
     const handleEdit = (id) => {
-        props.sendToast("error", "Cannot edit student's schedule!");
+        const schedule = fetchDocuments(rowData, id)
+        setSchedule(schedule)
+        setOpenModal(true)
     };
 
     const handleDelete = (index) => {
@@ -146,6 +158,10 @@ export default function ScheduleAdmin(props) {
         setSession("");
         setTableTitle("All Schedules");
     };
+
+    const handleDeleteRequest = (id) => {
+
+    }
 
     return (
         <>
@@ -241,11 +257,48 @@ export default function ScheduleAdmin(props) {
                                 handleEdit={handleEdit}
                                 handleDelete={handleDelete}
                                 handleRefreshEntry={handleRefreshEntry}
+                                handleAddEntry={handleOpenModal}
                             />
                         </div>
                     </div>
                 </Grid>
             </Grid>
+
+            <Dialog
+                open={openDialog}
+                onClose={handleCloseDialog}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                style={{
+                    zIndex: 100000,
+                }}>
+                <DialogTitle id="alert-dialog-title">Delete confirmation</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Once deleted, this document will not be able to be restored!
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDeleteRequest}>Accept</Button>
+                    <Button onClick={handleCloseDialog} autoFocus>
+                        Cancel
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog
+                className="modal"
+                fullWidth={true}
+                open={openModal}
+                onClose={handleCloseModal}>
+                <DialogContent
+                    sx={{
+                        bgcolor: "background.paper",
+                        boxShadow: 12,
+                    }}>
+                    <AttendanceScheduleForm sendToast={props.sendToast} schedule={schedule} closeHandler={handleCloseModal} />
+                </DialogContent>
+            </Dialog>
         </>
     );
 }

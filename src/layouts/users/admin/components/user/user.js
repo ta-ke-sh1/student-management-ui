@@ -143,10 +143,6 @@ export default function UsersAdmin(props) {
         } catch (e) {
             props.sendToast("error", e.toString());
         }
-
-        return function cleanUp() {
-            localStorage.setItem("users_data", "");
-        };
     }, []);
 
     const handleSearch = () => {
@@ -348,7 +344,7 @@ export default function UsersAdmin(props) {
                                             setDistricts(
                                                 objectToMap(
                                                     districtsMap[0][
-                                                        "quan-huyen"
+                                                    "quan-huyen"
                                                     ]
                                                 )
                                             );

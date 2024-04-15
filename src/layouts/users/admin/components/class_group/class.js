@@ -68,10 +68,6 @@ export default function FGWClass(props) {
 
     useEffect(() => {
         fetchGroups();
-
-        return function cleanUp() {
-            localStorage.setItem("groups_data", "");
-        };
     }, []);
 
     const handleSearchGroup = async () => {
@@ -195,8 +191,8 @@ export default function FGWClass(props) {
             await axios
                 .get(
                     process.env.REACT_APP_HOST_URL +
-                        "/semester/participants?id=" +
-                        id
+                    "/semester/participants?id=" +
+                    id
                 )
                 .then((res) => {
                     if (res.data.status) {
@@ -216,8 +212,8 @@ export default function FGWClass(props) {
             await axios
                 .get(
                     process.env.REACT_APP_HOST_URL +
-                        "/semester/schedules?id=" +
-                        id
+                    "/semester/schedules?id=" +
+                    id
                 )
                 .then((res) => {
                     if (res.data.status) {
@@ -236,8 +232,8 @@ export default function FGWClass(props) {
             await axios
                 .get(
                     process.env.REACT_APP_HOST_URL +
-                        "/schedule/attendances?id=" +
-                        id
+                    "/schedule/attendances?id=" +
+                    id
                 )
                 .then((res) => {
                     if (res.data.status) {

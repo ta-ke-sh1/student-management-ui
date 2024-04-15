@@ -118,27 +118,35 @@ export default class Constants {
   get slot() {
     return [
       {
+        id: 1,
         time: "7:30 - 9:00",
       },
       {
+        id: 2,
         time: "9:10 - 10:40",
       },
       {
+        id: 3,
         time: "10:50 - 12:20",
       },
       {
+        id: 4,
         time: "12:50 - 14:20",
       },
       {
+        id: 5,
         time: "14:30 - 16:00",
       },
       {
+        id: 6,
         time: "16:10 - 17:40",
       },
       {
+        id: 7,
         time: "17:50 - 19:20",
       },
       {
+        id: 8,
         time: "19:30 - 21:00",
       },
     ];

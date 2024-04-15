@@ -118,6 +118,7 @@ export default function CampusAdmin(props) {
 
                     setRows(result);
                     setRowData(result);
+                    localStorage.setItem("rooms", JSON.stringify(result))
                 });
         } catch (e) {
             props.sendToast("error", e.toString());

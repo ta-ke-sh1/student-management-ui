@@ -54,7 +54,7 @@ export default function SubmmissionAccordion(props) {
                     "/submission?id=" +
                     props.course.id +
                     "-" +
-                    props.assignment.name +
+                    props.assignment.id +
                     "-" +
                     props.decoded.id
                 )
@@ -83,7 +83,7 @@ export default function SubmmissionAccordion(props) {
             formData.append("programme", props.course.programme);
             formData.append("user_id", props.decoded.id);
             formData.append("course_id", props.course.id);
-            formData.append("assignment_id", props.assignment.name);
+            formData.append("assignment_id", props.assignment.id);
 
             axios
                 .post(
@@ -158,7 +158,7 @@ export default function SubmmissionAccordion(props) {
                     id="panel1a-header">
                     <Grid container>
                         <Grid item sm={2} md={2}>
-                            {props.assignment.id}
+                            <h3 style={{ margin: 0, lineHeight: 1 }}>{props.assignment.name}</h3>
                         </Grid>
                         <Grid item sm={3} md={3}>
                             {" "}

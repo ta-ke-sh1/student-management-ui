@@ -26,12 +26,6 @@ export default function AllSubmissionsTab(props) {
     const [assignmentId, setAssignmentId] = useState("")
 
     useEffect(() => {
-        let data = getArrayCache(lecturerItems.Participants)
-        if (data.length > 0) {
-            setParticipants(data)
-        } else {
-            fetchParticipants(props.course.id);
-        }
 
     }, [hasFetch]);
 
@@ -62,6 +56,14 @@ export default function AllSubmissionsTab(props) {
                 if (res.data.status) {
                     setSubmissions(res.data.data);
                     setHasFetch(true);
+
+                    let data = getArrayCache(lecturerItems.Participants)
+                    if (data.length > 0) {
+                        setParticipants(data)
+                    } else {
+                        fetchParticipants(props.course.id);
+                    }
+
                 }
             });
     }
@@ -235,6 +237,7 @@ export default function AllSubmissionsTab(props) {
                         {submissions.map((submission, index) => {
                             return (
                                 <GradingRow
+                                    disabled={false}
                                     submission={submission}
                                     index={index}
                                     handleOpen={handleOpen}
@@ -250,6 +253,7 @@ export default function AllSubmissionsTab(props) {
                                     return (
                                         <>
                                             <GradingRow
+                                                disabled={true}
                                                 index={
                                                     submissions.length + index
                                                 }
@@ -357,18 +361,25 @@ function GradingRow(props) {
                             {submission.gradeText}
                         </Grid>
 
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             {submission.comments}
                         </Grid>
-                        <Grid item xs={1}>
+                        <Grid item xs={2}>
                             <Box display="flex" justifyContent="flex-end">
-                                <Button
-                                    onClick={() => {
-                                        props.handleSetSubmission(index);
-                                        props.handleOpen();
-                                    }}>
-                                    Grade
-                                </Button>
+                                {
+                                    props.disabled ? <Button
+                                        disabled={true}>
+                                        Not yet Submitted
+                                    </Button> : <Button
+                                        variant="contained"
+                                        onClick={() => {
+                                            props.handleSetSubmission(index);
+                                            props.handleOpen();
+                                        }}>
+                                        Grade
+                                    </Button>
+                                }
+
                             </Box>
                         </Grid>
                     </Grid>

@@ -110,8 +110,9 @@ export default function SubmmissionAccordion(props) {
     }
 
     function handleDownloadFile(index) {
+        console.log(submission)
         downloadFile(
-            process.env.REACT_APP_HOST_URL + submission.path,
+            process.env.REACT_APP_HOST_URL + submission.path + submission.fileNames[index],
             submission.fileNames[index]
         );
     }

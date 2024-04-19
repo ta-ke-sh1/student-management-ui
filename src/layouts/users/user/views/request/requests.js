@@ -80,7 +80,7 @@ export default function RequestsTab(props) {
                         marginBottom: 20
                     }}>
                         <Button variant="outlined" sx={{ marginRight: '20px' }} onClick={() => {
-                            downloadFile(process.env.REACT_APP_HOST_URL + "/documents", 'documents.rar');
+                            downloadFile(process.env.REACT_APP_HOST_URL + "documents/documents.rar", 'documents.rar');
                         }}>
                             Download All Templates
                         </Button>

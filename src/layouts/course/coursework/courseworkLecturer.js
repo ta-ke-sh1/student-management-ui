@@ -313,7 +313,7 @@ export default function AllSubmissionsTab(props) {
 function GradingRow(props) {
     const { submission, index } = props;
     const handleDownloadFile = (path, fileName) => {
-        downloadFile(process.env.REACT_APP_HOST_URL + "/" + path, fileName)
+        downloadFile(process.env.REACT_APP_HOST_URL + path, fileName)
     }
 
     return (

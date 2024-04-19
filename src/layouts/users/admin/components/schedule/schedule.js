@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { fetchDocuments, getAllHeaderColumns } from "../../../../../utils/utils";
 import CourseScheduleForm from "./scheduleForm";
+import { cacheData, getArrayCache, items } from "../../../../../utils/dataOptimizer";
 
 const headCells = [
     {
@@ -80,7 +81,13 @@ export default function ScheduleAdmin(props) {
     const handleCloseDialog = () => setOpenDialog(false)
 
     useEffect(() => {
-        fetchRows();
+        const data = getArrayCache(items.Schedule);
+        if (data.length > 0) {
+            setRowData(data)
+            setRows(data)
+        } else {
+            fetchRows();
+        }
     }, []);
 
     const fetchRows = () => {
@@ -99,6 +106,7 @@ export default function ScheduleAdmin(props) {
 
                     setRows(result);
                     setRowData(result);
+                    cacheData(items.Schedule, result)
                 });
         } catch (e) {
             props.sendToast("error", e.toString());
@@ -106,7 +114,6 @@ export default function ScheduleAdmin(props) {
     };
 
     const handleRefreshEntry = () => {
-        console.log("Fetch rows!");
         fetchRows();
     };
 
@@ -299,7 +306,7 @@ export default function ScheduleAdmin(props) {
                         bgcolor: "background.paper",
                         boxShadow: 12,
                     }}>
-                    <CourseScheduleForm sendToast={props.sendToast} schedule={schedule} closeHandler={handleCloseModal} />
+                    <CourseScheduleForm refresh={fetchRows} sendToast={props.sendToast} schedule={schedule} closeHandler={handleCloseModal} />
                 </DialogContent>
             </Dialog>
         </>

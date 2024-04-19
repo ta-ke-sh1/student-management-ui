@@ -10,13 +10,20 @@ import {
 } from "@mui/material";
 import { fromMilisecondsToDisplayFormatDateString } from "../../utils/utils";
 import axios from "axios";
+import { cacheData, getArrayCache, lecturerItems } from "../../utils/dataOptimizer";
 
 export default function ScheduleTab(props) {
     const course = props.course;
     const [schedules, setSchedules] = useState();
     const user = props.decoded;
     useEffect(() => {
-        fetchSchedules();
+        let data = getArrayCache(lecturerItems.Schedules)
+        if (data.length > 0) {
+            setSchedules(data)
+        } else {
+            fetchSchedules();
+        }
+
     }, [course]);
 
     function fetchSchedules() {
@@ -32,6 +39,7 @@ export default function ScheduleTab(props) {
                         let data = res.data.data;
                         let sorted = data.sort((a, b) => a.session - b.session);
                         setSchedules(sorted);
+                        cacheData(lecturerItems.Schedules, sorted)
                     } else {
                         props.sendToast("error", res.data.data);
                     }

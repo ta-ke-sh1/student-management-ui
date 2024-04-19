@@ -10,6 +10,11 @@ export const items = {
     Schedule: "scheduleData"
 }
 
+export const lecturerItems = {
+    Participants: "participants",
+    Schedules: "schedules",
+}
+
 // Cache data for less database requests
 export const cacheData = (item, data) => {
     localStorage.setItem(item, JSON.stringify(data))

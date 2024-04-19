@@ -8,10 +8,9 @@ import lodash from "lodash";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
+import { getArrayCache, lecturerItems } from "../../../utils/dataOptimizer";
 
 export default function AllSubmissionsTab(props) {
-    console.log(props);
-
     const [submission, setSubmission] = useState();
     const [submissions, setSubmissions] = useState([]);
     const [hasFetch, setHasFetch] = useState(false);
@@ -27,8 +26,13 @@ export default function AllSubmissionsTab(props) {
     const [assignmentId, setAssignmentId] = useState("")
 
     useEffect(() => {
-        console.log("Test");
-        fetchParticipants(props.course.id);
+        let data = getArrayCache(lecturerItems.Participants)
+        if (data.length > 0) {
+            setParticipants(data)
+        } else {
+            fetchParticipants(props.course.id);
+        }
+
     }, [hasFetch]);
 
     function fetchParticipants(id) {

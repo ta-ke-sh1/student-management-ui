@@ -14,6 +14,8 @@ import {
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { normalizeIndex } from "../../utils/utils";
+import { getArrayCache, lecturerItems } from "../../utils/dataOptimizer";
+import lodash from "lodash";
 
 export default function AttendanceTab(props) {
     const session = props.session;
@@ -27,19 +29,47 @@ export default function AttendanceTab(props) {
         };
     }, [session]);
 
+    function getRemainingSubmissions(participants, attendances) {
+        let remains = lodash.differenceWith(
+            participants,
+            attendances,
+            function (o1, o2) {
+                return o1["student_id"] == o2["student_id"];
+            }
+        );
+        console.log(remains);
+        return remains ?? [];
+    }
+
     function fetchRows() {
         const course = JSON.parse(localStorage.getItem("schedule"));
+        console.log(course)
         try {
             axios
                 .get(process.env.REACT_APP_HOST_URL + "/course/attendances", {
                     params: {
                         id: course.course_id,
-                        session: course.slot,
+                        session: course.session,
                     },
                 })
                 .then((res) => {
                     if (res.data.status) {
-                        setAttendances(res.data.data);
+                        let attendances = res.data.data;
+                        const participants = getArrayCache(lecturerItems.Participants)
+                        let data = getRemainingSubmissions(participants, res.data.data);
+                        data.forEach((attendance) => {
+                            attendances.push({
+                                dob: attendance.dob,
+                                group_id: course.course_id,
+                                status: true,
+                                student_id: attendance.student_id,
+                                id: course.course_id + "-" + attendance.student_id + "-session" + course.session,
+                                remark: -1,
+                                session: course.session
+                            })
+                        })
+
+                        setAttendances(attendances);
                     } else {
                         props.sendToast("error", res.data.data);
                     }

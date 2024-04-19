@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Grid, Box, Card } from "@mui/material";
 import axios from "axios";
+import { cacheData, getArrayCache, items, lecturerItems } from "../../utils/dataOptimizer";
 
 export default function ParticipantsTab(props) {
     const course = props.course;
@@ -8,7 +9,13 @@ export default function ParticipantsTab(props) {
     const [participants, setParticipants] = useState([]);
 
     useEffect(() => {
-        fetchParticipants();
+        let data = getArrayCache(lecturerItems.Participants);
+        if (data.length > 0) {
+            setParticipants(data)
+        } else {
+            fetchParticipants();
+        }
+
     }, [course]);
 
     function fetchParticipants() {
@@ -16,6 +23,8 @@ export default function ParticipantsTab(props) {
             axios.get(process.env.REACT_APP_HOST_URL + "/course/participants?id=" + course.id).then((res) => {
                 if (res.data.status) {
                     setParticipants(res.data.data);
+
+                    cacheData(lecturerItems.Participants, res.data.data)
                 } else {
                     props.sendToast("error", res.data.data)
                 }

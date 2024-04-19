@@ -19,6 +19,7 @@ import CampusForm from "./campusForm";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { getAllHeaderColumns } from "../../../../../utils/utils";
+import { cacheData, getArrayCache, items } from "../../../../../utils/dataOptimizer";
 
 const headCells = [
     {
@@ -98,7 +99,14 @@ export default function CampusAdmin(props) {
     const [tableTitle, setTableTitle] = useState("All Rooms");
 
     useEffect(() => {
-        fetchRows();
+        let rooms = getArrayCache(items.Rooms)
+        if (rooms.length > 0) {
+            setRows(rooms)
+            setRowData(rooms)
+        } else {
+            fetchRows();
+        }
+
     }, []);
 
     // Get all rooms from "room" table in database
@@ -118,7 +126,7 @@ export default function CampusAdmin(props) {
 
                     setRows(result);
                     setRowData(result);
-                    localStorage.setItem("rooms", JSON.stringify(result))
+                    cacheData(items.Rooms, result)
                 });
         } catch (e) {
             props.sendToast("error", e.toString());

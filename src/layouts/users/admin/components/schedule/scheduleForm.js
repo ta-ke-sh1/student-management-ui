@@ -20,7 +20,7 @@ export default function CourseScheduleForm(props) {
     })
 
     const [courses, setCourses] = useState(JSON.parse(localStorage.getItem(items.Groups)) ?? [])
-    const [rooms, setRooms] = useState(JSON.parse(localStorage.getItem("rooms")) ?? [])
+    const [rooms, setRooms] = useState(JSON.parse(localStorage.getItem(items.Rooms)) ?? [])
     const [subjects, setSubjects] = useState(JSON.parse(localStorage.getItem("subjectsData")) ?? [])
     const [lecturers, setLecturers] = useState(JSON.parse(localStorage.getItem("lecturers")) ?? [])
 
@@ -126,7 +126,7 @@ export default function CourseScheduleForm(props) {
                     });
 
                     setRooms(result);
-                    localStorage.setItem("rooms", JSON.stringify(result))
+                    cacheData(items.Rooms, result)
                 });
         } catch (e) {
             props.sendToast("error", e.toString());
@@ -137,12 +137,23 @@ export default function CourseScheduleForm(props) {
         console.log(formData)
         if (formData.course_id && formData.subject && formData.lecturer && formData.room) {
             if (props.schedule.id) {
+                formData.id = props.schedule.id
                 axios.put(process.env.REACT_APP_HOST_URL + "/schedule", formData).then((res) => {
-                    console.log(res)
+                    if (res.data.status) {
+                        props.refresh()
+                        props.closeHandler()
+                    } else {
+                        props.sendToast("error", "Failed to edit schedule")
+                    }
                 })
             } else {
                 axios.post(process.env.REACT_APP_HOST_URL + "/schedule", formData).then((res) => {
-                    console.log(res)
+                    if (res.data.status) {
+                        props.refresh()
+                        props.closeHandler()
+                    } else {
+                        props.sendToast("error", "Failed to add schedule")
+                    }
                 })
             }
         } else {

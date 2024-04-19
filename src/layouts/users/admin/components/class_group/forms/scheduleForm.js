@@ -3,27 +3,74 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { DesktopDatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import { getArrayCache, items } from "../../../../../../utils/dataOptimizer";
 
 export default function ScheduleListForm(props) {
-  const [slot, setSlot] = useState(1);
-  const [session, setSession] = useState(0);
-  const [date, setDate] = useState(new Date());
-  const [room, setRoom] = useState();
-  const [lecturer, setLecturer] = useState({});
+  const [slot, setSlot] = useState(props.schedule.slot ?? 1);
+  const [session, setSession] = useState(props.schedule.session ?? 0);
+  const [date, setDate] = useState(dayjs(props.schedule.date) ?? new Date());
+  const [room, setRoom] = useState(props.schedule.room ?? "");
+  const [lecturer, setLecturer] = useState(props.schedule.lecturer ?? "");
 
   const [rooms, setRooms] = useState([]);
   const [lecturers, setLecturers] = useState([]);
 
   const handleConfirm = () => {
-
+    if (props.schedule.id) {
+      axios.put(process.env.REACT_APP_HOST_URL + "/schedule", {
+        id: props.schedule.id,
+        course_id: props.group.id,
+        subject: props.group.subject,
+        session: session,
+        lecturer: lecturer,
+        room: room,
+        date: date,
+        slot: slot,
+      }).then((res) => {
+        if (res.data.status) {
+          props.refresh(props.group.id)
+          props.closeHandler();
+        } else {
+          props.sendToast("error", "Failed to edit schedule")
+        }
+      })
+    } else {
+      axios.post(process.env.REACT_APP_HOST_URL + "/schedule", {
+        course_id: props.group.id,
+        subject: props.group.subject,
+        session: session,
+        lecturer: lecturer,
+        room: room,
+        date: date,
+        slot: slot,
+      }).then((res) => {
+        if (res.data.status) {
+          props.refresh(props.group.id)
+          props.closeHandler();
+        } else {
+          props.sendToast("error", "Failed to add schedule")
+        }
+      })
+    }
   };
 
   useEffect(() => {
-    fetchLecturers();
-    fetchRooms();
+    let lecturers = getArrayCache(items.Lecturers)
+    if (lecturers.length > 0) {
+      setLecturers(lecturers)
+    } else {
+      fetchLecturers();
+    }
+
+    let rooms = getArrayCache(items.Rooms)
+    if (rooms.length > 0) {
+      setRooms(rooms)
+    } else {
+      fetchRooms();
+    }
+
+
   }, []);
-
-
 
   const fetchRooms = () => {
     axios.get(process.env.REACT_APP_HOST_URL + "/campus/rooms")
@@ -100,8 +147,8 @@ export default function ScheduleListForm(props) {
               <FormControl fullWidth>
                 <InputLabel id="slot-select-label-form">Room</InputLabel>
                 <Select
-                  defaultValue={slot}
-                  value={slot}
+                  defaultValue={room}
+                  value={room}
                   label="Room"
                   MenuProps={{
                     disablePortal: true, // <--- HERE
@@ -110,7 +157,7 @@ export default function ScheduleListForm(props) {
                     },
                   }}
                   onChange={(e) => {
-                    setSlot(e.target.value);
+                    setRoom(e.target.value);
                   }}
                 >
                   {rooms.map((room, index) => (
@@ -140,7 +187,7 @@ export default function ScheduleListForm(props) {
                 >
                   {lecturers.map((lecturer, index) => (
                     <MenuItem key={"Lecturer-number-" + (index + 1)} value={lecturer.id}>
-                      {lecturer.username}
+                      {lecturer.id}
                     </MenuItem>
                   ))}
                 </Select>

@@ -29,7 +29,7 @@ import AttendanceWidget from "./widgets/attendanceWidget";
 import AttendanceForm from "./forms/attendanceForm";
 import { filterByAttribute } from "../../../../../utils/utils";
 import { toast } from "react-toastify";
-import { cacheData, getCache, items } from "../../../../../utils/dataOptimizer";
+import { cacheData, getArrayCache, getCache, items } from "../../../../../utils/dataOptimizer";
 
 export default function FGWClass(props) {
     const constants = new Constants();
@@ -56,7 +56,7 @@ export default function FGWClass(props) {
 
     const [groups, setGroups] = useState([]);
 
-    const [year, setYear] = useState(2023);
+    const [year, setYear] = useState(2024);
     const [department, setDepartment] = useState("");
 
     const [dialogTitle, setDialogTitle] = useState("");
@@ -68,7 +68,12 @@ export default function FGWClass(props) {
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
-        fetchGroups();
+        let data = getArrayCache(items.Groups)
+        if (data.length > 0) {
+            setGroups(data)
+        } else {
+            fetchGroups();
+        }
     }, []);
 
     const handleSearchGroup = async () => {
@@ -561,7 +566,7 @@ export default function FGWClass(props) {
             </Dialog>
 
             <Dialog
-                maxWidth="lg"
+                maxWidth="md"
                 className="modal"
                 fullWidth={true}
                 open={openScheduleModal}
@@ -572,6 +577,7 @@ export default function FGWClass(props) {
                         boxShadow: 12,
                     }}>
                     <ScheduleListForm
+                        sendToast={props.sendToast}
                         closeHandler={handleCloseScheduleFormModal}
                         schedule={schedule}
                         group={group}
@@ -593,6 +599,7 @@ export default function FGWClass(props) {
                         boxShadow: 12,
                     }}>
                     <ParticipantsForm
+                        sendToast={props.sendToast}
                         closeHandler={handleCloseParticipantFormModal}
                         refresh={fetchParticipants}
                         participant={participant}

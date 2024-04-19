@@ -18,6 +18,12 @@ const headCells = [
     label: "Date",
   },
   {
+    id: "session",
+    numeric: true,
+    disablePadding: false,
+    label: "Session",
+  },
+  {
     id: "slot",
     numeric: true,
     disablePadding: false,

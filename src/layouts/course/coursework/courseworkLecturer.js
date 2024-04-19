@@ -1,9 +1,13 @@
-import { Grid, Box, Button, Modal } from "@mui/material";
+import { Grid, Box, Button, Modal, Tooltip, IconButton } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import AssignmentGradingModal from "../components/modal/assignment_grading_modal";
-import { formatSecondsToDate } from "../../../utils/utils";
+import { downloadFile, formatSecondsToDate } from "../../../utils/utils";
 import lodash from "lodash";
+
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 
 export default function AllSubmissionsTab(props) {
     console.log(props);
@@ -16,6 +20,11 @@ export default function AllSubmissionsTab(props) {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+
+    const [assignment, setAssignment] = useState({})
+    const [current, setCurrent] = useState(0)
+
+    const [assignmentId, setAssignmentId] = useState("")
 
     useEffect(() => {
         console.log("Test");
@@ -31,12 +40,14 @@ export default function AllSubmissionsTab(props) {
             })
             .then((res) => {
                 if (res.data.status) {
+                    console.log(res.data.data)
                     setParticipants(res.data.data);
                 }
             });
     }
 
     function fetchAssignments(id) {
+        setAssignmentId(id)
         axios
             .get(process.env.REACT_APP_HOST_URL + "/submission/course", {
                 params: {
@@ -63,6 +74,21 @@ export default function AllSubmissionsTab(props) {
         return remains ?? [];
     }
 
+    function deleteAssignment() {
+        axios.delete(process.env.REACT_APP_HOST_URL + "/course/coursework", {
+            params: {
+                id: assignment.id,
+                course_id: assignment.course_id
+            }
+        }).then((res) => {
+            if (res.data.status) {
+                window.location.reload();
+            } else {
+                props.sendToast("error", "Failed to delete coursework")
+            }
+        })
+    }
+
     return (
         <>
             <div className="curriculum-container">
@@ -84,11 +110,36 @@ export default function AllSubmissionsTab(props) {
                         }}>
                         Submissions
                     </h3>
-                    <Button
-                        onClick={props.handleOpenCourseworkModal}
-                        variant="contained">
-                        Add New Coursework
-                    </Button>
+                    <div>
+                        <IconButton
+                            onClick={props.handleOpenCourseworkModal}>
+                            <AddIcon />
+                        </IconButton>
+                        {
+                            assignment.id ? <>
+                                <IconButton
+                                    sx={{
+                                        margin: '0 10px'
+                                    }}
+                                    onClick={
+                                        () => {
+                                            console.log(assignment)
+                                            props.handleOpenCourseworkModal(assignment)
+                                        }
+                                    }>
+                                    <EditIcon />
+                                </IconButton><IconButton
+                                    onClick={
+                                        () => {
+                                            console.log(assignment)
+                                            deleteAssignment();
+                                        }
+                                    }>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </> : <></>
+                        }
+                    </div>
                 </div>
 
                 <div
@@ -105,20 +156,22 @@ export default function AllSubmissionsTab(props) {
                                     }}>
                                     <div
                                         style={{
-                                            marginRight: "20px",
+                                            marginRight: "10px",
                                             paddingTop: "5px",
                                         }}>
                                         Select an assignment:
                                     </div>
                                     {props.course.assignments.map(
-                                        (assignment) => {
+                                        (assignment, index) => {
                                             return (
                                                 <Button
                                                     sx={{
-                                                        marginRight: 10,
+                                                        marginRight: '10px',
                                                     }}
-                                                    variant="outlined"
+                                                    variant={current === index ? "contained" : "outlined"}
                                                     onClick={() => {
+                                                        setCurrent(index)
+                                                        setAssignment(assignment)
                                                         fetchAssignments(
                                                             assignment.id
                                                         );
@@ -137,7 +190,7 @@ export default function AllSubmissionsTab(props) {
                         <>This course has no assignment yet</>
                     )}
                 </div>
-                {submissions.length > 0 ? (
+                {(
                     <>
                         <div
                             className="curriculum-row"
@@ -221,8 +274,6 @@ export default function AllSubmissionsTab(props) {
                             )}
                         </>
                     </>
-                ) : (
-                    <></>
                 )}
                 <Modal open={open} onClose={handleClose} sx={{}}>
                     <Box
@@ -240,6 +291,9 @@ export default function AllSubmissionsTab(props) {
                             closeHandler={handleClose}
                             assignment={submission}
                             sendToast={props.sendToast}
+                            refresh={() => {
+                                fetchAssignments(assignmentId)
+                            }}
                         />
                     </Box>
                 </Modal>
@@ -250,6 +304,10 @@ export default function AllSubmissionsTab(props) {
 
 function GradingRow(props) {
     const { submission, index } = props;
+    const handleDownloadFile = (path, fileName) => {
+        downloadFile(process.env.REACT_APP_HOST_URL + "/" + path, fileName)
+    }
+
     return (
         <div className="curriculum-row">
             <Grid container spacing={3}>
@@ -273,7 +331,18 @@ function GradingRow(props) {
                                     flexDirection: "column",
                                 }}>
                                 {submission.fileNames.map((fileName) => {
-                                    return <div>{fileName}</div>;
+                                    return (
+                                        <Tooltip title="Click to download file">
+                                            <Button sx={{
+                                                width: 'fit-content',
+                                                fontSize: '12px'
+                                            }} variant="contained" onClick={() => {
+                                                handleDownloadFile(submission.path + fileName, fileName)
+                                            }}>
+                                                {fileName}
+                                            </Button>
+                                        </Tooltip>
+                                    )
                                 })}
                             </div>
                         </Grid>

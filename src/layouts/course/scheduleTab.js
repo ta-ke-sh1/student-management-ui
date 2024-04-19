@@ -15,9 +15,6 @@ export default function ScheduleTab(props) {
     const course = props.course;
     const [schedules, setSchedules] = useState();
     const user = props.decoded;
-
-    console.log(props);
-
     useEffect(() => {
         fetchSchedules();
     }, [course]);
@@ -27,8 +24,8 @@ export default function ScheduleTab(props) {
             axios
                 .get(
                     process.env.REACT_APP_HOST_URL +
-                        "/course/schedules?id=" +
-                        course.id
+                    "/course/schedules?id=" +
+                    course.id
                 )
                 .then((res) => {
                     if (res.data.status) {

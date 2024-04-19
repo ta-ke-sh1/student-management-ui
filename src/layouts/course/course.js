@@ -65,12 +65,14 @@ export default function CourseUser() {
         window !== undefined ? () => window.document.body : undefined;
     const [mobileOpen, setMobileOpen] = useState(true);
 
-    const [current, setCurrent] = useState(0);
+    const [current, setCurrent] = useState(2);
 
     const [openCourseworkModal, setOpenCourseworkModal] = useState(false);
     const [openMaterialModal, setOpenMaterialModal] = useState(false);
 
     const [course, setCourse] = useState({});
+
+    const [coursework, setCoursework] = useState({})
 
     useEffect(() => {
         fetchCourse();
@@ -95,7 +97,13 @@ export default function CourseUser() {
         }
     }
 
-    const handleOpenCourseworkModal = () => {
+    const handleOpenCourseworkModal = (coursework) => {
+        if (coursework.id) {
+            setCoursework(coursework)
+        } else {
+            setCoursework({})
+        }
+        console.log(coursework)
         setOpenCourseworkModal(true);
     };
 
@@ -406,6 +414,7 @@ export default function CourseUser() {
                     }}
                     className={"modal"}>
                     <CourseworkFormModal
+                        coursework={coursework}
                         closeHandler={() => setOpenCourseworkModal(false)}
                         sendToast={sendToast}
                     />

@@ -14,10 +14,10 @@ export default function CourseworkFormModal(props) {
 
     const { id } = useParams();
 
-    const [name, setName] = useState("")
-    const [openDate, setOpenDate] = useState(new Date())
-    const [deadline, setDeadline] = useState(new Date())
-    const [closedDate, setClosedDate] = useState(new Date())
+    const [name, setName] = useState(props.coursework.name ?? "")
+    const [openDate, setOpenDate] = useState(props.coursework.id ? dayjs(props.coursework.start * 1000) : new Date())
+    const [deadline, setDeadline] = useState(props.coursework.id ? dayjs(props.coursework.deadline * 1000) : new Date())
+    const [closedDate, setClosedDate] = useState(props.coursework.id ? dayjs(props.coursework.close * 1000) : new Date())
 
     useEffect(() => {
 
@@ -25,21 +25,39 @@ export default function CourseworkFormModal(props) {
 
     const handleConfirm = () => {
         try {
-            axios.post(process.env.REACT_APP_HOST_URL + "/course/coursework", {
-                id: id,
-                name: name,
-                start: dayjs(openDate).unix(),
-                deadline: dayjs(deadline).unix(),
-                close: dayjs(closedDate).unix()
-            }).then((res) => {
-                if (res.data.status) {
-                    props.closeHandler();
-                    window.location.reload();
-                } else {
-                    props.sendToast("error", res.data.data)
-                }
-                console.log(res)
-            })
+            if (props.coursework.id) {
+                axios.put(process.env.REACT_APP_HOST_URL + "/course/coursework", {
+                    id: props.coursework.id,
+                    course_id: id,
+                    name: name,
+                    start: dayjs(openDate).unix(),
+                    deadline: dayjs(deadline).unix(),
+                    close: dayjs(closedDate).unix()
+                }).then((res) => {
+                    if (res.data.status) {
+                        props.closeHandler();
+                    } else {
+                        props.sendToast("error", res.data.data)
+                    }
+                    console.log(res)
+                })
+            } else {
+                axios.post(process.env.REACT_APP_HOST_URL + "/course/coursework", {
+                    course_id: id,
+                    name: name,
+                    start: dayjs(openDate).unix(),
+                    deadline: dayjs(deadline).unix(),
+                    close: dayjs(closedDate).unix()
+                }).then((res) => {
+                    if (res.data.status) {
+                        props.closeHandler();
+                    } else {
+                        props.sendToast("error", res.data.data)
+                    }
+                    console.log(res)
+                })
+            }
+
         } catch (e) {
             props.sendToast("error", e.toString())
         }

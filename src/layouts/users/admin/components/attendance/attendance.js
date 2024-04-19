@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from "react";
-import { TextField, Button, Grid } from "@mui/material";
+import { TextField, Button, Grid, Dialog, DialogContent } from "@mui/material";
 import CustomTable from "../../../../../common/table/table";
 
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-import { getAllHeaderColumns } from "../../../../../utils/utils";
+import { fetchDocuments, getAllHeaderColumns } from "../../../../../utils/utils";
+import AttendanceForm from "./attendanceForm";
+import { cacheData, getArrayCache, items } from "../../../../../utils/dataOptimizer";
 
 const headCells = [
     {
@@ -58,6 +60,8 @@ export default function AttendanceAdmin(props) {
     const [rowData, setRowData] = useState([]);
     const [rows, setRows] = useState([]);
 
+    const [attendance, setAttendance] = useState({})
+
     const [attendanceId, setAttendanceId] = useState("");
     const [groupId, setGroupId] = useState("");
     const [studentId, setStudentId] = useState("");
@@ -65,8 +69,18 @@ export default function AttendanceAdmin(props) {
 
     const [tableTitle, setTableTitle] = useState("All Attendances");
 
+    const [open, setOpen] = useState(false);
+
     useEffect(() => {
-        fetchRows();
+        let attendances = getArrayCache(items.Attendances)
+        if (attendances.length > 0) {
+            setRowData(attendances)
+            setRows(attendances)
+        }
+        else {
+            fetchRows();
+        }
+
     }, []);
 
     const fetchRows = () => {
@@ -87,6 +101,8 @@ export default function AttendanceAdmin(props) {
 
                     setRows(result);
                     setRowData(result);
+
+                    cacheData(items.Attendances, result)
                 });
         } catch (e) {
             props.sendToast("error", e.toString());
@@ -94,12 +110,12 @@ export default function AttendanceAdmin(props) {
     };
 
     const handleRefreshEntry = () => {
-        console.log("Fetch rows!");
         fetchRows();
     };
 
     const handleEdit = (id) => {
-        props.sendToast("error", "Cannot edit student's attendance!");
+        let attendance = fetchDocuments(rowData, id)
+        setAttendance(attendance)
     };
 
     const handleDelete = (index) => {
@@ -151,6 +167,9 @@ export default function AttendanceAdmin(props) {
         setSession("");
         setTableTitle("All Attendances");
     };
+
+    const handleOpen = () => setOpen(true)
+    const handleClose = () => setOpen(false)
 
     return (
         <>
@@ -261,11 +280,24 @@ export default function AttendanceAdmin(props) {
                                 handleEdit={handleEdit}
                                 handleDelete={handleDelete}
                                 handleRefreshEntry={handleRefreshEntry}
+                                handleAddEntry={() => {
+                                    handleOpen();
+                                }}
                             />
                         </div>
                     </div>
                 </Grid>
             </Grid>
+
+            <Dialog open={open} onClose={handleClose}
+                className="modal"
+                style={{
+                    zIndex: 100000,
+                }}>
+                <DialogContent>
+                    <AttendanceForm handleClose={handleClose} sendToast={props.sendToast} attendance={attendance} />
+                </DialogContent>
+            </Dialog>
         </>
     );
 }

@@ -5,8 +5,9 @@ import Constants from "../../../../../utils/constants";
 import dayjs from "dayjs";
 import { DesktopDatePicker } from "@mui/x-date-pickers";
 import { fetchDocuments } from "../../../../../utils/utils";
+import { cacheData, items } from "../../../../../utils/dataOptimizer";
 
-export default function AttendanceScheduleForm(props) {
+export default function CourseScheduleForm(props) {
 
     const [formData, setFormData] = useState({
         course_id: props.schedule.course_id ?? "",
@@ -18,7 +19,7 @@ export default function AttendanceScheduleForm(props) {
         slot: props.schedule.slot ?? 1,
     })
 
-    const [courses, setCourses] = useState(JSON.parse(localStorage.getItem("groups_data")) ?? [])
+    const [courses, setCourses] = useState(JSON.parse(localStorage.getItem(items.Groups)) ?? [])
     const [rooms, setRooms] = useState(JSON.parse(localStorage.getItem("rooms")) ?? [])
     const [subjects, setSubjects] = useState(JSON.parse(localStorage.getItem("subjectsData")) ?? [])
     const [lecturers, setLecturers] = useState(JSON.parse(localStorage.getItem("lecturers")) ?? [])
@@ -76,10 +77,7 @@ export default function AttendanceScheduleForm(props) {
                 .then((res) => {
                     if (res.data.status) {
                         setCourses(res.data.data);
-                        localStorage.setItem(
-                            "groups_data",
-                            JSON.stringify(res.data.data)
-                        );
+                        cacheData(items.Groups, res.data.data)
                     } else {
                         props.sendToast("error", res.data.data);
                     }
@@ -174,45 +172,39 @@ export default function AttendanceScheduleForm(props) {
         <>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={12}>
-
                     <h2 style={{ margin: 0 }}>
-                        {
-                            formData.course_id ? "Manage course: " + formData.course_id + " schedule" : "Add session schedule"
-                        }
-
+                        Manage schedule form
                     </h2>
                 </Grid>
                 <Divider />
-                {
-                    props.schedule.id ? <></> :
-                        <Grid item xs={12} md={12}>
-                            <FormControl fullWidth>
-                                <InputLabel id="room-select-label-form">Course</InputLabel>
-                                <Select
-                                    defaultValue={formData.course_id ?? ""}
-                                    value={formData.course_id ?? ""}
-                                    label="Course"
-                                    name="course_id"
-                                    MenuProps={{
-                                        disablePortal: true, // <--- HERE
-                                        onClick: (e) => {
-                                            e.preventDefault();
-                                        },
-                                    }}
-                                    onChange={handleChange}
-                                >
-                                    <MenuItem value={"default"} disabled>
-                                        Please select a course
-                                    </MenuItem>
-                                    {courses.map((course) => (
-                                        <MenuItem key={course.id} value={course.id}>
-                                            {course.name}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                }
+                <Grid item xs={12} md={12}>
+                    <FormControl fullWidth>
+                        <InputLabel id="room-select-label-form">Course</InputLabel>
+                        <Select
+                            disabled={props.schedule.id !== undefined}
+                            defaultValue={formData.course_id ?? ""}
+                            value={formData.course_id ?? ""}
+                            label="Course"
+                            name="course_id"
+                            MenuProps={{
+                                disablePortal: true, // <--- HERE
+                                onClick: (e) => {
+                                    e.preventDefault();
+                                },
+                            }}
+                            onChange={handleChange}
+                        >
+                            <MenuItem value={"default"} disabled>
+                                Please select a course
+                            </MenuItem>
+                            {courses.map((course) => (
+                                <MenuItem key={course.id} value={course.id}>
+                                    {course.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Grid>
                 <Grid item xs={12} md={12}>
                     <TextField type="number" onChange={handleChange} name="session" value={formData.session} id="form-session" fullWidth label="Session" variant="outlined" />
                 </Grid>

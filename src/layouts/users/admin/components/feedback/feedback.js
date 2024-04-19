@@ -15,75 +15,80 @@ const headCells = [
     },
     {
         id: "course_id",
-        numeric: false,
-        disablePadding: true,
+        numeric: true,
+        disablePadding: false,
         label: "Course Id",
     },
     {
         id: "lecturer_id",
-        numeric: false,
-        disablePadding: true,
+        numeric: true,
+        disablePadding: false,
         label: "Lecturer Id",
     },
     {
         id: "student_id",
-        numeric: false,
-        disablePadding: true,
+        numeric: true,
+        disablePadding: false,
         label: "Student Id",
     },
     {
         id: "q1",
         numeric: true,
         disablePadding: false,
-        label: "Question 1",
+        label: "Q1",
     },
     {
         id: "q2",
         numeric: true,
         disablePadding: false,
-        label: "Question 2",
+        label: "Q2",
     },
     {
         id: "q3",
         numeric: true,
         disablePadding: false,
-        label: "Question 3",
+        label: "Q3",
     },
     {
         id: "q4",
         numeric: true,
         disablePadding: false,
-        label: "Question 4",
+        label: "Q4",
     },
     {
         id: "q5",
         numeric: true,
         disablePadding: false,
-        label: "Question 2",
+        label: "Q2",
     },
     {
         id: "q6",
         numeric: true,
         disablePadding: false,
-        label: "Question 6",
+        label: "Q6",
     },
     {
         id: "q7",
         numeric: true,
         disablePadding: false,
-        label: "Question 7",
+        label: "Q7",
     },
     {
         id: "q8",
         numeric: true,
         disablePadding: false,
-        label: "Question 8",
+        label: "Q8",
     },
     {
         id: "total",
         numeric: true,
         disablePadding: false,
-        label: "Total Score",
+        label: "Total",
+    }, {
+        id: "comments",
+        numeric: true,
+        disablePadding: false,
+        label: "Comments",
     },
 ];
 
@@ -128,6 +133,10 @@ export default function FeedbackAdmin(props) {
         }
     };
 
+    const handleAddEntry = () => {
+        props.sendToast("error", "Cannot add new student's feedback!");
+    }
+
     const handleRefreshEntry = () => {
         console.log("Fetch rows!");
         fetchRows();
@@ -137,8 +146,20 @@ export default function FeedbackAdmin(props) {
         props.sendToast("error", "Cannot edit student's feedback!");
     };
 
-    const handleDelete = (index) => {
-        props.sendToast("error", "Cannot delete student's feedback!");
+    const handleDelete = (id) => {
+
+        axios.delete(process.env.REACT_APP_HOST_URL + "/feedback", {
+            params: {
+                id: id
+            }
+        }).then((res) => {
+            if (res.data.status) {
+                props.sendToast("success", "Deleted student feedback with id " + id);
+                fetchRows();
+            } else {
+                props.sendToast("error", "Cannot delete feedback " + id);
+            }
+        })
     };
 
     const handleSearch = () => {
@@ -291,6 +312,7 @@ export default function FeedbackAdmin(props) {
                                 handleEdit={handleEdit}
                                 handleDelete={handleDelete}
                                 handleRefreshEntry={handleRefreshEntry}
+                                handleAddEntry={handleAddEntry}
                             />
                         </div>
                     </div>

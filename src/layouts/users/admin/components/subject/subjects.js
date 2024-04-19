@@ -132,9 +132,6 @@ export default function SubjectsAdmin(props) {
                             data.push(subject);
                         });
                         setRows(data);
-                        toast.success("Data Fetched Succesfully", {
-                            position: "bottom-left",
-                        });
                         localStorage.setItem(
                             "subjectsData",
                             JSON.stringify(data)
@@ -173,7 +170,10 @@ export default function SubjectsAdmin(props) {
             .then((res) => {
                 if (res.data.status) {
                     toast.success("Deleted");
+                    fetchRows();
+                    tableRef.current.clearSelected();
                 } else {
+                    toast.error("Failed to delete")
                 }
             });
     };

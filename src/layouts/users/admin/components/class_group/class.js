@@ -29,6 +29,7 @@ import AttendanceWidget from "./widgets/attendanceWidget";
 import AttendanceForm from "./forms/attendanceForm";
 import { filterByAttribute } from "../../../../../utils/utils";
 import { toast } from "react-toastify";
+import { cacheData, getCache, items } from "../../../../../utils/dataOptimizer";
 
 export default function FGWClass(props) {
     const constants = new Constants();
@@ -72,7 +73,7 @@ export default function FGWClass(props) {
 
     const handleSearchGroup = async () => {
         try {
-            let groups = JSON.parse(localStorage.getItem("groups_data"));
+            let groups = getCache(items.Groups)
             if (programme !== "") {
                 groups = groups.filter(function (group) {
                     return group.programme === programme;
@@ -115,7 +116,7 @@ export default function FGWClass(props) {
         setTerm("");
         setYear("");
         setDepartment("");
-        let groups = JSON.parse(localStorage.getItem("groups_data"));
+        let groups = getCache(items.Groups)
         setGroups(groups);
     };
 
@@ -172,10 +173,7 @@ export default function FGWClass(props) {
                 .then((res) => {
                     if (res.data.status) {
                         setGroups(res.data.data);
-                        localStorage.setItem(
-                            "groups_data",
-                            JSON.stringify(res.data.data)
-                        );
+                        cacheData(items.Groups, res.data.data)
                     } else {
                         props.sendToast("error", res.data.data);
                     }

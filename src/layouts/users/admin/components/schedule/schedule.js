@@ -5,7 +5,7 @@ import CustomTable from "../../../../../common/table/table";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { fetchDocuments, getAllHeaderColumns } from "../../../../../utils/utils";
-import AttendanceScheduleForm from "./scheduleForm";
+import CourseScheduleForm from "./scheduleForm";
 
 const headCells = [
     {
@@ -257,7 +257,10 @@ export default function ScheduleAdmin(props) {
                                 handleEdit={handleEdit}
                                 handleDelete={handleDelete}
                                 handleRefreshEntry={handleRefreshEntry}
-                                handleAddEntry={handleOpenModal}
+                                handleAddEntry={() => {
+                                    setSchedule({})
+                                    handleOpenModal()
+                                }}
                             />
                         </div>
                     </div>
@@ -296,7 +299,7 @@ export default function ScheduleAdmin(props) {
                         bgcolor: "background.paper",
                         boxShadow: 12,
                     }}>
-                    <AttendanceScheduleForm sendToast={props.sendToast} schedule={schedule} closeHandler={handleCloseModal} />
+                    <CourseScheduleForm sendToast={props.sendToast} schedule={schedule} closeHandler={handleCloseModal} />
                 </DialogContent>
             </Dialog>
         </>

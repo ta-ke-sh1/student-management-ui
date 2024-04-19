@@ -15,7 +15,6 @@ const headCells = [
 ];
 
 export default function ParticipantsWidget(props) {
-    console.log(props)
     const [showModal, setShowModal] = useState(false);
     const [participant, setParticipant] = useState({})
 

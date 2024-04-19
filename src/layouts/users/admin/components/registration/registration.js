@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import { TextField, Button, Grid } from "@mui/material";
+import { TextField, Button, Grid, Dialog, DialogContent } from "@mui/material";
 import CustomTable from "../../../../../common/table/table";
 
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-import { getAllHeaderColumns } from "../../../../../utils/utils";
+import { fetchDocuments, getAllHeaderColumns } from "../../../../../utils/utils";
+import { cacheData, getArrayCache, items } from "../../../../../utils/dataOptimizer";
+import RegistrationForm from "./registrationForm";
 
 const headCells = [
     {
@@ -47,7 +49,6 @@ const headCells = [
 
 export default function RegistrationAdmin(props) {
     const tableRef = useRef();
-    const [registration, setRegistration] = useState("HN");
 
     // Registration room data
     const [rowData, setRowData] = useState([]);
@@ -57,11 +58,29 @@ export default function RegistrationAdmin(props) {
     const [groupId, setGroupId] = useState("");
     const [studentId, setStudentId] = useState("");
 
+    const [registration, setRegistration] = useState({})
+
     const [tableTitle, setTableTitle] = useState("All Registrations");
 
     useEffect(() => {
-        fetchRows();
+        let data = getArrayCache(items.Registration)
+        if (data.length === 0) {
+            fetchRows()
+        } else {
+            setRows(data);
+            setRowData(data);
+        }
     }, []);
+
+    const [open, setOpen] = useState(false)
+
+    const handleOpen = () => setOpen(true)
+    const handleClose = () => setOpen(false)
+
+    const handleAddEntry = () => {
+        setRegistration({})
+        handleOpen()
+    }
 
     const fetchRows = () => {
         let result = [];
@@ -73,6 +92,7 @@ export default function RegistrationAdmin(props) {
                 .then((res) => {
                     if (!res.data.status) {
                         props.sendToast("error", res.data.data);
+                        return;
                     }
 
                     res.data.data.forEach((room) => {
@@ -81,6 +101,7 @@ export default function RegistrationAdmin(props) {
 
                     setRows(result);
                     setRowData(result);
+                    cacheData(items.Registration, result)
                 });
         } catch (e) {
             props.sendToast("error", e.toString());
@@ -92,12 +113,26 @@ export default function RegistrationAdmin(props) {
         fetchRows();
     };
 
-    const handleEdit = (id) => {
+    const handleEdit = () => {
         props.sendToast("error", "Cannot edit student's registration!");
     };
 
     const handleDelete = (index) => {
-        props.sendToast("error", "Cannot delete student's registration!");
+        console.log(index);
+        const registration = fetchDocuments(rowData, index)
+        axios.delete(process.env.REACT_APP_HOST_URL + "/schedule/participant", {
+            params: {
+                group_id: registration.id,
+                student_id: registration.student_id
+            }
+        }).then((res) => {
+            if (res.data.status) {
+                fetchRows()
+                props.sendToast("successr", "Deleted student's registration!");
+            } else {
+                props.sendToast("error", "Failed to delete student's registration!");
+            }
+        })
     };
 
     const handleSearch = () => {
@@ -231,11 +266,21 @@ export default function RegistrationAdmin(props) {
                                 handleEdit={handleEdit}
                                 handleDelete={handleDelete}
                                 handleRefreshEntry={handleRefreshEntry}
+                                handleAddEntry={handleAddEntry}
                             />
                         </div>
                     </div>
                 </Grid>
             </Grid>
+
+            <Dialog className="modal" open={open} fullWidth={true} onClose={handleClose}>
+                <DialogContent sx={{
+                    bgcolor: "background.paper",
+                    boxShadow: 12,
+                }}>
+                    <RegistrationForm sendToast={props.sendToast} refresh={fetchRows} registration={registration} closeHandler={handleClose} />
+                </DialogContent>
+            </Dialog>
         </>
     );
 }

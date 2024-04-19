@@ -5,7 +5,8 @@ export const items = {
     Users: "usersData",
     Lecturers: "lecturersData",
     Rooms: "roomsData",
-    Registration: "registrationData"
+    Registration: "registrationData",
+    Feedback: "feedbackData"
 }
 
 // Cache data for less database requests

@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import { TextField, Button, Grid } from "@mui/material";
+import { TextField, Button, Grid, Dialog, DialogContent } from "@mui/material";
 import CustomTable from "../../../../../common/table/table";
 
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-import { getAllHeaderColumns } from "../../../../../utils/utils";
+import { fetchDocuments, getAllHeaderColumns } from "../../../../../utils/utils";
+import FeedbackForm from "./feedbackForm";
+import { items, cacheData, getArrayCache } from "../../../../../utils/dataOptimizer";
 
 const headCells = [
     {
@@ -94,7 +96,7 @@ const headCells = [
 
 export default function FeedbackAdmin(props) {
     const tableRef = useRef();
-    const [feedback, setFeedback] = useState("HN");
+    const [feedback, setFeedback] = useState({});
 
     // Feedback room data
     const [rowData, setRowData] = useState([]);
@@ -107,8 +109,19 @@ export default function FeedbackAdmin(props) {
 
     const [tableTitle, setTableTitle] = useState("All Feedbacks");
 
+    const [open, setOpen] = useState(false)
+
+    const handleClose = () => setOpen(false)
+
     useEffect(() => {
-        fetchRows();
+        const data = getArrayCache(items.Feedback)
+        if (data.length > 0) {
+            setRowData(data)
+            setRows(data)
+        } else {
+            fetchRows();
+        }
+
     }, []);
 
     const fetchRows = () => {
@@ -127,6 +140,7 @@ export default function FeedbackAdmin(props) {
 
                     setRows(result);
                     setRowData(result);
+                    cacheData(items.Feedback, result)
                 });
         } catch (e) {
             props.sendToast("error", e.toString());
@@ -134,20 +148,20 @@ export default function FeedbackAdmin(props) {
     };
 
     const handleAddEntry = () => {
-        props.sendToast("error", "Cannot add new student's feedback!");
+        props.sendToast("error", "Only students can add feedback!");
     }
 
     const handleRefreshEntry = () => {
-        console.log("Fetch rows!");
         fetchRows();
     };
 
     const handleEdit = (id) => {
-        props.sendToast("error", "Cannot edit student's feedback!");
+        const feeback = fetchDocuments(rowData, id)
+        setFeedback(feeback)
+        setOpen(true)
     };
 
     const handleDelete = (id) => {
-
         axios.delete(process.env.REACT_APP_HOST_URL + "/feedback", {
             params: {
                 id: id
@@ -318,6 +332,24 @@ export default function FeedbackAdmin(props) {
                     </div>
                 </Grid>
             </Grid>
+            <Dialog
+                className="modal"
+                fullWidth={true}
+                open={open}
+                onClose={handleClose}>
+                <DialogContent
+                    sx={{
+                        bgcolor: "background.paper",
+                        boxShadow: 12,
+                    }}>
+                    <FeedbackForm
+                        closeHandler={handleClose}
+                        feedback={feedback}
+                        refresh={fetchRows}
+                        sendToast={props.sendToast}
+                    />
+                </DialogContent>
+            </Dialog>
         </>
     );
 }

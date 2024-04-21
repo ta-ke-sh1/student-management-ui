@@ -9,11 +9,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { getArrayCache, lecturerItems } from "../../../utils/dataOptimizer";
+import SummarizeIcon from '@mui/icons-material/Summarize';
 
 export default function AllSubmissionsTab(props) {
     const [submission, setSubmission] = useState();
     const [submissions, setSubmissions] = useState([]);
-    const [hasFetch, setHasFetch] = useState(false);
     const [participants, setParticipants] = useState([]);
 
     const [open, setOpen] = useState(false);
@@ -21,13 +21,9 @@ export default function AllSubmissionsTab(props) {
     const handleClose = () => setOpen(false);
 
     const [assignment, setAssignment] = useState({})
-    const [current, setCurrent] = useState(0)
+    const [current, setCurrent] = useState(-1)
 
     const [assignmentId, setAssignmentId] = useState("")
-
-    useEffect(() => {
-
-    }, [hasFetch]);
 
     function fetchParticipants(id) {
         axios
@@ -55,7 +51,6 @@ export default function AllSubmissionsTab(props) {
             .then((res) => {
                 if (res.data.status) {
                     setSubmissions(res.data.data);
-                    setHasFetch(true);
 
                     let data = getArrayCache(lecturerItems.Participants)
                     if (data.length > 0) {
@@ -95,6 +90,20 @@ export default function AllSubmissionsTab(props) {
         })
     }
 
+    function summarizeAllGrades() {
+        axios.get(process.env.REACT_APP_HOST_URL + "/course/summarize", {
+            params: {
+                id: assignment.course_id
+            }
+        }).then((res) => {
+            if (res.data.status) {
+                props.sendToast("success", "Summarized grades for all students")
+            } else {
+                props.sendToast("error", "Failed to delete coursework")
+            }
+        })
+    }
+
     return (
         <>
             <div className="curriculum-container">
@@ -117,6 +126,13 @@ export default function AllSubmissionsTab(props) {
                         Submissions
                     </h3>
                     <div>
+                        <Tooltip title="Summarize all grades">
+                            <IconButton
+                                onClick={summarizeAllGrades}>
+                                <SummarizeIcon />
+                            </IconButton>
+                        </Tooltip>
+
                         <IconButton
                             onClick={props.handleOpenCourseworkModal}>
                             <AddIcon />
@@ -129,7 +145,6 @@ export default function AllSubmissionsTab(props) {
                                     }}
                                     onClick={
                                         () => {
-                                            console.log(assignment)
                                             props.handleOpenCourseworkModal(assignment)
                                         }
                                     }>
@@ -137,7 +152,6 @@ export default function AllSubmissionsTab(props) {
                                 </IconButton><IconButton
                                     onClick={
                                         () => {
-                                            console.log(assignment)
                                             deleteAssignment();
                                         }
                                     }>

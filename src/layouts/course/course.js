@@ -122,6 +122,7 @@ export default function CourseUser() {
             />
         ) : (
             <AllSubmissionsTab
+                refresh={fetchCourse}
                 course={course}
                 handleSelectTab={handleSelectTab}
                 sendToast={sendToast}
@@ -415,6 +416,7 @@ export default function CourseUser() {
                     className={"modal"}>
                     <CourseworkFormModal
                         coursework={coursework}
+                        refresh={fetchCourse}
                         closeHandler={() => setOpenCourseworkModal(false)}
                         sendToast={sendToast}
                     />

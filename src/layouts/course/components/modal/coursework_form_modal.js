@@ -19,10 +19,6 @@ export default function CourseworkFormModal(props) {
     const [deadline, setDeadline] = useState(props.coursework.id ? dayjs(props.coursework.deadline * 1000) : new Date())
     const [closedDate, setClosedDate] = useState(props.coursework.id ? dayjs(props.coursework.close * 1000) : new Date())
 
-    useEffect(() => {
-
-    }, [])
-
     const handleConfirm = () => {
         try {
             if (props.coursework.id) {
@@ -36,6 +32,7 @@ export default function CourseworkFormModal(props) {
                 }).then((res) => {
                     if (res.data.status) {
                         props.closeHandler();
+                        props.refresh();
                     } else {
                         props.sendToast("error", res.data.data)
                     }
@@ -51,6 +48,7 @@ export default function CourseworkFormModal(props) {
                 }).then((res) => {
                     if (res.data.status) {
                         props.closeHandler();
+                        props.refresh();
                     } else {
                         props.sendToast("error", res.data.data)
                     }

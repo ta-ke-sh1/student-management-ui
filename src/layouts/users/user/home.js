@@ -35,64 +35,64 @@ export default function UserHome(props) {
     const nav_tabs =
         token.role === 1
             ? [
-                  {
-                      title: "Navigation",
-                      tabs: [
-                          {
-                              name: "Home",
-                              id: 0,
-                              icon: <HomeIcon />,
-                          },
-                          {
-                              name: "Personal Info",
-                              id: 1,
-                              icon: <AccountCircleIcon />,
-                          },
-                          {
-                              name: "Schedule",
-                              id: 2,
-                              icon: <EventNoteIcon />,
-                          },
-                          {
-                              name: "Curriculum",
-                              id: 3,
-                              icon: <ViewListIcon />,
-                          },
-                          {
-                              name: "Requests",
-                              id: 4,
-                              icon: <ArchiveIcon />,
-                          },
-                      ],
-                  },
-              ]
+                {
+                    title: "Navigation",
+                    tabs: [
+                        {
+                            name: "Home",
+                            id: 0,
+                            icon: <HomeIcon />,
+                        },
+                        {
+                            name: "Personal Info",
+                            id: 1,
+                            icon: <AccountCircleIcon />,
+                        },
+                        {
+                            name: "Schedule",
+                            id: 2,
+                            icon: <EventNoteIcon />,
+                        },
+                        {
+                            name: "Curriculum",
+                            id: 3,
+                            icon: <ViewListIcon />,
+                        },
+                        {
+                            name: "Requests",
+                            id: 4,
+                            icon: <ArchiveIcon />,
+                        },
+                    ],
+                },
+            ]
             : [
-                  {
-                      title: "Navigation",
-                      tabs: [
-                          {
-                              name: "Home",
-                              id: 0,
-                              icon: <HomeIcon />,
-                          },
-                          {
-                              name: "Personal Info",
-                              id: 1,
-                              icon: <AccountCircleIcon />,
-                          },
-                          {
-                              name: "Schedule",
-                              id: 2,
-                              icon: <EventNoteIcon />,
-                          },
-                          {
-                              name: "Requests",
-                              id: 4,
-                              icon: <ArchiveIcon />,
-                          },
-                      ],
-                  },
-              ];
+                {
+                    title: "Navigation",
+                    tabs: [
+                        {
+                            name: "Home",
+                            id: 0,
+                            icon: <HomeIcon />,
+                        },
+                        {
+                            name: "Personal Info",
+                            id: 1,
+                            icon: <AccountCircleIcon />,
+                        },
+                        {
+                            name: "Schedule",
+                            id: 2,
+                            icon: <EventNoteIcon />,
+                        },
+                        {
+                            name: "Requests",
+                            id: 4,
+                            icon: <ArchiveIcon />,
+                        },
+                    ],
+                },
+            ];
 
     function sendToast(type, message) {
         const opt = {

@@ -1,10 +1,11 @@
 import { Suspense, useEffect, useState } from "react";
 import Loading from "../../../../../common/loading/loading";
-import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Grid, Typography } from "@mui/material";
+import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Grid, IconButton, Typography } from "@mui/material";
 import axios from "axios";
-
+import RefreshIcon from '@mui/icons-material/Refresh';
 import { useNavigate } from "react-router-dom";
 import { decodeToken, fromMilisecondsToDisplayFormatDateString } from "../../../../../utils/utils";
+import { getArrayCache } from "../../../../../utils/dataOptimizer";
 
 export default function CoursesUser(props) {
     const token = decodeToken(localStorage.getItem("access_token"));
@@ -15,8 +16,25 @@ export default function CoursesUser(props) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetchCourse();
-        console.log()
+        let data = getArrayCache("course")
+        if (data.length > 0) {
+            let courses = data
+            let ongoing = [];
+            let others = [];
+            courses.forEach((course) => {
+                console.log(new Date().getTime())
+                let currentTime = new Date().getTime()
+                if (course.endDate >= currentTime && course.startDate <= currentTime) {
+                    ongoing.push(course)
+                } else {
+                    others.push(course)
+                }
+            })
+            setOtherCourses(others);
+            setOngoingCourses(ongoing);
+        } else {
+            fetchCourse();
+        }
 
         return function cleanUp() {
             localStorage.removeItem("course")
@@ -58,14 +76,32 @@ export default function CoursesUser(props) {
                     marginBottom: "40px",
                 }}
             >
-                <h2
-                    className="bold"
-                    style={{
-                        fontSize: "1.75rem",
-                    }}
-                >
-                    Ongoing Courses
-                </h2>
+                <div style={{
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    height: 'fit-content'
+                }}>
+                    <div style={{
+                        marginTop: '-20px'
+                    }}>
+                        <h2
+                            className="bold"
+                            style={{
+                                fontSize: "1.75rem",
+                            }}
+                        >
+                            Ongoing Courses
+                        </h2>
+                    </div>
+                    <IconButton style={{
+                        height: '40px'
+                    }} >
+                        <RefreshIcon onClick={fetchCourse} />
+                    </IconButton>
+                </div>
+
                 <Grid container spacing={4}>
                     {
                         onGoingCourses.length > 0 ?
@@ -119,7 +155,7 @@ export default function CoursesUser(props) {
                         <Grid container spacing={4}>{
                             otherCourses.map((course, index) => {
                                 return (
-                                    <Grid item xs={6} sm={4} md={3}>
+                                    <Grid item xs={6} sm={4} md={4}>
                                         <Card sx={{ width: 345 }}>
                                             <CardMedia
                                                 sx={{ height: 120, backgroundImage: `url(${process.env.PUBLIC_URL}/banner/banner` + (index + 1) + ".jpg)", }}

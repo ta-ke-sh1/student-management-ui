@@ -7,7 +7,9 @@ export const items = {
     Rooms: "roomsData",
     Registration: "registrationData",
     Feedback: "feedbackData",
-    Schedule: "scheduleData"
+    Schedule: "scheduleData",
+    Curriculum: "curriculumData",
+    UserDetails: "userDetailsData",
 }
 
 export const lecturerItems = {
@@ -41,4 +43,11 @@ export const getCacheData = (item, fn) => {
     } else if (fn) {
         fn();
     }
+}
+
+export const removeAllCache = () => {
+    const cache = Object.keys(items)
+    cache.forEach((item) => {
+        localStorage.clear(item)
+    })
 }

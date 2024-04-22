@@ -131,7 +131,7 @@ export default function ScheduleTab(props) {
                                                     display="flex"
                                                     justifyContent="flex-end">
                                                     <Button
-                                                        disabled={isValidDate(
+                                                        disabled={!isValidDate(
                                                             schedule.date
                                                         )}
                                                         onClick={() =>

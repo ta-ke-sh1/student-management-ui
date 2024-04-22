@@ -86,7 +86,7 @@ export function isExpiredToken(secondsSinceEpoch) {
 }
 
 export function objectToMap(obj) {
-    return Object.keys(obj).map((key) => obj[key]);
+    return Object.keys(obj).map((key) => obj[key])
 }
 
 export function convertDateToDayOfTheWeek(date) {

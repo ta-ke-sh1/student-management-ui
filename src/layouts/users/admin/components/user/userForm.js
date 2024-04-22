@@ -83,6 +83,7 @@ export default function UserForm(props) {
     axios.get(process.env.REACT_APP_HOST_URL + "/user/deactivate?id=" + id).then((res) => {
       if (res.status === 200) {
         props.closeHandler();
+        props.refresh();
       }
     });
   };
@@ -113,6 +114,7 @@ export default function UserForm(props) {
             toast.success("User edited", {
               position: "bottom-left",
             });
+            props.refresh();
             props.closeHandler();
           } else {
             toast.error(res.data.data, {
@@ -126,7 +128,8 @@ export default function UserForm(props) {
             toast.success("User added", {
               position: "bottom-left",
             });
-            props.closeHandler();
+            props.refresh();
+            props.handleRefreshEntry();
           } else {
             toast.error(res.data.data, {
               position: "bottom-left",

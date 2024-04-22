@@ -6,13 +6,10 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
 import Constants from "../../../../../utils/constants";
 import axios from "axios";
-
 import { decodeToken } from "../../../../../utils/utils";
 
 export default function ScheduleHome(props) {
     const token = decodeToken(localStorage.getItem("access_token"));
-    console.log(token);
-    // token = {id, avatar, user, email, role}
 
     const constants = new Constants();
 
@@ -39,11 +36,9 @@ export default function ScheduleHome(props) {
 
     useLayoutEffect(() => {
         fetchSchedules();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleTakeAttendance = (data) => {
-        console.log(data);
         data.source = "home";
         localStorage.setItem("schedule", JSON.stringify(data));
         props.handleChangeAttendance();
@@ -59,8 +54,8 @@ export default function ScheduleHome(props) {
             axios
                 .get(
                     process.env.REACT_APP_HOST_URL +
-                        "/schedule/" +
-                        (token.role === 2 ? "lecturer" : "student"),
+                    "/schedule/" +
+                    (token.role === 2 ? "lecturer" : "student"),
                     {
                         params: {
                             user_id: token.user,
@@ -106,11 +101,11 @@ export default function ScheduleHome(props) {
                     "slot-content-container " +
                     (token.role === 2
                         ? "lecturer"
-                        : schedule.status === 1
-                        ? "attended"
-                        : schedule.status === 0
-                        ? "absent"
-                        : "not-yet");
+                        : schedule.remark === 1
+                            ? "attended"
+                            : schedule.remark === 0
+                                ? "absent"
+                                : "not-yet");
                 return (
                     <div className={className}>
                         <Tooltip
@@ -128,13 +123,13 @@ export default function ScheduleHome(props) {
                                 onClick={() => {
                                     return token.role === 2
                                         ? handleTakeAttendance(
-                                              dateMap[slot][dayNumber]
-                                          )
+                                            dateMap[slot][dayNumber]
+                                        )
                                         : null;
                                 }}>
                                 {dateMap[slot][dayNumber].subject}
                                 <br />
-                                {dateMap[slot][dayNumber].class}
+                                {dateMap[slot][dayNumber].course_id}
                                 <br />
                                 {dateMap[slot][dayNumber].room}
                                 <br />
@@ -142,11 +137,11 @@ export default function ScheduleHome(props) {
                                 <br />
                                 {token.role === 2
                                     ? "Take Attendance"
-                                    : schedule.status === 1
-                                    ? "Attended"
-                                    : schedule.status === 0
-                                    ? "Absent"
-                                    : "Not Yet"}
+                                    : schedule.remark === 1
+                                        ? "Attended"
+                                        : schedule.remark === 0
+                                            ? "Absent"
+                                            : "Not Yet"}
                             </div>
                         </Tooltip>
                     </div>

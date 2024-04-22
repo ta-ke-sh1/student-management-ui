@@ -19,11 +19,13 @@ import UserForm from "./userForm";
 import axios from "axios";
 import Constants from "../../../../../utils/constants";
 import {
+    fetchDocuments,
     filterByAttribute,
     getAllHeaderColumns,
     objectToMap,
 } from "../../../../../utils/utils";
 import address_tree from "../../../../../utils/address_tree.json";
+import { cacheData, getArrayCache, items } from "../../../../../utils/dataOptimizer";
 
 const headCells = [
     {
@@ -136,7 +138,13 @@ export default function UsersAdmin(props) {
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
-        fetchRows();
+        let data = getArrayCache(items.Users)
+        if (data.length > 0) {
+            setUsers(data)
+        } else {
+            fetchRows();
+        }
+
         try {
             let citiesMap = objectToMap(address_tree);
             setCities(citiesMap);
@@ -193,10 +201,7 @@ export default function UsersAdmin(props) {
                         res.data.data.forEach((user) => {
                             result.push(user);
                         });
-                        localStorage.setItem(
-                            "users_data",
-                            JSON.stringify(result)
-                        );
+                        cacheData(items.Users, result)
                         setUsers(result);
                     }
                 });
@@ -216,13 +221,20 @@ export default function UsersAdmin(props) {
         setOpenModal(true);
     };
 
-    const handleDelete = (index) => {
-        setDialogTitle("Delete User");
-        setDialogContent(
-            "This user will be deleted, are you sure? This change cannot be undone"
-        );
-        setOpen(true);
-        console.log(index);
+    const handleDelete = (id) => {
+        let user = fetchDocuments(users, id)
+        axios.delete(process.env.REACT_APP_HOST_URL + "/user", {
+            params: {
+                id: user.id,
+                role: user.role
+            }
+        }).then((res) => {
+            if (res.data.status) {
+                fetchRows();
+            } else {
+                props.sendToast("error", res.data.data);
+            }
+        })
     };
 
     const handleClose = () => {

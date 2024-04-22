@@ -14,10 +14,7 @@ import CurriculumTab from "./views/curriculum/curriculum";
 import { Main, drawerWidth } from "../../../common/drawer/drawer";
 import CoursesUser from "./views/courses/courses";
 import { ToastContainer, toast } from "react-toastify";
-import AttendaceTab from "./views/attendance/attendance";
-import { useNavigate } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
-import axios from "axios";
 import RequestsTab from "./views/request/requests";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import { decodeToken } from "../../../utils/utils";
@@ -27,7 +24,7 @@ export default function UserHome(props) {
     const token = decodeToken(localStorage.getItem("access_token"));
     const _container =
         window !== undefined ? () => window.document.body : undefined;
-    const [current, setCurrent] = useState(props.index ?? 2);
+    const [current, setCurrent] = useState(props.index ?? 1);
     const [mobileOpen, setMobileOpen] = useState(true);
 
     const [course, setCourse] = useState({});

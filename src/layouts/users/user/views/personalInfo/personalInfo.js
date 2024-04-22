@@ -1,22 +1,28 @@
 import { Suspense, useEffect, useState } from "react";
-import { Dialog, DialogContent, Grid, IconButton, Tooltip } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import { ToastContainer, toast } from "react-toastify";
+import { Button, Dialog, DialogContent, Grid } from "@mui/material";
+import { ToastContainer } from "react-toastify";
 import axios from "axios";
 import { decodeToken } from "../../../../../utils/utils";
 import Loading from "../../../../../common/loading/loading";
-import AddressForm from "./form/addressForm";
-import InformationForm from "./form/informationForm";
+import { cacheData, getCache, items } from "../../../../../utils/dataOptimizer";
+import AvatarForm from "./form/avatarForm";
+import PasswordForm from "./form/passwordForm";
 
 export default function PersonalInfo(props) {
   const token = decodeToken(localStorage.getItem("access_token"));
   const [user, setUser] = useState({});
 
-  const [openAddressModal, setOpenAddressModal] = useState(false);
-  const [openInformationModal, setOpenInformationModal] = useState(false);
+  const [openAvatarModal, setOpenAvatarModal] = useState(false);
+  const [openPasswordModal, setOpenPasswordModal] = useState(false);
 
   useEffect(() => {
-    fetchUserData();
+    let data = getCache(items.UserDetails)
+    if (data) {
+      setUser(data)
+    } else {
+      fetchUserData();
+    }
+
   }, []);
 
   const fetchUserData = () => {
@@ -26,8 +32,8 @@ export default function PersonalInfo(props) {
         if (!res.data.status) {
           props.sendToast("error", res.data.data);
         } else {
-          console.log(res.data);
           setUser(res.data.data[0]);
+          cacheData(items.UserDetails, res.data.data[0])
         }
       });
     } catch (e) {
@@ -41,12 +47,14 @@ export default function PersonalInfo(props) {
         className="basic-info"
         style={{
           marginBottom: "40px",
+          paddingTop: "10px"
         }}
       >
         <div
           className="profile-pic-container"
           style={{
-            backgroundImage: `url(${process.env.REACT_APP_HOST_URL}` + token.avatar + `)`,
+            cursor: 'pointer',
+            backgroundImage: `url(${process.env.REACT_APP_HOST_URL}` + user.path + `)`,
           }}
         ></div>
         <div className="user-contact">
@@ -62,6 +70,15 @@ export default function PersonalInfo(props) {
           <span>{user.major}</span>
         </div>
       </div>
+      <div style={{
+        margin: '10px 0 20px 0'
+      }}>
+        <Button onClick={() => setOpenPasswordModal(true)} variant="contained" style={{
+          marginRight: '20px'
+        }}>Edit Password</Button>
+        <Button variant="contained" onClick={() => setOpenAvatarModal(true)}>Change Avatar</Button>
+      </div>
+
       <div
         className="big-widget inner-widget"
         style={{
@@ -69,16 +86,6 @@ export default function PersonalInfo(props) {
         }}
       >
         <div className="relative-container ">
-          <Tooltip title={"Edit"}>
-            <IconButton
-              className="icon-btn"
-              onClick={() => {
-                setOpenInformationModal(true);
-              }}
-            >
-              <EditIcon />
-            </IconButton>
-          </Tooltip>
           <h3 className="bold">Personal Information</h3>
           <Grid container className="personal-details-container">
             <Grid item xs={12} sm={6}>
@@ -113,16 +120,6 @@ export default function PersonalInfo(props) {
         }}
       >
         <div className="relative-container ">
-          <Tooltip title={"Edit"}>
-            <IconButton
-              className="icon-btn"
-              onClick={() => {
-                setOpenAddressModal(true);
-              }}
-            >
-              <EditIcon />
-            </IconButton>
-          </Tooltip>
           <h3 className="bold">Address</h3>
           <Grid container className="personal-details-container">
             <Grid item xs={12} sm={6}>
@@ -141,25 +138,28 @@ export default function PersonalInfo(props) {
         </div>
       </div>
 
-      <Dialog className="modal" fullWidth={true} open={openAddressModal} onClose={() => setOpenAddressModal(false)}>
+      <Dialog className="modal" fullWidth={true} open={openAvatarModal} onClose={() => setOpenAvatarModal(false)}>
         <DialogContent
           sx={{
             bgcolor: "background.paper",
             boxShadow: 12,
           }}
         >
-          <AddressForm sendToast={props.sendToast} user={user} refresh={fetchUserData} />
+          <AvatarForm sendToast={props.sendToast} user={user} refresh={() => {
+            fetchUserData()
+            window.location.reload()
+          }} handleClose={() => setOpenAvatarModal(false)} />
         </DialogContent>
       </Dialog>
 
-      <Dialog className="modal" fullWidth={true} open={openInformationModal} onClose={() => setOpenInformationModal(false)}>
+      <Dialog className="modal" fullWidth={true} open={openPasswordModal} onClose={() => setOpenPasswordModal(false)}>
         <DialogContent
           sx={{
             bgcolor: "background.paper",
             boxShadow: 12,
           }}
         >
-          <InformationForm sendToast={props.sendToast} user={user} refresh={fetchUserData} />
+          <PasswordForm sendToast={props.sendToast} user={user} refresh={fetchUserData} handleClose={() => setOpenPasswordModal(false)} />
         </DialogContent>
       </Dialog>
       <ToastContainer />

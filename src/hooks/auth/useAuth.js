@@ -2,6 +2,7 @@ import { useContext, createContext } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import React, { useState, useMemo } from "react";
 import ValidToken from "./validToken";
+import { removeAllCache } from "../../utils/dataOptimizer";
 
 const AuthContext = createContext();
 
@@ -25,6 +26,7 @@ export function AuthProvider({ children }) {
         setToken(null);
         setClearance(0);
         localStorage.removeItem("access_token")
+        removeAllCache();
     };
 
     let value = useMemo(() => ({ token, clearance, login, logout }), [token]);

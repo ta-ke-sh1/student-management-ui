@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
-import { Grid, Box, Card } from "@mui/material";
+import { Grid, Box, Card, IconButton } from "@mui/material";
 import axios from "axios";
-import { cacheData, getArrayCache, items, lecturerItems } from "../../utils/dataOptimizer";
+import { cacheData, getArrayCache, lecturerItems } from "../../utils/dataOptimizer";
+
+import AddIcon from '@mui/icons-material/Add';
+import RefreshIcon from '@mui/icons-material/Refresh'
 
 export default function ParticipantsTab(props) {
     const course = props.course;
@@ -36,13 +39,35 @@ export default function ParticipantsTab(props) {
 
     return (
         <div>
-            <h2
-                className="bold"
-                style={{
-                    fontSize: "1.75rem",
-                }}>
-                Participants
-            </h2>
+            <div style={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                height: 'fit-content',
+                paddingTop: '20px'
+            }}>
+                <div>
+                    <h2
+                        className="bold"
+                        style={{
+                            marginTop: '0px',
+                            fontSize: "1.75rem",
+                        }}
+                    >
+                        Participants
+                    </h2>
+                </div>
+                <div>
+                    <IconButton style={{
+                        height: '40px'
+                    }} >
+                        <RefreshIcon onClick={fetchParticipants} />
+                    </IconButton>
+                </div>
+
+            </div>
+
             <Grid container spacing={4}>
                 {participants.map((participant, index) => {
                     console.log(participant)

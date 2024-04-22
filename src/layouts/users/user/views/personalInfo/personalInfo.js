@@ -51,8 +51,12 @@ export default function PersonalInfo(props) {
         }}
       >
         <div
+          onClick={() => {
+            setOpenAvatarModal(true)
+          }}
           className="profile-pic-container"
           style={{
+            objectFit: 'cover',
             cursor: 'pointer',
             backgroundImage: `url(${process.env.REACT_APP_HOST_URL}` + user.path + `)`,
           }}

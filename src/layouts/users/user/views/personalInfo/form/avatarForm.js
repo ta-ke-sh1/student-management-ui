@@ -20,6 +20,13 @@ export default function AvatarForm(props) {
             return
         }
 
+        const fileType = file['type'];
+        const validImageTypes = ['image/jpeg', 'image/png'];
+        if (!validImageTypes.includes(fileType)) {
+            props.sendToast("error", "Invalid image type!")
+            return
+        }
+
         const formData = new FormData()
         formData.append("id", props.user.id)
         formData.append("role", props.user.role)

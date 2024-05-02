@@ -61,7 +61,9 @@ export default function ScheduleTab(props) {
 
     function isValidDate(date) {
         const current = new Date().getTime();
-        return date > current - 86400000 && date < current + 86400000;
+        // Can only take attendance within 2 days
+        let isValid = date > current - 172800000 && date < current + 172800000;
+        return isValid;
     }
 
     return (

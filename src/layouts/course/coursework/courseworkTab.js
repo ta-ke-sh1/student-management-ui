@@ -12,16 +12,15 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { fromMilisecondsToDisplayFormatDateString } from "../../../utils/utils";
 import { useNavigate } from "react-router-dom";
+import { cacheData } from "../../../utils/dataOptimizer";
 
 export default function CourseworkTab(props) {
-    const navigate = useNavigate();
     const [assignments, setAssignments] = useState([]);
     const [materials, setMaterials] = useState([]);
 
     useEffect(() => {
         fetchCourseworks();
         fetchMaterials();
-        console.log("Fetch");
     }, [props.id]);
 
     function fetchCourseworks() {
@@ -29,11 +28,12 @@ export default function CourseworkTab(props) {
             axios
                 .get(
                     process.env.REACT_APP_HOST_URL +
-                        "/course/courseworks?id=" +
-                        props.course.id
+                    "/course/courseworks?id=" +
+                    props.course.id
                 )
                 .then((res) => {
                     if (res.data.status) {
+
                         setAssignments(res.data.data);
                         console.log(res.data.data);
                     } else {
@@ -50,8 +50,8 @@ export default function CourseworkTab(props) {
             axios
                 .get(
                     process.env.REACT_APP_HOST_URL +
-                        "/course/materials?id=" +
-                        props.course.id
+                    "/course/materials?id=" +
+                    props.course.id
                 )
                 .then((res) => {
                     if (res.data.status) {
@@ -143,7 +143,7 @@ export default function CourseworkTab(props) {
             {materials.length > 0 ? (
                 materials.map((material) => {
                     return (
-                        <MaterialItem material={material} onClick={() => {}} />
+                        <MaterialItem material={material} onClick={() => { }} />
                     );
                 })
             ) : (

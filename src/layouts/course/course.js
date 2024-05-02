@@ -65,7 +65,7 @@ export default function CourseUser() {
         window !== undefined ? () => window.document.body : undefined;
     const [mobileOpen, setMobileOpen] = useState(true);
 
-    const [current, setCurrent] = useState(1);
+    const [current, setCurrent] = useState(0);
 
     const [openCourseworkModal, setOpenCourseworkModal] = useState(false);
     const [openMaterialModal, setOpenMaterialModal] = useState(false);
@@ -415,6 +415,7 @@ export default function CourseUser() {
                     }}
                     className={"modal"}>
                     <CourseworkFormModal
+                        course={course}
                         coursework={coursework}
                         refresh={fetchCourse}
                         closeHandler={() => setOpenCourseworkModal(false)}

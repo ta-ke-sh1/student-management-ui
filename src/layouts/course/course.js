@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, Divider, Snackbar } from "@mui/material";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Drawer, Box, Fab } from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
 import ListItem from "@mui/material/ListItem";
@@ -29,7 +29,7 @@ import FeedbackStudentTab from "./components/feedback/feedbackStudentTab";
 import FeedbackLecturerTab from "./components/feedback/feedbackLecturerTab";
 
 import AttendanceTab from "./attendanceTab";
-import AllSubmissionsTab from "./coursework/courseworkLecturer";
+import CourseworkLecturer from "./coursework/courseworkLecturer";
 
 const drawerWidth = 240;
 
@@ -71,8 +71,10 @@ export default function CourseUser() {
     const [openMaterialModal, setOpenMaterialModal] = useState(false);
 
     const [course, setCourse] = useState({});
-
+    const [material, setMaterial] = useState({})
     const [coursework, setCoursework] = useState({})
+
+    const lecturerTabRef = useRef();
 
     useEffect(() => {
         fetchCourse();
@@ -121,7 +123,9 @@ export default function CourseUser() {
                 course={course}
             />
         ) : (
-            <AllSubmissionsTab
+            <CourseworkLecturer
+                ref={lecturerTabRef}
+                id={course.id}
                 refresh={fetchCourse}
                 course={course}
                 handleSelectTab={handleSelectTab}
@@ -435,7 +439,13 @@ export default function CourseUser() {
                     }}
                     className={"modal"}>
                     <CourseworkMaterialModal
-                        closeHandler={() => setOpenMaterialModal(false)}
+                        course={course}
+                        material={material}
+                        closeHandler={() => {
+                            setOpenMaterialModal(false)
+                            lecturerTabRef.current.refreshMaterials();
+                        }
+                        }
                         sendToast={sendToast}
                     />
                 </DialogContent>

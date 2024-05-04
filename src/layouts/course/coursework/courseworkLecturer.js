@@ -1,18 +1,22 @@
-import { Grid, Box, Button, Modal, Tooltip, IconButton } from "@mui/material";
+import { Grid, Box, Button, Modal, Tooltip, IconButton, Icon, Divider } from "@mui/material";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import AssignmentGradingModal from "../components/modal/assignment_grading_modal";
 import { downloadFile, formatSecondsToDate } from "../../../utils/utils";
 import lodash from "lodash";
-
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
+import InsertLinkIcon from '@mui/icons-material/InsertLink';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { getArrayCache, lecturerItems } from "../../../utils/dataOptimizer";
 import SummarizeIcon from '@mui/icons-material/Summarize';
+import Delete from "@mui/icons-material/Delete";
+import Refresh from "@mui/icons-material/Refresh";
+import MaterialItem from "../components/material_item";
 
-export default function AllSubmissionsTab(props) {
-    const [submission, setSubmission] = useState();
+export default forwardRef((props, ref) => {
+    const [submission, setSubmission] = useState({});
     const [submissions, setSubmissions] = useState([]);
     const [participants, setParticipants] = useState([]);
 
@@ -23,7 +27,20 @@ export default function AllSubmissionsTab(props) {
     const [assignment, setAssignment] = useState({})
     const [current, setCurrent] = useState(-1)
 
-    const [assignmentId, setAssignmentId] = useState("")
+    const [assignmentId, setAssignmentId] = useState("");
+
+    const [material, setMaterial] = useState({})
+    const [materials, setMaterials] = useState([]);
+
+    useImperativeHandle(ref, () => ({
+        refreshMaterials() {
+            fetchMaterials();
+        }
+    }))
+
+    useEffect(() => {
+        fetchMaterials();
+    }, [props.course])
 
     function fetchParticipants(id) {
         axios
@@ -38,6 +55,26 @@ export default function AllSubmissionsTab(props) {
                     setParticipants(res.data.data);
                 }
             });
+    }
+
+    function fetchMaterials() {
+        try {
+            axios
+                .get(
+                    process.env.REACT_APP_HOST_URL +
+                    "/course/materials?id=" +
+                    props.course.id
+                )
+                .then((res) => {
+                    if (res.data.status) {
+                        setMaterials(res.data.data);
+                    } else {
+                        props.sendToast("error", res.data.data);
+                    }
+                });
+        } catch (e) {
+            props.sendToast("error", e.toString());
+        }
     }
 
     function fetchAssignments(id) {
@@ -115,8 +152,83 @@ export default function AllSubmissionsTab(props) {
                         flexDirection: "row",
                         justifyContent: "space-between",
                         alignItems: "center",
-                        margin: "20px 0",
+                        margin: "20px 0 5px 0",
                     }}>
+
+                    <h3
+                        className="bold"
+                        style={{
+                            lineHeight: "1.5rem",
+                            fontSize: "1.75rem",
+                        }}>
+                        Materials
+                    </h3>
+                    <div>
+                        <Tooltip title="Refresh material">
+                            <IconButton
+                                onClick={fetchMaterials}>
+                                <Refresh />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Add new material">
+                            <IconButton
+                                onClick={props.handleOpenMaterialModal}>
+                                <AddIcon />
+                            </IconButton>
+                        </Tooltip>
+
+                    </div>
+                </div>
+                <div style={{
+                    justifyContent: 'start',
+                    alignContent: 'center',
+                    alignItems: 'center',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    marginBottom: '10px'
+                }}>
+                    <SaveAltIcon /><div style={{
+                        marginLeft: '10px',
+                        marginRight: '40px'
+                    }}>: File</div>
+                    <InsertLinkIcon /><div style={{
+                        marginLeft: '10px',
+                    }}>: URL Link</div>
+                </div>
+                <Divider />
+                <div
+                    style={{
+                        marginTop: '20px',
+                        marginBottom: "20px",
+                        paddingBottom: "10px",
+                        width: '100%'
+                    }}>
+                    {
+                        materials.length > 0 ?
+                            <>{
+                                materials.map((material) => {
+                                    console.log(material)
+                                    return (
+                                        <MaterialItem sendToast={props.sendToast} material={material} refresh={fetchMaterials} isLecturer={true} />
+                                    )
+                                })
+                            }
+                            </>
+                            : <p>Currently not any materials available</p>
+                    }
+                </div>
+
+                <div
+                    style={{
+                        height: "40px",
+                        width: "100%",
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        margin: "20px 0 10px 0",
+                    }}>
+
                     <h3
                         className="bold"
                         style={{
@@ -132,11 +244,13 @@ export default function AllSubmissionsTab(props) {
                                 <SummarizeIcon />
                             </IconButton>
                         </Tooltip>
+                        <Tooltip title="Add new coursework assignment">
+                            <IconButton
+                                onClick={props.handleOpenCourseworkModal}>
+                                <AddIcon />
+                            </IconButton>
+                        </Tooltip>
 
-                        <IconButton
-                            onClick={props.handleOpenCourseworkModal}>
-                            <AddIcon />
-                        </IconButton>
                         {
                             assignment.id ? <>
                                 <IconButton
@@ -161,10 +275,11 @@ export default function AllSubmissionsTab(props) {
                         }
                     </div>
                 </div>
-
+                <Divider />
                 <div
                     style={{
-                        marginBottom: "20px",
+                        marginTop: '20px',
+                        marginBottom: "10px",
                         paddingBottom: "10px",
                     }}>
                     {props.course.assignments ? (
@@ -322,12 +437,14 @@ export default function AllSubmissionsTab(props) {
             </div>
         </>
     );
-}
+})
+
 
 function GradingRow(props) {
     const { submission, index } = props;
+
     const handleDownloadFile = (path, fileName) => {
-        downloadFile(process.env.REACT_APP_HOST_URL + path, fileName)
+        downloadFile(process.env.REACT_APP_HOST_URL + path + fileName, fileName)
     }
 
     return (

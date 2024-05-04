@@ -149,7 +149,7 @@ export default function SubmmissionAccordion(props) {
 
     return (
         <>
-            <Accordion defaultExpanded={true}>
+            <Accordion defaultExpanded={false}>
                 <AccordionSummary
                     sx={{
                         borderBottom: "3px solid #F11A7B",

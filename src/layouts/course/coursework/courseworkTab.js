@@ -1,6 +1,5 @@
 import {
     Divider,
-    Button,
     Card,
     Typography,
     CardContent,
@@ -11,8 +10,8 @@ import MaterialItem from "../components/material_item";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { fromMilisecondsToDisplayFormatDateString } from "../../../utils/utils";
-import { useNavigate } from "react-router-dom";
-import { cacheData } from "../../../utils/dataOptimizer";
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
+import InsertLinkIcon from '@mui/icons-material/InsertLink';
 
 export default function CourseworkTab(props) {
     const [assignments, setAssignments] = useState([]);
@@ -75,13 +74,6 @@ export default function CourseworkTab(props) {
             <Divider sx={{ margin: "20px 0" }} />
             <div className="row-space-between">
                 <h1 style={{ fontSize: "1.5rem" }}>Courseworks</h1>
-                {props.decoded.role > 1 ? (
-                    <Button onClick={props.handleOpenCourseworkModal}>
-                        Add Coursework
-                    </Button>
-                ) : (
-                    <></>
-                )}
             </div>
             <br />
             {assignments.length > 0 ? (
@@ -89,6 +81,7 @@ export default function CourseworkTab(props) {
                     console.log(assignment);
                     return props.decoded.role === 1 ? (
                         <SubmmissionAccordion
+
                             refresh={fetchCourseworks}
                             course={props.course}
                             sendToast={props.sendToast}
@@ -131,19 +124,28 @@ export default function CourseworkTab(props) {
             )}
             <Divider sx={{ margin: "20px 0" }} />
             <div className="row-space-between">
-                <h1 style={{ fontSize: "1.5rem" }}>Materials</h1>
-                {props.decoded.role > 1 ? (
-                    <Button onClick={props.handleOpenMaterialModal}>
-                        Add Material
-                    </Button>
-                ) : (
-                    <></>
-                )}
+                <h1 style={{ fontSize: "1.5rem", marginBottom: '10px' }}>Materials</h1>
+            </div>
+            <div style={{
+                justifyContent: 'start',
+                alignContent: 'center',
+                alignItems: 'center',
+                display: 'flex',
+                flexDirection: 'row',
+                marginBottom: '15px'
+            }}>
+                <SaveAltIcon /><div style={{
+                    marginLeft: '10px',
+                    marginRight: '40px'
+                }}>: File</div>
+                <InsertLinkIcon /><div style={{
+                    marginLeft: '10px',
+                }}>: URL Link</div>
             </div>
             {materials.length > 0 ? (
                 materials.map((material) => {
                     return (
-                        <MaterialItem material={material} onClick={() => { }} />
+                        <MaterialItem material={material} onClick={() => { }} isLecturer={false} />
                     );
                 })
             ) : (

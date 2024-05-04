@@ -24,7 +24,7 @@ export default function UserHome(props) {
     const token = decodeToken(localStorage.getItem("access_token"));
     const _container =
         window !== undefined ? () => window.document.body : undefined;
-    const [current, setCurrent] = useState(props.index ?? 1);
+    const [current, setCurrent] = useState(props.index ?? 0);
     const [mobileOpen, setMobileOpen] = useState(true);
 
     const [course, setCourse] = useState({});

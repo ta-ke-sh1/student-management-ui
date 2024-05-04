@@ -129,7 +129,6 @@ export default function UserForm(props) {
               position: "bottom-left",
             });
             props.refresh();
-            props.handleRefreshEntry();
           } else {
             toast.error(res.data.data, {
               position: "bottom-left",

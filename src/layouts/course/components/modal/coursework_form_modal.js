@@ -35,41 +35,40 @@ export default function CourseworkFormModal(props) {
                 props.sendToast("error", "Please fill all fields!");
                 return;
             }
-            // if (props.coursework.id) {
-            //     axios.put(process.env.REACT_APP_HOST_URL + "/course/coursework", {
-            //         id: props.coursework.id,
-            //         course_id: id,
-            //         name: name,
-            //         start: dayjs(openDate).unix(),
-            //         deadline: dayjs(deadline).unix(),
-            //         close: dayjs(closedDate).unix()
-            //     }).then((res) => {
-            //         if (res.data.status) {
-            //             props.closeHandler();
-            //             props.refresh();
-            //         } else {
-            //             props.sendToast("error", res.data.data)
-            //         }
-            //         console.log(res)
-            //     })
-            // } else {
-            //     axios.post(process.env.REACT_APP_HOST_URL + "/course/coursework", {
-            //         course_id: id,
-            //         name: name,
-            //         start: dayjs(openDate).unix(),
-            //         deadline: dayjs(deadline).unix(),
-            //         close: dayjs(closedDate).unix()
-            //     }).then((res) => {
-            //         if (res.data.status) {
-            //             props.closeHandler();
-            //             props.refresh();
-            //         } else {
-            //             props.sendToast("error", res.data.data)
-            //         }
-            //         console.log(res)
-            //     })
-            // }
-
+            if (props.coursework.id) {
+                axios.put(process.env.REACT_APP_HOST_URL + "/course/coursework", {
+                    id: props.coursework.id,
+                    course_id: id,
+                    name: name,
+                    start: dayjs(openDate).unix(),
+                    deadline: dayjs(deadline).unix(),
+                    close: dayjs(closedDate).unix()
+                }).then((res) => {
+                    if (res.data.status) {
+                        props.closeHandler();
+                        props.refresh();
+                    } else {
+                        props.sendToast("error", res.data.data)
+                    }
+                    console.log(res)
+                })
+            } else {
+                axios.post(process.env.REACT_APP_HOST_URL + "/course/coursework", {
+                    course_id: id,
+                    name: name,
+                    start: dayjs(openDate).unix(),
+                    deadline: dayjs(deadline).unix(),
+                    close: dayjs(closedDate).unix()
+                }).then((res) => {
+                    if (res.data.status) {
+                        props.closeHandler();
+                        props.refresh();
+                    } else {
+                        props.sendToast("error", res.data.data)
+                    }
+                    console.log(res)
+                })
+            }
         } catch (e) {
             props.sendToast("error", e.toString())
         }

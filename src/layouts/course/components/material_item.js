@@ -8,21 +8,19 @@ import Delete from "@mui/icons-material/Delete";
 
 export default function MaterialItem(props) {
 
-    const handleDownloadFile = (path, fileName) => {
-        downloadFile(process.env.REACT_APP_HOST_URL + path + fileName, fileName)
-    }
-
     const handleDelete = () => {
-        axios.delete(process.env.REACT_APP_HOST_URL + "/course/materials", {
-            params: {
-                id: props.material.id,
-                course_id: props.material.course_id,
-                path: props.material.path + props.material.name
-            }
-        }).then((res) => {
-            props.refresh();
-        })
-
+        const confirm = window.confirm("Are you sure? This action cannot be undone!")
+        if (confirm) {
+            axios.delete(process.env.REACT_APP_HOST_URL + "/course/materials", {
+                params: {
+                    id: props.material.id,
+                    course_id: props.material.course_id,
+                    path: props.material.path + props.material.name
+                }
+            }).then((res) => {
+                props.refresh();
+            })
+        }
     }
 
     return (
@@ -53,7 +51,7 @@ export default function MaterialItem(props) {
                         props.material.type === "1" ? props.material.name : props.material.url}
                 </Button>
                 {
-                    props.isLecturer ? <Tooltip title="Delete Material">
+                    props.isLecturer ? <Tooltip arrow title="Delete Material">
                         <IconButton onClick={handleDelete}>
                             <Delete />
                         </IconButton>

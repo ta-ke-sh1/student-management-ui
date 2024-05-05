@@ -129,6 +129,7 @@ export default function UserForm(props) {
               position: "bottom-left",
             });
             props.refresh();
+            props.closeHandler();
           } else {
             toast.error(res.data.data, {
               position: "bottom-left",
@@ -159,14 +160,6 @@ export default function UserForm(props) {
 
   const handlePhoneChange = (newValue) => {
     setFormData((prevFormData) => ({ ...prevFormData, ["phone"]: newValue }));
-  };
-
-  const handleChangeDob = (e) => {
-    setFormData((prevFormData) => ({ ...prevFormData, ["dob"]: e }));
-  }
-
-  const handleClear = (e) => {
-    e.preventDefault();
   };
 
   return (
@@ -357,7 +350,7 @@ export default function UserForm(props) {
           </Button>
         </Grid>
         <Grid item xs={id ? 3 : 6}>
-          <Button fullWidth color="error" variant="outlined" sx={{ padding: "15px 30px" }} onClick={(e) => handleClear(e)}>
+          <Button fullWidth color="error" variant="outlined" sx={{ padding: "15px 30px" }} onClick={props.closeHandler}>
             Cancel
           </Button>
         </Grid>

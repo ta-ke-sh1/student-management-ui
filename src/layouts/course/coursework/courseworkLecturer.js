@@ -113,18 +113,21 @@ export default forwardRef((props, ref) => {
     }
 
     function deleteAssignment() {
-        axios.delete(process.env.REACT_APP_HOST_URL + "/course/coursework", {
-            params: {
-                id: assignment.id,
-                course_id: assignment.course_id
-            }
-        }).then((res) => {
-            if (res.data.status) {
-                window.location.reload();
-            } else {
-                props.sendToast("error", "Failed to delete coursework")
-            }
-        })
+        let confirm = window.confirm("Are you sure? This action cannot be undone!");
+        if (confirm) {
+            axios.delete(process.env.REACT_APP_HOST_URL + "/course/coursework", {
+                params: {
+                    id: assignment.id,
+                    course_id: assignment.course_id
+                }
+            }).then((res) => {
+                if (res.data.status) {
+                    window.location.reload();
+                } else {
+                    props.sendToast("error", "Failed to delete coursework")
+                }
+            })
+        }
     }
 
     function summarizeAllGrades() {
@@ -164,13 +167,13 @@ export default forwardRef((props, ref) => {
                         Materials
                     </h3>
                     <div>
-                        <Tooltip title="Refresh material">
+                        <Tooltip arrow title="Refresh material">
                             <IconButton
                                 onClick={fetchMaterials}>
                                 <Refresh />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title="Add new material">
+                        <Tooltip arrow title="Add new material">
                             <IconButton
                                 onClick={props.handleOpenMaterialModal}>
                                 <AddIcon />
@@ -238,13 +241,13 @@ export default forwardRef((props, ref) => {
                         Submissions
                     </h3>
                     <div>
-                        <Tooltip title="Summarize all grades">
+                        <Tooltip arrow title="Summarize all grades">
                             <IconButton
                                 onClick={summarizeAllGrades}>
                                 <SummarizeIcon />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title="Add new coursework assignment">
+                        <Tooltip arrow title="Add new coursework assignment">
                             <IconButton
                                 onClick={props.handleOpenCourseworkModal}>
                                 <AddIcon />
@@ -471,7 +474,7 @@ function GradingRow(props) {
                                 }}>
                                 {submission.fileNames.map((fileName) => {
                                     return (
-                                        <Tooltip title="Click to download file">
+                                        <Tooltip arrow title="Click to download file">
                                             <Button sx={{
                                                 width: 'fit-content',
                                                 fontSize: '12px'

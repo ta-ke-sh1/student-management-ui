@@ -48,7 +48,7 @@ export default function EnhancedTableToolbar(props) {
             {numSelected === 0 ? (
                 <>
 
-                    <Tooltip title="Add New Entry">
+                    <Tooltip arrow title="Add New Entry">
                         <IconButton
                             onClick={() => {
                                 if (props.handleAddEntry) {
@@ -63,13 +63,13 @@ export default function EnhancedTableToolbar(props) {
                 </>
             ) : numSelected === 1 ? (
                 <>
-                    <Tooltip title="Edit">
+                    <Tooltip arrow title="Edit">
                         <IconButton
                             onClick={() => props.handleEdit(selected[0])}>
                             <EditIcon />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title="Delete">
+                    <Tooltip arrow title="Delete">
                         <IconButton
                             onClick={() => {
                                 props.clearSelected();
@@ -81,7 +81,7 @@ export default function EnhancedTableToolbar(props) {
                     {
                         props.isCampusControl ?
                             <>
-                                <Tooltip title="View Details">
+                                <Tooltip arrow title="View Details">
                                     <IconButton onClick={() => props.handleSearchInfo(selected[0])}>
                                         <InfoIcon />
                                     </IconButton>
@@ -90,7 +90,7 @@ export default function EnhancedTableToolbar(props) {
                     }{
                         props.isDownloadable ?
                             <>
-                                <Tooltip>
+                                <Tooltip arrow>
                                     <IconButton onClick={() => props.handleDownload(selected[0])}>
                                         <DownloadIcon />
                                     </IconButton>
@@ -100,7 +100,7 @@ export default function EnhancedTableToolbar(props) {
                 </>
             ) : (
                 <>
-                    <Tooltip title="Delete">
+                    <Tooltip arrow title="Delete">
                         <IconButton onClick={() => props.handleDelete(selected)}>
                             <DeleteIcon />
                         </IconButton>
@@ -108,7 +108,7 @@ export default function EnhancedTableToolbar(props) {
                 </>
             )}
 
-            <Tooltip title="Refresh">
+            <Tooltip arrow title="Refresh">
                 <IconButton
                     onClick={() => {
                         if (props.handleRefreshEntry) {

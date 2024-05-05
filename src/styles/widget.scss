@@ -49,20 +49,14 @@
 		padding-bottom: 2px;
 		border-bottom: 3px solid #6528f7;
 	}
+}
 
-	.submission-table {
-		width: 100%;
+.submission-table {
+	width: 100%;
 
-		.col-1 {
-			width: 250px;
-			border-right: 1px solid black;
-		}
-
-		td {
-			padding: 0 10px;
-			border-bottom: 1px solid black;
-			height: 3rem;
-		}
+	.col-1 {
+		min-width: 40px;
+		max-width: 40px;
 	}
 }
 

@@ -80,7 +80,7 @@ export default function RequestsTab(props) {
                         marginBottom: 20
                     }}>
                         <Button variant="outlined" sx={{ marginRight: '20px' }} onClick={() => {
-                            downloadFile(process.env.REACT_APP_HOST_URL + "documents/documents.rar", 'documents.rar');
+                            downloadFile(process.env.REACT_APP_HOST_URL + "/documents/documents.rar", 'documents.rar');
                         }}>
                             Download All Templates
                         </Button>
@@ -131,7 +131,11 @@ export default function RequestsTab(props) {
                                                     </Grid>
                                                     <Grid item justify="flex-end" xs={4}>
                                                         <Box display="flex" justifyContent="flex-end">
-                                                            <strong style={{ marginRight: '10px' }}>Status:</strong> {request.status === -1 ? "Processing" : request.status === 0 ? "Rejected" : "Accepeted"}
+                                                            <strong style={{ marginRight: '10px' }}>Status:</strong> {request.status === -1 ?
+                                                                "Processing"
+                                                                : request.status === 0 ?
+                                                                    <span style={{ color: 'red' }}>Rejected</span> :
+                                                                    <span style={{ color: 'green' }}>Accepeted</span>}
                                                         </Box>
                                                     </Grid>
                                                 </Grid>

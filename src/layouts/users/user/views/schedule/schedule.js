@@ -11,6 +11,8 @@ import { decodeToken } from "../../../../../utils/utils";
 export default function ScheduleHome(props) {
     const token = decodeToken(localStorage.getItem("access_token"));
 
+    console.log(token)
+
     const constants = new Constants();
 
     const [dateMap, setDateMap] = useState([]);
@@ -109,6 +111,7 @@ export default function ScheduleHome(props) {
                 return (
                     <div className={className}>
                         <Tooltip
+                            arrow
                             title={
                                 token.role === 2
                                     ? "Click to take attendance"
@@ -117,7 +120,7 @@ export default function ScheduleHome(props) {
                             <div
                                 style={{
                                     userSelect: "none",
-                                    cursor: "pointer",
+                                    cursor: token.role === 2 ? "pointer" : "default",
                                 }}
                                 className={"slot-content"}
                                 onClick={() => {
@@ -169,7 +172,7 @@ export default function ScheduleHome(props) {
                         {dateToFormattedDate(getLastDateOfWeek(selectedDate))}
                     </h3>
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <Tooltip title="Select a date to see weekly schedule">
+                        <Tooltip arrow title="Select a date to see weekly schedule">
                             <DatePicker
                                 onChange={(e) => {
                                     setSelectedDate(e);

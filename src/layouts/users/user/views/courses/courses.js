@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useState } from "react";
 import Loading from "../../../../../common/loading/loading";
-import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Grid, IconButton, Typography } from "@mui/material";
+import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Grid, IconButton, Tooltip, Typography } from "@mui/material";
 import axios from "axios";
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { useNavigate } from "react-router-dom";
@@ -95,11 +95,14 @@ export default function CoursesUser(props) {
                             Ongoing Courses
                         </h2>
                     </div>
-                    <IconButton style={{
-                        height: '40px'
-                    }} >
-                        <RefreshIcon onClick={fetchCourse} />
-                    </IconButton>
+                    <Tooltip title="Refresh data" arrow>
+                        <IconButton style={{
+                            height: '40px'
+                        }} >
+                            <RefreshIcon onClick={fetchCourse} />
+                        </IconButton>
+                    </Tooltip>
+
                 </div>
 
                 <Grid container spacing={4}>
@@ -145,49 +148,51 @@ export default function CoursesUser(props) {
                     }
                 </Grid>
                 {
-                    otherCourses.length > 0 ? <h2
-                        className="bold"
-                        style={{
-                            fontSize: "1.75rem",
-                        }}
-                    >
-                        All Courses
-                        <Grid container spacing={4}>{
-                            otherCourses.map((course, index) => {
-                                return (
-                                    <Grid item xs={6} sm={4} md={4}>
-                                        <Card sx={{ width: 345 }}>
-                                            <CardMedia
-                                                sx={{ height: 120, backgroundImage: `url(${process.env.PUBLIC_URL}/banner/banner` + (index + 1) + ".jpg)", }}
-                                            />
-                                            <CardContent>
-                                                <Typography sx={{ fontSize: 14 }} gutterBottom>
-                                                    {course.id}
-                                                </Typography>
-                                                <Typography variant="h5" sx={{
-                                                    fontWeight: "bold",
-                                                    color: "primary"
-                                                }} component="div">
-                                                    {course.subject}
-                                                </Typography>
-                                                <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                                                    Lecturer: {course.lecturer}
-                                                </Typography>
-                                                <Typography variant="body2">
-                                                    From {fromMilisecondsToDisplayFormatDateString(course.startDate)} to {fromMilisecondsToDisplayFormatDateString(course.endDate)}
-                                                </Typography>
-                                            </CardContent>
-                                            <CardActions>
-                                                <Button size="small" onClick={() => handleNavigate(course.id)}>
-                                                    See Details
-                                                </Button>
-                                            </CardActions>
-                                        </Card>
-                                    </Grid>
-                                )
-                            })}
-                        </Grid>
-                    </h2> : <></>
+                    otherCourses.length > 0 ?
+                        <>
+                            <h2
+                                className="bold"
+                                style={{
+                                    fontSize: "1.75rem",
+                                    marginTop: '30px',
+                                    marginBottom: "10px"
+                                }}
+                            >
+                                Other Courses
+                            </h2>
+                            <Grid container spacing={4}>{
+                                otherCourses.map((course, index) => {
+                                    return (
+                                        <Grid item xs={6} sm={4} md={4}>
+                                            <Card >
+                                                <CardActionArea onClick={() => handleNavigate(course.id)}>
+                                                    <CardMedia
+                                                        sx={{ height: 120, backgroundImage: `url(${process.env.PUBLIC_URL}/banner/banner` + (index + 1) + ".jpg)", }}
+                                                    />
+                                                    <CardContent>
+                                                        <Typography sx={{ fontSize: 14 }} gutterBottom>
+                                                            {course.id}
+                                                        </Typography>
+                                                        <Typography variant="h5" sx={{
+                                                            fontWeight: "bold",
+                                                            color: "primary"
+                                                        }} component="div">
+                                                            {course.subject}
+                                                        </Typography>
+                                                        <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                                                            Lecturer: {course.lecturer}
+                                                        </Typography>
+                                                        <Typography variant="body2">
+                                                            From {fromMilisecondsToDisplayFormatDateString(course.startDate)} to {fromMilisecondsToDisplayFormatDateString(course.endDate)}
+                                                        </Typography>
+                                                    </CardContent>
+                                                </CardActionArea>
+                                            </Card>
+                                        </Grid>
+                                    )
+                                })}
+                            </Grid>
+                        </> : <></>
                 }
 
             </div>

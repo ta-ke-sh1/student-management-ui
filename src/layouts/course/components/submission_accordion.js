@@ -40,7 +40,6 @@ export default function SubmmissionAccordion(props) {
 
     const remainingTimeMiliseconds = (props.assignment.deadline - new Date() / 1000)
     const openTime = props.assignment.start - new Date() / 1000;
-    console.log(remainingTimeMiliseconds)
 
     useEffect(() => {
         fetchAssignment();
@@ -59,7 +58,6 @@ export default function SubmmissionAccordion(props) {
                     props.decoded.id
                 )
                 .then((res) => {
-                    console.log(res.data);
                     if (res.data.status) {
                         console.log(res.data.data);
                         setSubmission(res.data.data);
@@ -154,9 +152,7 @@ export default function SubmmissionAccordion(props) {
                     sx={{
                         borderBottom: "3px solid #F11A7B",
                     }}
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header">
+                    expandIcon={<ExpandMoreIcon />}>
                     <Grid container>
                         <Grid item sm={2} md={2}>
                             <h3 style={{ margin: 0, lineHeight: 1 }}>{props.assignment.name}</h3>
@@ -205,14 +201,7 @@ export default function SubmmissionAccordion(props) {
                                     )}
                                 </TableCell>
                             </TableRow>
-                            <TableRow>
-                                <TableCell className="col-1">
-                                    Time Remaining
-                                </TableCell>
-                                <TableCell className="col-2">
-                                    {remainingTime}
-                                </TableCell>
-                            </TableRow>
+
                             {submission !== -1 ? (
                                 <>
                                     <TableRow>
@@ -230,14 +219,14 @@ export default function SubmmissionAccordion(props) {
                                             File Submissions
                                         </TableCell>
                                         <TableCell
-                                            className="col-2"
-                                            sx={{ width: "100%" }}>
+                                            className="col-2">
                                             <Stack direction="row" spacing={1}>
                                                 {submission.fileNames &&
                                                     submission.fileNames.map(
                                                         (fileName, index) => {
                                                             return (
                                                                 <Chip
+
                                                                     key={
                                                                         "submission-" +
                                                                         index
@@ -251,9 +240,13 @@ export default function SubmmissionAccordion(props) {
                                                                         )
                                                                     }
                                                                     onDelete={() => {
-                                                                        handleDeleteFile(
-                                                                            index
-                                                                        );
+                                                                        if (remainingTimeMiliseconds < 0) {
+                                                                            props.sendToast("error", "Submission is locked");
+                                                                        } else {
+                                                                            handleDeleteFile(
+                                                                                index
+                                                                            );
+                                                                        }
                                                                     }}
                                                                 />
                                                             );
@@ -264,7 +257,16 @@ export default function SubmmissionAccordion(props) {
                                     </TableRow>
                                 </>
                             ) : (
-                                <></>
+                                <>
+                                    <TableRow>
+                                        <TableCell className="col-1">
+                                            Time Remaining
+                                        </TableCell>
+                                        <TableCell className="col-2">
+                                            {remainingTime}
+                                        </TableCell>
+                                    </TableRow>
+                                </>
                             )}
                             <TableRow>
                                 <TableCell className="col-1">

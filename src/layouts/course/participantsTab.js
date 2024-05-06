@@ -19,14 +19,14 @@ export default function ParticipantsTab(props) {
             fetchParticipants();
         }
 
-    }, [course]);
+    }, []);
 
     function fetchParticipants() {
         try {
             axios.get(process.env.REACT_APP_HOST_URL + "/course/participants?id=" + course.id).then((res) => {
                 if (res.data.status) {
+                    console.log(res.data.data)
                     setParticipants(res.data.data);
-
                     cacheData(lecturerItems.Participants, res.data.data)
                 } else {
                     props.sendToast("error", res.data.data)
@@ -72,20 +72,29 @@ export default function ParticipantsTab(props) {
                 {participants.map((participant, index) => {
                     console.log(participant)
                     return (
-                        <Grid item sm={4}>
+                        <Grid item sm={12}>
                             <Card sx={{ padding: '15px' }}>
                                 <Grid container alignItems="center">
-                                    <Grid item xs={3}>
+                                    <Grid item xs={1}>
                                         No. {index + 1}
                                     </Grid>
-                                    <Grid item xs={6}>
+                                    <Grid item xs={2}>
                                         {participant.student_id}
                                     </Grid>
-                                    <Grid item xs={3}>
-                                        <Box display="flex"
-                                            justifyContent="flex-end">
-                                            {participant.status === true ? "Activated" : "Disabled"}
-                                        </Box>
+                                    <Grid item xs={2}>
+                                        {participant.dob}
+                                    </Grid>
+                                    <Grid item xs={2}>
+                                        <strong>Grade:{" "}</strong>{participant.grade === "" ? "Not yet" : <strong style={{ color: 'red' }}>{participant.grade}</strong>}
+                                    </Grid>
+                                    <Grid item xs={2}>
+                                        <strong>Grade Text:{" "}</strong>{<strong style={{ color: 'red' }}>{participant.gradeText}</strong> ?? ""}
+                                    </Grid>
+                                    <Grid item xs={3} style={{
+                                        justifyContent: 'end',
+                                        textAlign: 'end'
+                                    }}>
+                                        <strong>Status:{" "}</strong>{participant.status === true ? "Activated" : "Disabled"}
                                     </Grid>
                                 </Grid>
                             </Card>

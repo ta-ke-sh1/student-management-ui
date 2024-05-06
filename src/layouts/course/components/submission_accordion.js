@@ -30,8 +30,6 @@ import { MuiFileInput } from "mui-file-input";
 export default function SubmmissionAccordion(props) {
     const [submission, setSubmission] = useState({});
     const [files, setFiles] = useState([]);
-    const [openDialog, setOpenDialog] = useState(false);
-    const [selected, setSelected] = useState(-1);
 
     const remainingTime = subtractTime(
         new Date() / 1000,
@@ -115,35 +113,35 @@ export default function SubmmissionAccordion(props) {
         );
     }
 
-    function handleDeleteFile(index) {
-        setSelected(index);
-        setOpenDialog(true);
-    }
+    function handleDeleteFile(selected) {
+        const confirm = window.confirm("Are you sure? This action cannot be undone!")
 
-    function handleDeleteFileRequest() {
-        try {
-            const path =
-                "\\assets" + submission.path + submission.fileNames[selected];
-            axios
-                .delete(process.env.REACT_APP_HOST_URL + "/submission/file", {
-                    params: {
-                        course_id: props.course.id,
-                        assignment_id: props.assignment.name,
-                        user_id: props.decoded.id,
-                        fileIndex: selected,
-                        filePath: path,
-                    },
-                })
-                .then((res) => {
-                    if (res.data.status) {
-                    } else {
-                        props.sendToast("error", res.data.data);
-                    }
-                });
-        } catch (e) {
-            props.sendToast("error", e.toString());
+        if (confirm) {
+            try {
+                const path =
+                    "\\assets" + submission.path + submission.fileNames[selected];
+                axios
+                    .delete(process.env.REACT_APP_HOST_URL + "/submission/file", {
+                        params: {
+                            course_id: props.course.id,
+                            assignment_id: props.assignment.name,
+                            user_id: props.decoded.id,
+                            fileIndex: selected,
+                            filePath: path,
+                        },
+                    })
+                    .then((res) => {
+                        if (res.data.status) {
+                        } else {
+                            props.sendToast("error", res.data.data);
+                        }
+                    });
+            } catch (e) {
+                props.sendToast("error", e.toString());
+            }
         }
     }
+
 
     return (
         <>
@@ -322,26 +320,6 @@ export default function SubmmissionAccordion(props) {
                     </p>
                 </AccordionDetails>
             </Accordion>
-            <br />
-            <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-                <DialogTitle>Delete Submitted File</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Are you sure you want to delete this file? This action
-                        cannot be undone!
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleDeleteFileRequest}>Accept</Button>
-                    <Button
-                        onClick={() => {
-                            setOpenDialog(false);
-                            setSelected(-1);
-                        }}>
-                        Cancel
-                    </Button>
-                </DialogActions>
-            </Dialog>
         </>
     );
 }

@@ -155,35 +155,35 @@ export default function UsersAdmin(props) {
 
     const handleSearch = () => {
         tableRef.current.clearSelected();
-        let users = JSON.parse(localStorage.getItem("users_data"));
+        let users = JSON.parse(localStorage.getItem(items.Users));
         if (auth !== "") {
-            users = users.filter(function (user) {
-                return user.role === auth;
+            users = users.filter(function (u) {
+                return u.role === auth;
             });
         }
         if (department !== "") {
-            users = users.filter(function (user) {
-                return user.department_id === department;
+            users = users.filter(function (u) {
+                return u.department_id === department;
             });
         }
         if (username !== "") {
-            users = users.filter(function (user) {
-                return user.id.startsWith(username);
+            users = users.filter(function (u) {
+                return u.id.startsWith(username);
             });
         }
         if (city !== "") {
-            users = users.filter(function (user) {
-                return user.city === city;
+            users = users.filter(function (u) {
+                return u.city === city;
             });
         }
         if (district !== "") {
-            users = users.filter(function (user) {
-                return user.district === district;
+            users = users.filter(function (u) {
+                return u.district === district;
             });
         }
         if (ward !== "") {
-            users = users.filter(function (user) {
-                return user.ward === ward;
+            users = users.filter(function (u) {
+                return u.ward === ward;
             });
         }
         setUsers(users);
@@ -249,7 +249,7 @@ export default function UsersAdmin(props) {
         setCity("");
         setDistrict("");
         setWard("");
-        let users = JSON.parse(localStorage.getItem("users_data"));
+        let users = JSON.parse(localStorage.getItem(items.Users));
         setUsers(users);
     };
 

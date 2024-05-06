@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, CardMedia, Grid, IconButton } from "@mui/material";
+import { Box, Card, CardContent, CardMedia, Dialog, DialogContent, Grid, IconButton } from "@mui/material";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { decodeToken, normalizeIndex } from "../../../../../utils/utils";
@@ -64,7 +64,14 @@ export default function CurriculumTab(props) {
             <div className="curriculum-row">
               <Card sx={{
                 display: "flex",
+              }} onClick={() => {
+                console.log(subject.gradeText);
+                if (subject.gradeText && subject.gradeText !== "Not Yet") {
+                } else {
+                  props.sendToast("default", "This course has not started yet!")
+                }
               }}>
+
                 <CardMedia sx={{
                   width: "150px",
                   backgroundImage:
@@ -85,16 +92,16 @@ export default function CurriculumTab(props) {
                       <strong style={{ marginRight: '10px' }}></strong> {subject.name}
                     </Grid>
                     <Grid item justify="flex-end" xs={1}>
-                      <Box display="flex" justifyContent="flex-end">
+                      <Box display="flex" justifyContent="flex-start">
                         <strong style={{ marginRight: '10px' }}>Grade:</strong>
                       </Box>
                     </Grid>
-                    <Grid item justify="flex-end" xs={1}>
+                    <Grid item justify="flex-end" xs={2}>
                       <Box display="flex" justifyContent="flex-end">
                         {subject.grade}
                       </Box>
                     </Grid>
-                    <Grid item justify="flex-end" xs={2}>
+                    <Grid item justify="flex-end" xs={1}>
                       <Box display="flex" justifyContent="flex-end">
                         {subject.gradeText ? <>{subject.gradeText}</> : <>Not yet</>}
                       </Box>
@@ -106,7 +113,7 @@ export default function CurriculumTab(props) {
             </div>
           );
         })}
-      </div>
+      </div >
     </>
   );
 }

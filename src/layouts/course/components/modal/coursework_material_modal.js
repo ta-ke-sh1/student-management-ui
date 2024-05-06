@@ -30,7 +30,11 @@ export default function CourseworkMaterialModal(props) {
     };
 
     const handleChangeFile = (newValue) => {
-        setFile(newValue);
+        if (newValue.size > 1048576) {
+            props.sendToast("error", "Must be smaller than 10mb")
+        } else {
+            setFile(newValue);
+        }
     };
 
     return (
@@ -74,6 +78,7 @@ export default function CourseworkMaterialModal(props) {
                         />
                     </Grid> : <Grid item xs={12} md={12}>
                         <MuiFileInput
+
                             value={file}
                             onChange={handleChangeFile}
                             label="File"

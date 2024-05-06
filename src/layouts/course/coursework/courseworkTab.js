@@ -1,15 +1,10 @@
 import {
     Divider,
-    Card,
-    Typography,
-    CardContent,
-    CardActionArea,
 } from "@mui/material";
 import SubmmissionAccordion from "../components/submission_accordion";
 import MaterialItem from "../components/material_item";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { fromMilisecondsToDisplayFormatDateString } from "../../../utils/utils";
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
 
@@ -32,9 +27,14 @@ export default function CourseworkTab(props) {
                 )
                 .then((res) => {
                     if (res.data.status) {
-
-                        setAssignments(res.data.data);
-                        console.log(res.data.data);
+                        if (Array.isArray(res.data.data)) {
+                            let sorted = res.data.data.sort((a, b) => {
+                                return a.name > b.name ? 1 : -1
+                            })
+                            setAssignments(sorted);
+                        } else {
+                            setAssignments([]);
+                        }
                     } else {
                         props.sendToast("error", res.data.data);
                     }
@@ -77,39 +77,18 @@ export default function CourseworkTab(props) {
             </div>
             <br />
             {assignments.length > 0 ? (
-                assignments.map((assignment, index) => {
+                assignments.map((assignment) => {
                     console.log(assignment);
-                    return props.decoded.role === 1 ? (
+                    return <div style={{
+                        marginBottom: '15px'
+                    }}>
                         <SubmmissionAccordion
-
                             refresh={fetchCourseworks}
                             course={props.course}
                             sendToast={props.sendToast}
                             decoded={props.decoded}
                             assignment={assignment}
-                        />
-                    ) : (
-                        <Card
-                            sx={{
-                                width: "100%",
-                                marginBottom: "20px",
-                            }}>
-                            <CardActionArea
-                                onClick={() => handleNavigate(index)}>
-                                <CardContent>
-                                    <Typography
-                                        gutterBottom
-                                        variant="h5"
-                                        component="div">
-                                        Assigment: {assignment.name} - Deadline:{" "}
-                                        {fromMilisecondsToDisplayFormatDateString(
-                                            assignment.deadline * 1000
-                                        )}
-                                    </Typography>
-                                </CardContent>
-                            </CardActionArea>
-                        </Card>
-                    );
+                        /></div>
                 })
             ) : (
                 <>

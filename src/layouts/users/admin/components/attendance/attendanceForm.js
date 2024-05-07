@@ -25,16 +25,42 @@ export default function AttendanceForm(props) {
         console.log(getArrayCache(items.Groups))
     }, [])
 
+    function validateForm() {
+
+        if (formData.session < 0) {
+            // success / error / default
+            props.sendToast("error", "Invalid session number")
+            return false;
+        }
+
+
+        return true;
+    }
 
     const handleConfirm = () => {
+
+        if (!validateForm()) {
+            return
+        }
+
         if (formData.course_id && formData.subject && formData.lecturer && formData.room) {
             if (props.attendance.id) {
                 axios.put(process.env.REACT_APP_HOST_URL + "/attendance", formData).then((res) => {
                     console.log(res)
+                    if (res.data.status) {
+                        props.sendToast("success", "Attendance added!")
+                    } else {
+                        props.sendToast("error", res.data.data)
+                    }
                 })
             } else {
                 axios.post(process.env.REACT_APP_HOST_URL + "/attendance", formData).then((res) => {
                     console.log(res)
+                    if (res.data.status) {
+                        props.sendToast("success", "Attendance edited!")
+                    } else {
+                        props.sendToast("error", res.data.data)
+                    }
                 })
             }
         } else {
@@ -191,7 +217,7 @@ export default function AttendanceForm(props) {
                     </Button>
                 </Grid>
                 <Grid item xs={12} md={6}>
-                    <Button color="error" fullWidth variant="outlined" sx={{ padding: "15px 30px" }} onClick={props.closeHandler}>
+                    <Button color="error" fullWidth variant="outlined" sx={{ padding: "15px 30px" }} onClick={props.handleClose}>
                         Cancel
                     </Button>
                 </Grid>

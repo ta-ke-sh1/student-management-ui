@@ -114,6 +114,7 @@ const headCells = [
 
 export default function UsersAdmin(props) {
     const tableRef = useRef();
+
     const constants = new Constants();
     const [user, setUser] = useState({});
 

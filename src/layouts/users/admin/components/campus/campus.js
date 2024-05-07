@@ -392,6 +392,7 @@ export default function CampusAdmin(props) {
                         boxShadow: 12,
                     }}>
                     <CampusForm
+                        sendToast={props.sendToast}
                         closeHandler={handleCloseModal}
                         room={room}
                         refresh={fetchRows}

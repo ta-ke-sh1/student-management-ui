@@ -25,6 +25,8 @@ export function getAllHeaderColumns(headCells) {
     return keys;
 }
 
+export const stringRegex = /^\w+( \w+)*$/;
+
 export const host_url = "https://tch2202.onrender.com";
 
 export const formatSecondsToDate = (date) => {

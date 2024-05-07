@@ -295,7 +295,10 @@ export default function AttendanceAdmin(props) {
                     zIndex: 100000,
                 }}>
                 <DialogContent>
-                    <AttendanceForm handleClose={handleClose} sendToast={props.sendToast} attendance={attendance} />
+                    <AttendanceForm
+                        handleClose={handleClose}
+                        sendToast={props.sendToast}
+                        attendance={attendance} />
                 </DialogContent>
             </Dialog>
         </>

@@ -12,6 +12,25 @@ export default function CampusForm(props) {
 
   const constants = new Constants();
 
+  const validateFormData = () => {
+    if (building === " ") {
+      props.sendToast("error", "Cannot be empty!");
+      return false;
+    }
+
+    if (number === " ") {
+      props.sendToast("error", "Cannot be empty!");
+      return false;
+    }
+
+    if (capacity <= 0) {
+      props.sendToast("error", "Must be larger than 0");
+      return false;
+    }
+
+    return true;
+  }
+
   const handleConfirm = () => {
 
     const room = {
@@ -20,6 +39,10 @@ export default function CampusForm(props) {
       number: number,
       capacity: capacity,
     };
+
+    if (!validateFormData()) {
+      return;
+    }
 
     if (campus && building && number && capacity) {
       if (roomId) {

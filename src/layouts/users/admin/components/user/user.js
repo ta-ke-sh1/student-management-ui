@@ -77,13 +77,6 @@ const headCells = [
         label: "Phone",
     },
     {
-        id: "status",
-        numeric: true,
-        disablePadding: false,
-        label: "Status",
-    },
-
-    {
         id: "city",
         numeric: true,
         disablePadding: false,
@@ -286,8 +279,8 @@ export default function UsersAdmin(props) {
                                         onChange={(e) => {
                                             setAuth(e.target.value);
                                         }}>
-                                        <MenuItem value={1}>User</MenuItem>
-                                        <MenuItem value={2}>Staff</MenuItem>
+                                        <MenuItem value={1}>Student</MenuItem>
+                                        <MenuItem value={2}>Lecturer</MenuItem>
                                         <MenuItem value={3}>Admin</MenuItem>
                                     </Select>
                                 </FormControl>
@@ -489,6 +482,7 @@ export default function UsersAdmin(props) {
                     <div className="big-widget">
                         <div className="campus-list">
                             <CustomTable
+                                isUserTable={true}
                                 ref={tableRef}
                                 handleAddEntry={() => {
                                     handleOpenModal();

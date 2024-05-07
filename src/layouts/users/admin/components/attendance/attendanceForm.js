@@ -43,21 +43,27 @@ export default function AttendanceForm(props) {
             return
         }
 
-        if (formData.course_id && formData.subject && formData.lecturer && formData.room) {
+        if (formData.group_id) {
             if (props.attendance.id) {
+                formData.id = props.attendance.id;
                 axios.put(process.env.REACT_APP_HOST_URL + "/attendance", formData).then((res) => {
                     console.log(res)
                     if (res.data.status) {
-                        props.sendToast("success", "Attendance added!")
+                        props.handleClose()
+                        props.sendToast("success", "Attendance edited!")
+                        props.refresh()
                     } else {
                         props.sendToast("error", res.data.data)
                     }
                 })
             } else {
+
                 axios.post(process.env.REACT_APP_HOST_URL + "/attendance", formData).then((res) => {
                     console.log(res)
                     if (res.data.status) {
-                        props.sendToast("success", "Attendance edited!")
+                        props.handleClose()
+                        props.sendToast("success", "Attendance adedd!")
+                        props.refresh()
                     } else {
                         props.sendToast("error", res.data.data)
                     }

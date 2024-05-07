@@ -191,6 +191,7 @@ export function getDayByNumber(number) {
 }
 
 export function downloadFile(url, filename) {
+    console.log(url)
     fetch(url)
         .then((response) => response.blob())
         .then((blob) => {

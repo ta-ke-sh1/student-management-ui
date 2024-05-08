@@ -52,6 +52,12 @@ const headCells = [
         disablePadding: false,
         label: "Capacity",
     },
+    {
+        id: "test",
+        numeric: true,
+        disablePadding: false,
+        label: "Test",
+    },
 ];
 
 export default function CampusAdmin(props) {

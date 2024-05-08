@@ -23,6 +23,8 @@ import FeedbackAdmin from "./components/feedback/feedback";
 import ScheduleAdmin from "./components/schedule/schedule";
 import AttendanceAdmin from "./components/attendance/attendance";
 import RegistrationAdmin from "./components/registration/registration";
+import EventNoteIcon from '@mui/icons-material/EventNote';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 
 export default function AdminHome() {
   const _container =
@@ -62,12 +64,12 @@ export default function AdminHome() {
         {
           name: "Schedules",
           id: 3,
-          icon: <CalendarMonthIcon />,
+          icon: <EventNoteIcon />,
         },
         {
           name: "Attendance",
           id: 4,
-          icon: <CalendarMonthIcon />,
+          icon: <CalendarTodayIcon />,
         },
       ],
     },

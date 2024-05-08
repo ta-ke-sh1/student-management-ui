@@ -89,6 +89,7 @@ export default function UserForm(props) {
   };
 
   const validateFormData = () => {
+    console.log(formData)
     if (!stringRegex.test(formData.firstName)) {
       toast.error("Invalid first name! Must only contain characters from A to Z", {
         position: "bottom-left",
@@ -111,22 +112,22 @@ export default function UserForm(props) {
       return false;
     }
 
-    if (formData.city === "") {
+    if (formData.city === "" || !formData.city) {
       toast.error("Must select city", {
         position: "bottom-left",
       });
       return false;
     }
 
-    if (formData.district === "") {
-      toast.error("Must select city", {
+    if (formData.district === "" || !formData.district) {
+      toast.error("Must select district", {
         position: "bottom-left",
       });
       return false;
     }
 
-    if (formData.ward === "") {
-      toast.error("Must select city", {
+    if (formData.ward === "" || !formData.ward) {
+      toast.error("Must select ward", {
         position: "bottom-left",
       });
       return false;

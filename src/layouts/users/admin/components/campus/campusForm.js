@@ -13,18 +13,18 @@ export default function CampusForm(props) {
   const constants = new Constants();
 
   const validateFormData = () => {
-    if (building === " ") {
-      props.sendToast("error", "Cannot be empty!");
+    if (building === " " || building === "" || !building) {
+      props.sendToast("error", "Invalid building");
       return false;
     }
 
-    if (number === " ") {
-      props.sendToast("error", "Cannot be empty!");
+    if (number === " " || number === "" || !number) {
+      props.sendToast("error", "Invalid number");
       return false;
     }
 
-    if (capacity <= 0) {
-      props.sendToast("error", "Must be larger than 0");
+    if (capacity <= 0 || isNaN(capacity)) {
+      props.sendToast("error", "Invalid capcity");
       return false;
     }
 
@@ -41,6 +41,7 @@ export default function CampusForm(props) {
     };
 
     if (!validateFormData()) {
+
       return;
     }
 
@@ -48,6 +49,7 @@ export default function CampusForm(props) {
       if (roomId) {
         axios.put(process.env.REACT_APP_HOST_URL + "/campus/room?id=" + roomId, room).then((res) => {
           if (res.status === 200) {
+            props.sendToast("success", "Room edited")
             props.closeHandler();
             props.refresh();
           }
@@ -55,6 +57,7 @@ export default function CampusForm(props) {
       } else {
         axios.post(process.env.REACT_APP_HOST_URL + "/campus/room", room).then((res) => {
           if (res.status === 200) {
+            props.sendToast("success", "Room added")
             props.closeHandler();
             props.refresh();
           }
